@@ -1,5 +1,7 @@
 package com.yk.bike.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,12 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
+
+import java.util.HashMap;
+
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+import cn.smssdk.gui.RegisterPage;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,7 +58,7 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        initMap(savedInstanceState);
+        startActivity(new Intent(this,LoginActivity.class));
     }
 
     @Override
@@ -67,14 +75,16 @@ public class MainActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        mMapView.onResume();
+        if (mMapView != null)
+            mMapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
-        mMapView.onPause();
+        if (mMapView != null)
+            mMapView.onPause();
     }
 
     @Override

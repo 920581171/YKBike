@@ -11,7 +11,7 @@ public class BaseActivity extends AppCompatActivity {
     @SuppressLint("ShowToast")
     public void showShort(String text){
         if (mToast==null){
-            mToast = new Toast(this);
+            mToast = Toast.makeText(this,text,Toast.LENGTH_SHORT);
         }
         mToast.setText(text);
         mToast.setDuration(Toast.LENGTH_SHORT);
@@ -21,7 +21,7 @@ public class BaseActivity extends AppCompatActivity {
     @SuppressLint("ShowToast")
     public void showLong(String text){
         if (mToast==null){
-            mToast = new Toast(this);
+            mToast = Toast.makeText(this,text,Toast.LENGTH_LONG);
         }
         mToast.setText(text);
         mToast.setDuration(Toast.LENGTH_LONG);
