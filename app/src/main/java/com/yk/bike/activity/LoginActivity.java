@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.fragment.LoginFragment;
+import com.yk.bike.fragment.StartFragment;
 
 public class LoginActivity extends BaseActivity {
     @Override
@@ -18,7 +19,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new LoginFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new StartFragment()).commit();
 
         transparentWindow();
     }

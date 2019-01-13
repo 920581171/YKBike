@@ -27,7 +27,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
     private EditText etInputName;
     private EditText etInputPassword;
     private Button btnLogin;
-    private TextView tvRegister;
+    private TextView tvToStart;
     private TextView tvPhoneLogin;
 
     private View mRootView;
@@ -46,11 +46,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         etInputName = mRootView.findViewById(R.id.et_input_name);
         etInputPassword = mRootView.findViewById(R.id.et_input_password);
         btnLogin = mRootView.findViewById(R.id.btn_login);
-        tvRegister = mRootView.findViewById(R.id.tv_register);
+        tvToStart = mRootView.findViewById(R.id.tv_to_start);
         tvPhoneLogin = mRootView.findViewById(R.id.tv_phone_login);
 
         btnLogin.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
+        tvToStart.setOnClickListener(this);
         tvPhoneLogin.setOnClickListener(this);
     }
 
@@ -94,9 +94,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                     });
                 }
                 break;
-            case R.id.tv_register:
+            case R.id.tv_to_start:
                 if (getActivity()!=null)
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new RegisterFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new StartFragment()).commit();
                 break;
             case R.id.tv_phone_login:
                 if (getActivity()!=null)

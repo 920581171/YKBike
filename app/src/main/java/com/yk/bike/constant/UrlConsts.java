@@ -38,4 +38,5 @@ public class UrlConsts {
     public static final String POST_ADMIN_INFO_FIND_ALL_ADMIN_INFO = "/adminInfo/findAllAdminInfo";//查找所有管理员信息
     public static final String POST_ADMIN_INFO_REGISTER_ADMIN_INFO = "/adminInfo/registerAdminInfo";//添加管理员
     public static final String POST_ADMIN_INFO_UPDATE_INFO = "/adminInfo/updateAdminInfo";//更新管理员信息
+    public static final String POST_ADMIN_INFO_APP_ADMIN_LOGIN = "/adminInfo/appAdminLogin";//管理员登陆
 }

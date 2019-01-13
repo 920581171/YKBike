@@ -82,4 +82,13 @@ public class ApiUtils {
 
         post(formBody,UrlConsts.POST_USER_INFO_UPDATE_APP_LOGIN,new CommonCallback<>(onResponseListener,CommonResponse.class));
     }
+
+    public void appAdminLogin(String adminNameOrPhone,String adminPassword,OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("adminNameOrPhone",adminNameOrPhone)
+                .add("adminPassword",adminPassword)
+                .build();
+
+        post(formBody,UrlConsts.POST_ADMIN_INFO_APP_ADMIN_LOGIN,new CommonCallback<>(onResponseListener,CommonResponse.class));
+    }
 }
