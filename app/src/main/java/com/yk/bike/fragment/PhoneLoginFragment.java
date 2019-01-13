@@ -4,32 +4,42 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnResponseListener;
+import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.MobResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.AccountValidatorUtil;
+import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MainHandler;
 
 import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import okhttp3.Response;
 
 public class PhoneLoginFragment extends BaseFragment implements View.OnClickListener {
 
     private View mRootView;
+    private TextInputLayout tilInputPhone;
+    private TextInputLayout tilInputCode;
     private EditText etInputPhone;
     private EditText etInputCode;
     private Button btnGetCode;
     private Button btnRigister;
+    private TextView tvUserLogin;
     private Handler handler;
 
     private long timeOut;
@@ -59,13 +69,66 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
     }
 
     public void initView() {
+        tilInputPhone = mRootView.findViewById(R.id.til_input_phone);
+        tilInputCode = mRootView.findViewById(R.id.til_input_code);
         etInputPhone = mRootView.findViewById(R.id.et_input_phone);
         etInputCode = mRootView.findViewById(R.id.et_input_code);
         btnGetCode = mRootView.findViewById(R.id.btn_get_code);
         btnRigister = mRootView.findViewById(R.id.btn_register);
+        tvUserLogin = mRootView.findViewById(R.id.tv_user_login);
 
+        etInputPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().length()==11){
+                    ApiUtils.getInstance().findUserByUserPhone(s.toString(), new OnBaseResponseListener<CommonResponse>() {
+                        @Override
+                        public void onError() {
+                            showShort("网络错误");
+                        }
+
+                        @Override
+                        public void onResponse(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)){
+                                btnRigister.setText(R.string.string_login);
+                            }else{
+                                btnRigister.setText(R.string.string_register);
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        etInputCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilInputCode.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         btnGetCode.setOnClickListener(this);
         btnRigister.setOnClickListener(this);
+        tvUserLogin.setOnClickListener(this);
 
         handler = new Handler();
         handler.postDelayed(runnable, 1000);
@@ -80,18 +143,19 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                     //回调完成
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //提交验证码成功
-                        HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
+                        HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
                         String country = (String) phoneMap.get("country"); // 国家代码，如“86”
                         String phone = (String) phoneMap.get("phone"); // 手机号码，如“13800138000”
-                        ApiUtils.getInstance().registerUserByPhone(phone, new OnResponseListener<CommonResponse>() {
+                        ApiUtils.getInstance().registerUserByPhone(phone, new OnBaseResponseListener<CommonResponse>() {
                             @Override
                             public void onError() {
-                                showShort("Error");
+                                showShort("网络错误");
                             }
 
                             @Override
                             public void onResponse(CommonResponse commonResponse) {
-                                showShort(commonResponse.getMsg());
+                                tilInputCode.setErrorEnabled(false);
+                                showShort(btnRigister.getText().toString()+"成功");
                                 getActivity().finish();
                             }
                         });
@@ -104,6 +168,12 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                         //返回支持发送验证码的国家列表
                     }
                 } else {
+                    String s = ((Throwable) data).getMessage();
+                    MobResponse mobResponse = (MobResponse) GsonUtils.fromJson(s,MobResponse.class);
+                    runOnUiThread(() -> {
+                        if (mobResponse!=null)
+                        tilInputCode.setError(mobResponse.getDetail());
+                    });
                     ((Throwable) data).printStackTrace();
                 }
             }
@@ -114,6 +184,7 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacks(runnable);
         SMSSDK.unregisterAllEventHandler();
     }
 
@@ -124,25 +195,29 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_get_code:
                 if ("".equals(phone)) {
-                    showShort("请输入手机号");
+                    tilInputPhone.setError("请输入手机号");
                 } else if (!AccountValidatorUtil.isMobile(phone)) {
-                    showShort("请输入正确手机号");
+                    tilInputPhone.setError("请输入正确手机号");
                 } else {
                     SMSSDK.getVerificationCode("86", phone);
                 }
                 break;
             case R.id.btn_register:
                 if ("".equals(phone)) {
-                    showShort("请输入手机号");
+                    tilInputPhone.setError("请输入手机号");
                 } else if (!AccountValidatorUtil.isMobile(phone)) {
-                    showShort("请输入正确手机号");
+                    tilInputPhone.setError("请输入正确手机号");
                 } else if ("".equals(code)) {
-                    showShort("请输入验证码");
+                    tilInputCode.setError("请输入验证码");
                 } else if (code.length() != 4) {
-                    showShort("请输入4位验证码");
+                    tilInputCode.setError("请输入4位验证码");
                 } else {
                     SMSSDK.submitVerificationCode("86", phone, code);
                 }
+                break;
+            case R.id.tv_user_login:
+                if (getActivity()!=null)
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new LoginFragment()).commit();
                 break;
         }
     }

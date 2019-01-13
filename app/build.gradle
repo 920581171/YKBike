@@ -70,5 +70,8 @@ dependencies {
     implementation 'com.amap.api:search:6.5.0.1'
     //定位功能
     implementation 'com.amap.api:location:4.4.0'
+    //Gson
     implementation 'com.google.code.gson:gson:2.8.5'
+    //圆形imageview
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }

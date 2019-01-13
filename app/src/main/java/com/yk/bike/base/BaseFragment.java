@@ -1,25 +1,37 @@
 package com.yk.bike.base;
 
 import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+
+import com.yk.bike.response.CommonResponse;
 
 public abstract class BaseFragment extends Fragment {
     @SuppressLint("ShowToast")
-    public void showShort(String text){
-        if (getActivity()!=null)
-        ((BaseActivity)getActivity()).showShort(text);
+    public void showShort(String text) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).showShort(text);
     }
 
     @SuppressLint("ShowToast")
-    public void showLong(String text){
-        if (getActivity()!=null)
-            ((BaseActivity)getActivity()).showLong(text);
+    public void showLong(String text) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).showLong(text);
+    }
+
+    public boolean isEmptyString(String s) {
+        if (getActivity() != null)
+            return ((BaseActivity) getActivity()).isEmptyString(s);
+        return false;
+    }
+
+    public boolean isResponseSuccess(CommonResponse commonResponse) {
+        if (getActivity() != null)
+            return ((BaseActivity) getActivity()).isResponseSuccess(commonResponse);
+        return false;
+    }
+
+    public void runOnUiThread(Runnable action) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).runOnUiThread(action);
     }
 }

@@ -23,83 +23,86 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_input_phone"
+        android:id="@+id/til_input_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_avtvar">
 
         <EditText
-            android:id="@+id/et_input_phone"
+            android:id="@+id/et_input_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/string_input"
-            android:inputType="phone"
-            android:maxLength="11"/>
+            android:hint="@string/string_hint_user_name"
+            android:inputType="text"
+            android:maxLength="20"/>
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_input_code"
+        android:id="@+id/til_input_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_get_code"
+        android:layout_marginEnd="32dp"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_input_phone">
+        app:layout_constraintTop_toBottomOf="@+id/til_input_name">
 
         <EditText
-            android:id="@+id/et_input_code"
+            android:id="@+id/et_input_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/string_input_code"
-            android:inputType="number"
-            android:maxLength="4"/>
+            android:hint="@string/string_hint_password"
+            android:inputType="textPassword"
+            android:maxLength="16"/>
 
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/btn_get_code"
-        style="@style/CommonButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:maxEms="11"
-        android:text="@string/string_get_code"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_input_phone"/>
-
-    <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/btn_login"
         style="@style/CommonButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:text="@string/string_register"
+        android:text="@string/string_login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_input_code"/>
+        app:layout_constraintTop_toBottomOf="@+id/til_input_password"/>
 
     <TextView
-        android:id="@+id/tv_user_login"
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/string_register"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_login"/>
+
+    <TextView
+        android:id="@+id/tv_phone_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
-        android:text="@string/string_user_login"
+        android:text="@string/string_phone_login"
         android:textColor="@color/colorAccent"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_register"/>
+        app:layout_constraintTop_toBottomOf="@+id/btn_login"/>
 
 </android.support.constraint.ConstraintLayout>
