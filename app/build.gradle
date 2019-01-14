@@ -74,4 +74,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     //圆形imageview
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    //二维码
+    implementation 'com.github.yuzhiqiang1993:zxing:2.2.5'
 }
