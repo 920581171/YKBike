@@ -1,6 +1,7 @@
 package com.yk.bike.base;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.yk.bike.response.CommonResponse;
@@ -32,6 +33,11 @@ public abstract class BaseFragment extends Fragment {
 
     public void runOnUiThread(Runnable action) {
         if (getActivity() != null)
-            ((BaseActivity) getActivity()).runOnUiThread(action);
+            getActivity().runOnUiThread(action);
+    }
+
+    public void sendBroadcast(Intent intent){
+        if (getActivity()!=null)
+            getActivity().sendBroadcast(intent);
     }
 }

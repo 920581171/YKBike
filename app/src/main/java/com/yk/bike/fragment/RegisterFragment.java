@@ -1,5 +1,6 @@
 package com.yk.bike.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,9 +17,11 @@ import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
+import com.yk.bike.utils.SharedPreferencesUtils;
 
 import java.util.Objects;
 
@@ -154,6 +157,10 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
                 System.out.println("success");
                 if (isResponseSuccess(commonResponse)) {
                     showShort("注册成功！");
+                    sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
+                    SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, etInputName.getText().toString());
+                    SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, MD5Utils.getMD5(etInputPassword.getText().toString()));
+                    SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_USER);
                     Objects.requireNonNull(getActivity()).finish();
                 } else {
                     showShort("注册失败，请重试！");

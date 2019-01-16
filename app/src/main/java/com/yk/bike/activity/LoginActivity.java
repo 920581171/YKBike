@@ -1,7 +1,7 @@
 package com.yk.bike.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,8 +10,15 @@ import android.view.WindowManager;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
-import com.yk.bike.fragment.LoginFragment;
+import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.callback.OnSuccessResponseListener;
+import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.StartFragment;
+import com.yk.bike.response.CommonResponse;
+import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.MD5Utils;
+import com.yk.bike.utils.SharedPreferencesUtils;
 
 public class LoginActivity extends BaseActivity {
     @Override
@@ -19,9 +26,42 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new StartFragment()).commit();
-
         transparentWindow();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.ll_login, new StartFragment()).commit();
+
+        String name = SharedPreferencesUtils.getString(Consts.SP_LOGIN_NAME);
+        String password = SharedPreferencesUtils.getString(Consts.SP_LOGIN_PASSWORD);
+        String type = SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE);
+
+        if ((!isEmptyString(name) || !isEmptyString(password)) && !isEmptyString(type))
+            switch (type) {
+                case Consts.LOGIN_TYPE_USER:
+                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<CommonResponse>) commonResponse -> {
+                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
+                        showShort("登陆成功");
+                        finish();
+                    });
+                    break;
+                case Consts.LOGIN_TYPE_ADMIN:
+                    sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
+                    showShort("登陆成功");
+                    finish();
+                    break;
+                case Consts.LOGIN_TYPE_PHONE:
+                    ApiUtils.getInstance().appAdminLogin(name, password, (OnSuccessResponseListener<CommonResponse>) commonResponse -> {
+                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_ADMIN_LOGIN));
+                        showShort("登陆成功");
+                        finish();
+                    });
+                    break;
+            }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_EXIT));
     }
 
     /**

@@ -17,12 +17,14 @@ import android.widget.TextView;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MobResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.AccountValidatorUtil;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MainHandler;
+import com.yk.bike.utils.SharedPreferencesUtils;
 
 import java.util.HashMap;
 
@@ -156,6 +158,8 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                             public void onResponse(CommonResponse commonResponse) {
                                 tilInputCode.setErrorEnabled(false);
                                 showShort(btnRigister.getText().toString()+"成功");
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,etInputPhone.getText().toString());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_PHONE);
                                 getActivity().finish();
                             }
                         });

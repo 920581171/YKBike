@@ -1,5 +1,7 @@
 package com.yk.bike.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,9 +16,11 @@ import android.widget.TextView;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
+import com.yk.bike.utils.SharedPreferencesUtils;
 
 public class AdminLoginFragment extends BaseFragment implements View.OnClickListener {
 
@@ -81,6 +85,10 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                         public void onResponse(CommonResponse commonResponse) {
                             if (isResponseSuccess(commonResponse)) {
                                 showShort("登陆成功");
+                                sendBroadcast(new Intent().setAction(Consts.BR_ACTION_ADMIN_LOGIN));
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, etInputAdminOrPhone.getText().toString());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, MD5Utils.getMD5(etInputPassword.getText().toString()));
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_ADMIN);
                                 getActivity().finish();
                             } else {
                                 showShort(commonResponse.getMsg());

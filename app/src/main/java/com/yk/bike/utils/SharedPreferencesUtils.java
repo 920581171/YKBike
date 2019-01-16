@@ -21,9 +21,7 @@ public class SharedPreferencesUtils {
      */
     public static void put(String key, Object object) {
 
-        SharedPreferences sp = BaseApplication.getApplication().getSharedPreferences(FILE_NAME,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
 
         if (object instanceof String) {
             editor.putString(key, (String) object);
@@ -59,6 +57,10 @@ public class SharedPreferencesUtils {
         }
 
         return null;
+    }
+
+    public static String getString(String key) {
+        return getSharedPreferences().getString(key, "");
     }
 
     /**

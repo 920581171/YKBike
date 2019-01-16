@@ -1,11 +1,13 @@
 package com.yk.bike.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,20 +22,37 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
+import com.yk.bike.constant.Consts;
+import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
-import java.util.HashMap;
-
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
-import cn.smssdk.gui.RegisterPage;
-
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainActivity";
+
     private int REQUEST_CODE_SCAN = 0;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action != null)
+                switch (action) {
+                    case Consts.BR_ACTION_EXIT:
+                        finish();
+                        break;
+                    case Consts.BR_ACTION_USER_LOGIN:
+                        Log.d(TAG, "onReceive: userLogin");
+                        break;
+                    case Consts.BR_ACTION_ADMIN_LOGIN:
+                        Log.d(TAG, "onReceive: adminLogin");
+                        break;
+                }
+        }
+    };
 
     private MapView mMapView;
     private AMap mAMap;
@@ -46,31 +65,34 @@ public class MainActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Consts.BR_ACTION_USER_LOGIN);
+        intentFilter.addAction(Consts.BR_ACTION_ADMIN_LOGIN);
+        intentFilter.addAction(Consts.BR_ACTION_EXIT);
+        registerReceiver(br, intentFilter);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                /*ZxingConfig是配置类
-                 *可以设置是否显示底部布局，闪光灯，相册，
-                 * 是否播放提示音  震动
-                 * 设置扫描框颜色等
-                 * 也可以不传这个参数
-                 * */
-                ZxingConfig config = new ZxingConfig();
-                config.setPlayBeep(true);//是否播放扫描声音 默认为true
-                config.setShake(true);//是否震动  默认为true
-                config.setDecodeBarCode(true);//是否扫描条形码 默认为true
-                config.setReactColor(R.color.colorPrimary);//设置扫描框四个角的颜色 默认为白色
-                config.setFrameLineColor(R.color.colorPrimary);//设置扫描框边框颜色 默认无色
-                config.setScanLineColor(R.color.colorPrimary);//设置扫描线的颜色 默认白色
-                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                config.setShowAlbum(false);
-                intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, REQUEST_CODE_SCAN);
-            }
+        fab.setOnClickListener(view -> {
+            //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //                        .setAction("Action", null).show();
+            Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+            /*ZxingConfig是配置类
+             *可以设置是否显示底部布局，闪光灯，相册，
+             * 是否播放提示音  震动
+             * 设置扫描框颜色等
+             * 也可以不传这个参数
+             * */
+            ZxingConfig config = new ZxingConfig();
+            config.setPlayBeep(true);//是否播放扫描声音 默认为true
+            config.setShake(true);//是否震动  默认为true
+            config.setDecodeBarCode(true);//是否扫描条形码 默认为true
+            config.setReactColor(R.color.colorPrimary);//设置扫描框四个角的颜色 默认为白色
+            config.setFrameLineColor(R.color.colorPrimary);//设置扫描框边框颜色 默认无色
+            config.setScanLineColor(R.color.colorPrimary);//设置扫描线的颜色 默认白色
+            config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+            config.setShowAlbum(false);
+            intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+            startActivityForResult(intent, REQUEST_CODE_SCAN);
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -82,7 +104,7 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        startActivity(new Intent(this,LoginActivity.class));
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     @Override
@@ -117,6 +139,7 @@ public class MainActivity extends BaseActivity
         if (mMapView != null) {
             mMapView.onDestroy();
         }
+        unregisterReceiver(br);
     }
 
     @Override
@@ -147,18 +170,19 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_user) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_admin) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_count) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_info) {
+            SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,"");
+            SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD,"");
+            SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,"");
+            startActivity(new Intent(this,LoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
