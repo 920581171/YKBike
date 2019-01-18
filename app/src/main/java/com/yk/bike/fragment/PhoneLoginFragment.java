@@ -1,5 +1,6 @@
 package com.yk.bike.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MobResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.AccountValidatorUtil;
 import com.yk.bike.utils.GsonUtils;
@@ -148,18 +150,21 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                         HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
                         String country = (String) phoneMap.get("country"); // 国家代码，如“86”
                         String phone = (String) phoneMap.get("phone"); // 手机号码，如“13800138000”
-                        ApiUtils.getInstance().registerUserByPhone(phone, new OnBaseResponseListener<CommonResponse>() {
+                        ApiUtils.getInstance().registerUserByPhone(phone, new OnBaseResponseListener<UserInfoResponse>() {
                             @Override
                             public void onError() {
                                 showShort("网络错误");
                             }
 
                             @Override
-                            public void onResponse(CommonResponse commonResponse) {
+                            public void onResponse(UserInfoResponse userInfoResponse) {
                                 tilInputCode.setErrorEnabled(false);
+                                UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
                                 showShort(btnRigister.getText().toString()+"成功");
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,etInputPhone.getText().toString());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,userInfo.getUserId());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,userInfo.getUserPhone());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_PHONE);
+                                sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivity().finish();
                             }
                         });

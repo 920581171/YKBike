@@ -4,7 +4,8 @@ public class UrlConsts {
     public static final String HEAD = "http://";
     public static final String IP = "192.168.43.151";
     public static final String PORT = "8080";
-    public static final String IPORT = HEAD + IP + ":" + PORT;
+//    public static final String IPORT = HEAD + IP + ":" + PORT;
+    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
 
     /**
      * userInfo
@@ -25,7 +26,7 @@ public class UrlConsts {
      */
     public static final String POST_BIKE_INFO_ADD_BIKE_INFO = "/bikeinfo/addBikeInfo";//添加自行车信息
     public static final String POST_BIKE_INFO_ALL_BIKE_INFO = "/bikeinfo/findAllBikeInfo";//查找所有自行车信息
-    public static final String POST_BIKE_INFO_BY_BIKE_ID = "/bikeinfo/findBikeInfoByBikeId";//根据bikeId查询自行车信息
+    public static final String POST_BIKE_INFO_FIND_BIKE_BY_BIKE_ID = "/bikeinfo/findBikeInfoByBikeId";//根据bikeId查询自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_INFO = "/bikeinfo/updateBikeInfo";//更新自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_LOCATION = "/bikeinfo/updateBikeLocation";//更新自行车位置信息
 

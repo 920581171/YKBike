@@ -23,4 +23,5 @@
     <string name="string_user_login">账号登陆</string>
     <string name="string_admin_login">管理员登陆</string>
     <string name="string_to_start">首页</string>
+    <string name="string_network_error">网络错误</string>
 </resources>

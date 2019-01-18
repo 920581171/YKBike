@@ -17,7 +17,9 @@ import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.OnCommonResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.SharedPreferencesUtils;
@@ -64,7 +66,7 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                 } else if (isEmptyString(password)) {
                     tilInputPassword.setError("密码不能为空");
                 } else {
-                    ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<CommonResponse>() {
+                    ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<AdminInfoResponse>() {
                         @Override
                         public void onStart() {
                             showShort("登陆中");
@@ -82,16 +84,18 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                         }
 
                         @Override
-                        public void onResponse(CommonResponse commonResponse) {
-                            if (isResponseSuccess(commonResponse)) {
+                        public void onResponse(AdminInfoResponse adminInfoResponse) {
+                            if (isResponseSuccess(adminInfoResponse)) {
+                                AdminInfoResponse.AdminInfo adminInfo = adminInfoResponse.getData();
                                 showShort("登陆成功");
-                                sendBroadcast(new Intent().setAction(Consts.BR_ACTION_ADMIN_LOGIN));
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, etInputAdminOrPhone.getText().toString());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, MD5Utils.getMD5(etInputPassword.getText().toString()));
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,adminInfo.getAdminId());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, adminInfo.getAdminName());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, adminInfo.getAdminPassword());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_ADMIN);
+                                sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivity().finish();
                             } else {
-                                showShort(commonResponse.getMsg());
+                                showShort(adminInfoResponse.getMsg());
                             }
                         }
                     });

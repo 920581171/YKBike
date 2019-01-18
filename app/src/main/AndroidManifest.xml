@@ -53,6 +53,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <service android:name="com.amap.api.location.APSService"/>
+        
+        <service android:name=".service.LocationService"/>
 
         <activity android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"/>

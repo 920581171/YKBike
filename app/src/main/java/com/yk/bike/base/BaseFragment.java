@@ -2,8 +2,11 @@ package com.yk.bike.base;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.yk.bike.response.BaseResponse;
 import com.yk.bike.response.CommonResponse;
 
 public abstract class BaseFragment extends Fragment {
@@ -25,9 +28,9 @@ public abstract class BaseFragment extends Fragment {
         return false;
     }
 
-    public boolean isResponseSuccess(CommonResponse commonResponse) {
+    public boolean isResponseSuccess(BaseResponse baseResponse) {
         if (getActivity() != null)
-            return ((BaseActivity) getActivity()).isResponseSuccess(commonResponse);
+            return ((BaseActivity) getActivity()).isResponseSuccess(baseResponse);
         return false;
     }
 
@@ -36,8 +39,23 @@ public abstract class BaseFragment extends Fragment {
             getActivity().runOnUiThread(action);
     }
 
-    public void sendBroadcast(Intent intent){
-        if (getActivity()!=null)
+    public void sendBroadcast(Intent intent) {
+        if (getActivity() != null)
             getActivity().sendBroadcast(intent);
+    }
+
+    public void sendBroadcast(String[] actions) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).sendBroadcast(actions);
+    }
+
+    public void sendBroadcast(String action) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).sendBroadcast(action);
+    }
+
+    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, onAlertDialogButtonClickListener);
     }
 }

@@ -1,5 +1,8 @@
 package com.yk.bike.callback;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MainHandler;
 
@@ -10,6 +13,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class CommonCallback<T> implements Callback {
+
+    private static final String TAG = "CommonCallback";
 
     private OnResponseListener<T> onResponseListener;
     private Class<T> tClass;
@@ -24,6 +29,7 @@ public class CommonCallback<T> implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
+        Log.d(TAG, "onFailure: ");
         MainHandler.getInstance().post(() -> {
             if (onResponseListener instanceof OnCommonResponseListener) {
                 ((OnCommonResponseListener<T>) onResponseListener).onError();
@@ -40,8 +46,13 @@ public class CommonCallback<T> implements Callback {
     public void onResponse(Call call, final Response response) throws IOException {
         T t;
         if (response.body() != null) {
-            t = (T) GsonUtils.fromJson(response.body().string(), tClass);
+            String responseStr = response.body().string();
+            Log.d(TAG, "onResponse: "+ responseStr);
+//            t = (T) GsonUtils.fromJson(responseStr, tClass);
+            Gson gson = new Gson();
+            t = gson.fromJson(responseStr,tClass);
         } else {
+            Log.d(TAG, "onResponse: null");
             t = null;
         }
         MainHandler.getInstance().post(() -> {

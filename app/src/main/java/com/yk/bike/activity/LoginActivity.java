@@ -15,7 +15,9 @@ import com.yk.bike.callback.OnCommonResponseListener;
 import com.yk.bike.callback.OnSuccessResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.StartFragment;
+import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.SharedPreferencesUtils;
@@ -37,20 +39,20 @@ public class LoginActivity extends BaseActivity {
         if ((!isEmptyString(name) || !isEmptyString(password)) && !isEmptyString(type))
             switch (type) {
                 case Consts.LOGIN_TYPE_USER:
-                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<CommonResponse>) commonResponse -> {
-                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
+                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<UserInfoResponse>) userInfoResponse -> {
+                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
                         showShort("登陆成功");
                         finish();
                     });
                     break;
                 case Consts.LOGIN_TYPE_ADMIN:
-                    sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
+                    sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
                     showShort("登陆成功");
                     finish();
                     break;
                 case Consts.LOGIN_TYPE_PHONE:
-                    ApiUtils.getInstance().appAdminLogin(name, password, (OnSuccessResponseListener<CommonResponse>) commonResponse -> {
-                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_ADMIN_LOGIN));
+                    ApiUtils.getInstance().appAdminLogin(name, password, (OnSuccessResponseListener<AdminInfoResponse>) adminInfoResponse -> {
+                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
                         showShort("登陆成功");
                         finish();
                     });

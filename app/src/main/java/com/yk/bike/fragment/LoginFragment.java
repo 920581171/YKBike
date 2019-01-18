@@ -19,6 +19,7 @@ import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.callback.OnCommonResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.SharedPreferencesUtils;
@@ -68,7 +69,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 } else if (isEmptyString(password)) {
                     tilInputPassword.setError("密码不能为空");
                 } else {
-                    ApiUtils.getInstance().appLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<CommonResponse>() {
+                    ApiUtils.getInstance().appLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<UserInfoResponse>() {
                         @Override
                         public void onStart() {
                             showShort("登陆中");
@@ -86,16 +87,18 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                         }
 
                         @Override
-                        public void onResponse(CommonResponse commonResponse) {
-                            if (isResponseSuccess(commonResponse)) {
+                        public void onResponse(UserInfoResponse userInfoResponse) {
+                            if (isResponseSuccess(userInfoResponse)) {
                                 showShort("登陆成功");
-                                sendBroadcast(new Intent().setAction(Consts.BR_ACTION_USER_LOGIN));
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, etInputName.getText().toString());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, MD5Utils.getMD5(etInputPassword.getText().toString()));
+                                UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,userInfo.getUserId());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, userInfo.getUserName());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, userInfo.getUserPassword());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_USER);
+                                sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivity().finish();
                             } else {
-                                showShort(commonResponse.getMsg());
+                                showShort(userInfoResponse.getMsg());
                             }
                         }
                     });
