@@ -22,14 +22,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.amap.api.location.AMapLocation;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.MyLocationStyle;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.fragment.BikeInfoFragment;
+import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.service.LocationService;
@@ -66,10 +65,6 @@ public class MainActivity extends BaseActivity
                 }
         }
     };
-
-    private MapView mMapView;
-    private AMap mAMap;
-    private MyLocationStyle mMyLocationStyle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +109,8 @@ public class MainActivity extends BaseActivity
         };
 
         bindService(new Intent(MainActivity.this, LocationService.class), connection, BIND_AUTO_CREATE);
+
+//        replaceFragment(R.id.ll_main,new MapFragment());
     }
 
     @Override
@@ -129,25 +126,16 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        if (mMapView != null)
-            mMapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
-        if (mMapView != null)
-            mMapView.onPause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mMapView != null) {
-            mMapView.onDestroy();
-        }
         unregisterReceiver(br);
         if (connection != null)
             unbindService(connection);
@@ -186,7 +174,7 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_admin) {
 
         } else if (id == R.id.nav_count) {
-
+            replaceFragment(R.id.ll_main,new BikeInfoFragment());
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_info) {
@@ -225,21 +213,6 @@ public class MainActivity extends BaseActivity
                         }
                     });
             }
-        }
-    }
-
-    public void initMap(Bundle savedInstanceState) {
-        mMapView = findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mAMap = mMapView.getMap();
-
-        mMyLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
-        mMyLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
-        mMyLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
-        if (mAMap != null) {
-            mAMap.setMyLocationStyle(mMyLocationStyle);//设置定位蓝点的Style
-            mAMap.getUiSettings().setMyLocationButtonEnabled(true);//设置默认定位按钮是否显示，非必需设置。
-            mAMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         }
     }
 

@@ -4,15 +4,15 @@ public class UrlConsts {
     public static final String HEAD = "http://";
     public static final String IP = "192.168.43.151";
     public static final String PORT = "8080";
-//    public static final String IPORT = HEAD + IP + ":" + PORT;
-    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
+    public static final String IPORT = HEAD + IP + ":" + PORT;
+//    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
 
     /**
      * userInfo
      */
     public static final String GET_USER_INFO_DOWNLOAD_AVATAR = "/userinfo/downloadAvatar";//下载头像
     public static final String POST_USER_INFO_UPLOAD_AVATAR = "/userinfo/uploadAvatar";//上传头像
-    public static final String POST_USER_INFO_FIND_ALL_USER_INFO = "/userinfo//userinfo/findAllUserInfo";//查找所有用户信息
+    public static final String POST_USER_INFO_FIND_ALL_USER_INFO = "/userinfo/userinfo/findAllUserInfo";//查找所有用户信息
     public static final String POST_USER_INFO_FIND_USER_BY_USER_ID = "/userinfo/findUserByUserId";//根据UserId查找用户
     public static final String POST_USER_INFO_FIND_USER_BY_NAME = "/userinfo/findUserByUserName ";//根据UserName查找用户
     public static final String POST_USER_INFO_FIND_USER_BY_PHONE = "/userinfo/findUserByUserPhone";//根据UserName查找用户
@@ -29,6 +29,7 @@ public class UrlConsts {
     public static final String POST_BIKE_INFO_FIND_BIKE_BY_BIKE_ID = "/bikeinfo/findBikeInfoByBikeId";//根据bikeId查询自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_INFO = "/bikeinfo/updateBikeInfo";//更新自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_LOCATION = "/bikeinfo/updateBikeLocation";//更新自行车位置信息
+    public static final String POST_BIKE_INFO_DELETE_BIKE_INFO = "/bikeinfo/deleteBikeInfo";
 
     /**
      * adminInfo

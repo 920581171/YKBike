@@ -4,6 +4,7 @@ import com.yk.bike.callback.CommonCallback;
 import com.yk.bike.callback.OnResponseListener;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoResponse;
+import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -123,5 +124,18 @@ public class ApiUtils {
                 .build();
 
         post(formBody,UrlConsts.POST_BIKE_INFO_UPDATE_BIKE_INFO,new CommonCallback<>(onResponseListener,CommonResponse.class));
+    }
+
+    public void findAllBikeInfo(OnResponseListener<BikeInfoListResponse> onResponseListener){
+        FormBody formBody = new FormBody.Builder().build();
+        post(formBody,UrlConsts.POST_BIKE_INFO_ALL_BIKE_INFO,new CommonCallback<>(onResponseListener,BikeInfoListResponse.class));
+    }
+
+    public void deleteBikeInfo(String bikeId,OnResponseListener<CommonResponse> onResponseListener){
+        FormBody formBody = new FormBody.Builder()
+                .add("bikeId",bikeId)
+                .build();
+
+        post(formBody,UrlConsts.POST_BIKE_INFO_DELETE_BIKE_INFO,new CommonCallback<>(onResponseListener,CommonResponse.class));
     }
 }

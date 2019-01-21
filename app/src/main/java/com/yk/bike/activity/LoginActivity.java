@@ -10,16 +10,12 @@ import android.view.WindowManager;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
-import com.yk.bike.callback.OnBaseResponseListener;
-import com.yk.bike.callback.OnCommonResponseListener;
 import com.yk.bike.callback.OnSuccessResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.StartFragment;
 import com.yk.bike.response.AdminInfoResponse;
-import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
-import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 
 public class LoginActivity extends BaseActivity {
@@ -45,12 +41,14 @@ public class LoginActivity extends BaseActivity {
                         finish();
                     });
                     break;
+//                case Consts.LOGIN_TYPE_PHONE:
+//                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<UserInfoResponse>) userInfoResponse -> {
+//                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
+//                        showShort("登陆成功");
+//                        finish();
+//                    });
+//                    break;
                 case Consts.LOGIN_TYPE_ADMIN:
-                    sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                    showShort("登陆成功");
-                    finish();
-                    break;
-                case Consts.LOGIN_TYPE_PHONE:
                     ApiUtils.getInstance().appAdminLogin(name, password, (OnSuccessResponseListener<AdminInfoResponse>) adminInfoResponse -> {
                         sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
                         showShort("登陆成功");

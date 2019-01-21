@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.yk.bike.R;
@@ -39,6 +42,10 @@ public class BaseActivity extends AppCompatActivity {
         mToast.setText(text);
         mToast.setDuration(Toast.LENGTH_LONG);
         mToast.show();
+    }
+
+    public void replaceFragment(int layoutId, Fragment fragment){
+        getSupportFragmentManager().beginTransaction().replace(layoutId,fragment).commit();
     }
 
     public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {

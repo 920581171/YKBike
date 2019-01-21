@@ -1,0 +1,110 @@
+package com.yk.bike.adapter;
+
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.yk.bike.R;
+import com.yk.bike.response.BikeInfoListResponse;
+import com.yk.bike.response.BikeInfoResponse;
+
+import java.util.List;
+
+public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHolder> {
+
+    private List<BikeInfoResponse.BikeInfo> list;
+
+    private OnItemClickListener onItemClickListener;
+
+    public BikeInfoAdapter(List<BikeInfoResponse.BikeInfo> list) {
+        this.list = list;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bikeinfo,viewGroup,false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        viewHolder.setIsRecyclable(false);
+        viewHolder.bikeId.setText(list.get(i).getBikeId());
+        String mileageText = list.get(i).getMileage()+viewHolder.itemView.getContext().getResources().getString(R.string.string_mileage_unit);
+        viewHolder.mileage.setText(mileageText);
+
+        if ("1".equals(list.get(i).getFix())){
+            viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_fix));
+        }else{
+            if (!"".equals(list.get(i).getUserId())){
+                viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_using));
+            }else{
+                viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_unused));
+            }
+        }
+
+        viewHolder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener!=null){
+                onItemClickListener.onClick(viewHolder,i);
+            }
+        });
+
+        viewHolder.itemView.setOnLongClickListener(v -> {
+            if (onItemClickListener!=null){
+                onItemClickListener.onLongClick(viewHolder,i);
+            }
+            return true;
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public List<BikeInfoResponse.BikeInfo> getList() {
+        return list;
+    }
+
+    public BikeInfoAdapter setList(List<BikeInfoResponse.BikeInfo> list) {
+        this.list = list;
+        return this;
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
+    }
+
+    public BikeInfoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+        return this;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView bikeId;
+        public TextView status;
+        public TextView mileage;
+
+        public ImageView ivShowInMap;
+        public TextView tvShowInMap;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            bikeId = itemView.findViewById(R.id.tv_bike_id);
+            status = itemView.findViewById(R.id.tv_status);
+            mileage = itemView.findViewById(R.id.tv_mileage);
+            ivShowInMap = itemView.findViewById(R.id.iv_show_in_map);
+            tvShowInMap = itemView.findViewById(R.id.tv_show_in_map);
+        }
+    }
+
+    public interface OnItemClickListener{
+        void onClick(ViewHolder holder,int position);
+        void onLongClick(ViewHolder holder,int position);
+    }
+}

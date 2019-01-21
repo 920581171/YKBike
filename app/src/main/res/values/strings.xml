@@ -24,4 +24,13 @@
     <string name="string_admin_login">管理员登陆</string>
     <string name="string_to_start">首页</string>
     <string name="string_network_error">网络错误</string>
+    <string name="string_show_status">状态：</string>
+    <string name="string_status_unused">未使用</string>
+    <string name="string_status_fix">维修中</string>
+    <string name="string_status_using">使用中</string>
+    <string name="string_show_in_map">地图定位</string>
+    <string name="string_show_mileage">里程：</string>
+    <string name="string_mileage_unit">公里</string>
+    <string name="string_show_bike_id">车辆编号：</string>
+    <string name="string_id">ID</string>
 </resources>

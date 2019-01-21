@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.yk.bike.response.BaseResponse;
 import com.yk.bike.response.CommonResponse;
@@ -57,5 +59,10 @@ public abstract class BaseFragment extends Fragment {
     public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {
         if (getActivity() != null)
             ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, onAlertDialogButtonClickListener);
+    }
+
+    public void replaceFragment(int layoutId, Fragment fragment) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).replaceFragment(layoutId, fragment);
     }
 }
