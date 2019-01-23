@@ -1,10 +1,10 @@
 package com.yk.bike.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,15 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yk.bike.R;
+import com.yk.bike.activity.MainActivity;
 import com.yk.bike.adapter.BikeInfoAdapter;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.response.BikeInfoListResponse;
+import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.utils.ApiUtils;
 
 public class BikeInfoFragment extends BaseFragment {
+
+    private static final String TAG = "BikeInfoFragment";
+
+    private MainActivity mainActivity;
 
     private View mRootView;
     private RecyclerView recyclerView;
@@ -36,7 +42,6 @@ public class BikeInfoFragment extends BaseFragment {
 
     public void init() {
         recyclerView = mRootView.findViewById(R.id.recyclerView);
-
         initRecyclerView();
     }
 
@@ -86,12 +91,32 @@ public class BikeInfoFragment extends BaseFragment {
                                 }
                             });
                         }
+
+                        @Override
+                        public void onShowInMapClick(BikeInfoAdapter.ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo) {
+                            MapFragment mapFragment = (MapFragment) mainActivity.getFragment(mainActivity.FRAGMENT_MAP);
+                            mapFragment.showBikeLocation(bikeInfo.getLatitude(), bikeInfo.getLongitude());
+                        }
                     });
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity)
+            mainActivity = (MainActivity) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainActivity = null;
     }
 
     private void deleteBike(BikeInfoAdapter.ViewHolder holder) {

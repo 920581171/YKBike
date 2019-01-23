@@ -65,4 +65,10 @@ public abstract class BaseFragment extends Fragment {
         if (getActivity() != null)
             ((BaseActivity) getActivity()).replaceFragment(layoutId, fragment);
     }
+
+    public void switchFragment(Fragment newFragment,Fragment currentFragment){
+        if (getActivity()!=null){
+            ((BaseActivity) getActivity()).switchFragment(newFragment,currentFragment);
+        }
+    }
 }

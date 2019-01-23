@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -28,6 +31,7 @@ import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.BikeInfoFragment;
+import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
@@ -38,10 +42,19 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
+import java.util.List;
+
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public final int FRAGMENT_MAP = 0;
+    public final int FRAGMENT_BIKEINFO = 1;
+
+    private int currentFragmentNum = 0;
+
     private static final String TAG = "MainActivity";
+
+    private Fragment[] fragments;
 
     private int REQUEST_CODE_SCAN = 0;
 
@@ -92,7 +105,31 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        initFragment();
+
         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    public void initFragment() {
+        fragments = new Fragment[2];
+        fragments[FRAGMENT_MAP] = new MapFragment();
+        fragments[FRAGMENT_BIKEINFO] = new BikeInfoFragment();
+
+        getSupportFragmentManager().getFragments().clear();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        for (Fragment f : fragments)
+            fragmentTransaction.add(R.id.ll_main, f);
+        fragmentTransaction.commit();
+    }
+
+    public void refreshFragment() {
+        if (fragments == null) {
+            initFragment();
+            return;
+        }
+        ((MapFragment) fragments[FRAGMENT_MAP]).initBikeLocation();
+        ((BikeInfoFragment) fragments[FRAGMENT_BIKEINFO]).init();
     }
 
     public void init() {
@@ -110,7 +147,7 @@ public class MainActivity extends BaseActivity
 
         bindService(new Intent(MainActivity.this, LocationService.class), connection, BIND_AUTO_CREATE);
 
-//        replaceFragment(R.id.ll_main,new MapFragment());
+        refreshFragment();
     }
 
     @Override
@@ -169,12 +206,13 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_user) {
-            // Handle the camera action
+        if (id == R.id.nav_map) {
+            ((MapFragment)switchFragment(FRAGMENT_MAP)).initBikeLocation();
+        } else if (id == R.id.nav_user) {
         } else if (id == R.id.nav_admin) {
 
         } else if (id == R.id.nav_count) {
-            replaceFragment(R.id.ll_main,new BikeInfoFragment());
+            ((BikeInfoFragment)switchFragment(FRAGMENT_BIKEINFO)).init();
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_info) {
@@ -182,6 +220,7 @@ public class MainActivity extends BaseActivity
             SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
+            switchFragment(FRAGMENT_MAP);
             startActivity(new Intent(this, LoginActivity.class));
         }
 
@@ -377,6 +416,18 @@ public class MainActivity extends BaseActivity
                 Log.d(TAG, "onDismiss: ");
             }
         });
+    }
+
+    public Fragment switchFragment(int newFragment) {
+        super.switchFragment(fragments[newFragment], fragments[currentFragmentNum]);
+        currentFragmentNum = newFragment;
+        return fragments[newFragment];
+    }
+
+    public Fragment getFragment(int position) {
+        return position < fragments.length ?
+                fragments[position] :
+                fragments[fragments.length - 1];
     }
 }
 

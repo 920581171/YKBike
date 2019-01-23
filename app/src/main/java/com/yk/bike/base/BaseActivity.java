@@ -48,6 +48,12 @@ public class BaseActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(layoutId,fragment).commit();
     }
 
+    public void switchFragment(Fragment newFragment,Fragment currentFragment){
+        if (newFragment!=null&&currentFragment!=null&&newFragment!=currentFragment){
+            getSupportFragmentManager().beginTransaction().show(newFragment).hide(currentFragment).commit();
+        }
+    }
+
     public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(title)

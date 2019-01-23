@@ -27,37 +27,50 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bikeinfo,viewGroup,false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bikeinfo, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.setIsRecyclable(false);
         viewHolder.bikeId.setText(list.get(i).getBikeId());
-        String mileageText = list.get(i).getMileage()+viewHolder.itemView.getContext().getResources().getString(R.string.string_mileage_unit);
+        String mileageText = list.get(i).getMileage() + viewHolder.itemView.getContext().getResources().getString(R.string.string_mileage_unit);
+        String userId = list.get(i).getUserId();
         viewHolder.mileage.setText(mileageText);
 
-        if ("1".equals(list.get(i).getFix())){
+        if ("1".equals(list.get(i).getFix())) {
             viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_fix));
-        }else{
-            if (!"".equals(list.get(i).getUserId())){
-                viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_using));
-            }else{
+        } else {
+            if (userId == null || "".equals(userId)) {
                 viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_unused));
+            } else {
+                viewHolder.status.setText(viewHolder.itemView.getContext().getResources().getString(R.string.string_status_using));
             }
         }
 
         viewHolder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener!=null){
-                onItemClickListener.onClick(viewHolder,i);
+            if (onItemClickListener != null) {
+                onItemClickListener.onClick(viewHolder, i);
             }
         });
 
         viewHolder.itemView.setOnLongClickListener(v -> {
-            if (onItemClickListener!=null){
-                onItemClickListener.onLongClick(viewHolder,i);
+            if (onItemClickListener != null) {
+                onItemClickListener.onLongClick(viewHolder, i);
             }
             return true;
+        });
+
+        viewHolder.ivShowInMap.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onShowInMapClick(viewHolder, list.get(i));
+            }
+        });
+
+        viewHolder.tvShowInMap.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onShowInMapClick(viewHolder, list.get(i));
+            }
         });
     }
 
@@ -103,8 +116,11 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
         }
     }
 
-    public interface OnItemClickListener{
-        void onClick(ViewHolder holder,int position);
-        void onLongClick(ViewHolder holder,int position);
+    public interface OnItemClickListener {
+        void onClick(ViewHolder holder, int position);
+
+        void onLongClick(ViewHolder holder, int position);
+
+        void onShowInMapClick(ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo);
     }
 }
