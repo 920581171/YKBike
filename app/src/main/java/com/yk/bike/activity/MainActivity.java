@@ -242,12 +242,12 @@ public class MainActivity extends BaseActivity
                 else
                     ApiUtils.getInstance().findBikeByBikeId(content, new OnBaseResponseListener<BikeInfoResponse>() {
                         @Override
-                        public void onError() {
-                            showShort(getResources().getString(R.string.string_network_error));
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(BikeInfoResponse bikeInfoResponse) {
+                        public void onSuccess(BikeInfoResponse bikeInfoResponse) {
                             onQRCodeResult(content, bikeInfoResponse);
                         }
                     });
@@ -333,12 +333,12 @@ public class MainActivity extends BaseActivity
                         ApiUtils.getInstance().addBikeInfo(content, aMapLocation.getLatitude(), aMapLocation.getLongitude(),
                                 new OnBaseResponseListener<CommonResponse>() {
                                     @Override
-                                    public void onError() {
-                                        showShort(getResources().getString(R.string.string_network_error));
+                                    public void onError(String errorMsg) {
+                                        showShort(errorMsg);
                                     }
 
                                     @Override
-                                    public void onResponse(CommonResponse commonResponse) {
+                                    public void onSuccess(CommonResponse commonResponse) {
                                         if (isResponseSuccess(commonResponse))
                                             showShort("添加成功");
                                         else
@@ -354,12 +354,12 @@ public class MainActivity extends BaseActivity
                                 .setFix("0");
                         ApiUtils.getInstance().updateBikeInfo(bikeInfo, new OnBaseResponseListener<CommonResponse>() {
                             @Override
-                            public void onError() {
-                                showShort(getResources().getString(R.string.string_network_error));
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
                             }
 
                             @Override
-                            public void onResponse(CommonResponse commonResponse) {
+                            public void onSuccess(CommonResponse commonResponse) {
                                 if (isResponseSuccess(commonResponse))
                                     showShort("维修完成");
                                 else
@@ -391,12 +391,12 @@ public class MainActivity extends BaseActivity
                             .setFix("1");
                     ApiUtils.getInstance().updateBikeInfo(bikeInfo, new OnBaseResponseListener<CommonResponse>() {
                         @Override
-                        public void onError() {
-                            showShort(getResources().getString(R.string.string_network_error));
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(CommonResponse commonResponse) {
+                        public void onSuccess(CommonResponse commonResponse) {
                             if (isResponseSuccess(commonResponse))
                                 showShort("报修成功");
                             else

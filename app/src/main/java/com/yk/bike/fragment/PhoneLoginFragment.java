@@ -92,12 +92,12 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                 if (s.toString().length()==11){
                     ApiUtils.getInstance().findUserByUserPhone(s.toString(), new OnBaseResponseListener<CommonResponse>() {
                         @Override
-                        public void onError() {
-                            showShort("网络错误");
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(CommonResponse commonResponse) {
+                        public void onSuccess(CommonResponse commonResponse) {
                             if (isResponseSuccess(commonResponse)){
                                 btnRigister.setText(R.string.string_login);
                             }else{
@@ -152,12 +152,12 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                         String phone = (String) phoneMap.get("phone"); // 手机号码，如“13800138000”
                         ApiUtils.getInstance().registerUserByPhone(phone, new OnBaseResponseListener<UserInfoResponse>() {
                             @Override
-                            public void onError() {
-                                showShort("网络错误");
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
                             }
 
                             @Override
-                            public void onResponse(UserInfoResponse userInfoResponse) {
+                            public void onSuccess(UserInfoResponse userInfoResponse) {
                                 tilInputCode.setErrorEnabled(false);
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
                                 showShort(btnRigister.getText().toString()+"成功");

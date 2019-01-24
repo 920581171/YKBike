@@ -75,12 +75,12 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
                 if (checkInput())
                     ApiUtils.getInstance().findUserByUserName(etInputName.getText().toString(), new OnBaseResponseListener<CommonResponse>() {
                         @Override
-                        public void onError() {
-                            showShort("网络错误");
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(CommonResponse commonResponse) {
+                        public void onSuccess(CommonResponse commonResponse) {
                             if (isResponseSuccess(commonResponse))
                                 tilInputName.setError("用户名已存在");
                             else
@@ -149,12 +149,12 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
             }
 
             @Override
-            public void onError() {
-                showShort("网络错误");
+            public void onError(String errorMsg) {
+                showShort(errorMsg);
             }
 
             @Override
-            public void onResponse(UserInfoResponse userInfoResponse) {
+            public void onSuccess(UserInfoResponse userInfoResponse) {
                 System.out.println("success");
                 if (isResponseSuccess(userInfoResponse)) {
                     showShort("注册成功！");

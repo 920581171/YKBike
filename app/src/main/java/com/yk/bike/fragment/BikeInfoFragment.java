@@ -48,12 +48,12 @@ public class BikeInfoFragment extends BaseFragment {
     private void initRecyclerView() {
         ApiUtils.getInstance().findAllBikeInfo(new OnBaseResponseListener<BikeInfoListResponse>() {
             @Override
-            public void onError() {
-                showShort(getResources().getString(R.string.string_network_error));
+            public void onError(String errorMsg) {
+                showShort(errorMsg);
             }
 
             @Override
-            public void onResponse(BikeInfoListResponse bikeInfoListResponse) {
+            public void onSuccess(BikeInfoListResponse bikeInfoListResponse) {
                 if (isResponseSuccess(bikeInfoListResponse)) {
                     BikeInfoAdapter adapter = new BikeInfoAdapter(bikeInfoListResponse.getData());
                     adapter.setOnItemClickListener(new BikeInfoAdapter.OnItemClickListener() {
@@ -138,12 +138,12 @@ public class BikeInfoFragment extends BaseFragment {
                             if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
                                 ApiUtils.getInstance().deleteBikeInfo(holder.bikeId.getText().toString(), new OnBaseResponseListener<CommonResponse>() {
                                     @Override
-                                    public void onError() {
-                                        showShort(getResources().getString(R.string.string_network_error));
+                                    public void onError(String errorMsg) {
+                                        showShort(errorMsg);
                                     }
 
                                     @Override
-                                    public void onResponse(CommonResponse commonResponse) {
+                                    public void onSuccess(CommonResponse commonResponse) {
                                         if (isResponseSuccess(commonResponse)) {
                                             showShort("删除成功！");
                                         }

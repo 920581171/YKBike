@@ -75,12 +75,12 @@ public class MapFragment extends BaseFragment {
     public void initBikeLocation() {
         ApiUtils.getInstance().findAllBikeInfo(new OnBaseResponseListener<BikeInfoListResponse>() {
             @Override
-            public void onError() {
-                showShort(getString(R.string.string_network_error));
+            public void onError(String errorMsg) {
+                showShort(errorMsg);
             }
 
             @Override
-            public void onResponse(BikeInfoListResponse bikeInfoListResponse) {
+            public void onSuccess(BikeInfoListResponse bikeInfoListResponse) {
                 if (isResponseSuccess(bikeInfoListResponse)) {
                     List<BikeInfoResponse.BikeInfo> list = bikeInfoListResponse.getData();
 

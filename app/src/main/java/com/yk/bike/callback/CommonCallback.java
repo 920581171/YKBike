@@ -1,5 +1,6 @@
 package com.yk.bike.callback;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -28,42 +29,51 @@ public class CommonCallback<T> implements Callback {
     }
 
     @Override
-    public void onFailure(Call call, IOException e) {
+    public void onFailure(@NonNull Call call, @NonNull IOException e) {
         Log.d(TAG, "onFailure: ");
         MainHandler.getInstance().post(() -> {
             if (onResponseListener instanceof OnCommonResponseListener) {
-                ((OnCommonResponseListener<T>) onResponseListener).onError();
+                ((OnCommonResponseListener<T>) onResponseListener).onError("网络错误");
                 ((OnCommonResponseListener<T>) onResponseListener).onFinish();
             } else if (onResponseListener instanceof OnBaseResponseListener) {
-                ((OnBaseResponseListener<T>) onResponseListener).onError();
+                ((OnBaseResponseListener<T>) onResponseListener).onError("网络错误");
             } else if (onResponseListener instanceof OnErrorResponseListener) {
-                ((OnErrorResponseListener<T>) onResponseListener).onError();
+                ((OnErrorResponseListener<T>) onResponseListener).onError("网络错误");
             }
         });
     }
 
     @Override
-    public void onResponse(Call call, final Response response) throws IOException {
-        T t;
-        if (response.body() != null) {
-            String responseStr = response.body().string();
-            Log.d(TAG, "onResponse: "+ responseStr);
-//            t = (T) GsonUtils.fromJson(responseStr, tClass);
-            Gson gson = new Gson();
-            t = gson.fromJson(responseStr,tClass);
-        } else {
-            Log.d(TAG, "onResponse: null");
-            t = null;
-        }
-        MainHandler.getInstance().post(() -> {
+    public void onResponse(@NonNull Call call, @NonNull final Response response) {
+        try {
+            T t;
+            if (response.body() != null) {
+                String responseStr = response.body().string();
+                Log.d(TAG, "onResponse: " + responseStr);
+                t = GsonUtils.fromJson(responseStr, tClass);
+            } else {
+                Log.d(TAG, "onResponse: null");
+                t = null;
+            }
+            MainHandler.getInstance().post(() -> {
+                if (onResponseListener instanceof OnCommonResponseListener) {
+                    ((OnCommonResponseListener<T>) onResponseListener).onSuccess(t);
+                    ((OnCommonResponseListener<T>) onResponseListener).onFinish();
+                } else if (onResponseListener instanceof OnBaseResponseListener) {
+                    ((OnBaseResponseListener<T>) onResponseListener).onSuccess(t);
+                } else if (onResponseListener instanceof OnSuccessResponseListener) {
+                    ((OnSuccessResponseListener<T>) onResponseListener).onSuccess(t);
+                }
+            });
+        } catch (IOException e) {
             if (onResponseListener instanceof OnCommonResponseListener) {
-                ((OnCommonResponseListener<T>) onResponseListener).onResponse(t);
+                ((OnCommonResponseListener<T>) onResponseListener).onError("数据解析错误");
                 ((OnCommonResponseListener<T>) onResponseListener).onFinish();
             } else if (onResponseListener instanceof OnBaseResponseListener) {
-                ((OnBaseResponseListener<T>) onResponseListener).onResponse(t);
-            } else if (onResponseListener instanceof OnSuccessResponseListener) {
-                ((OnSuccessResponseListener<T>) onResponseListener).onResponse(t);
+                ((OnBaseResponseListener<T>) onResponseListener).onError("数据解析错误");
+            } else if (onResponseListener instanceof OnErrorResponseListener) {
+                ((OnErrorResponseListener<T>) onResponseListener).onError("数据解析错误");
             }
-        });
+        }
     }
 }

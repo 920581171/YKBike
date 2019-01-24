@@ -79,12 +79,12 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                         }
 
                         @Override
-                        public void onError() {
-                            showShort("网络出错");
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(AdminInfoResponse adminInfoResponse) {
+                        public void onSuccess(AdminInfoResponse adminInfoResponse) {
                             if (isResponseSuccess(adminInfoResponse)) {
                                 AdminInfoResponse.AdminInfo adminInfo = adminInfoResponse.getData();
                                 showShort("登陆成功");

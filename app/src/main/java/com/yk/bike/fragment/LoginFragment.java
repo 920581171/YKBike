@@ -82,12 +82,12 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                         }
 
                         @Override
-                        public void onError() {
-                            showShort("网络出错");
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
                         }
 
                         @Override
-                        public void onResponse(UserInfoResponse userInfoResponse) {
+                        public void onSuccess(UserInfoResponse userInfoResponse) {
                             if (isResponseSuccess(userInfoResponse)) {
                                 showShort("登陆成功");
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
