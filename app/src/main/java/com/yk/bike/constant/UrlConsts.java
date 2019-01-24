@@ -4,8 +4,9 @@ public class UrlConsts {
     public static final String HEAD = "http://";
     public static final String IP = "192.168.43.151";
     public static final String PORT = "8080";
-    public static final String IPORT = HEAD + IP + ":" + PORT;
+//    public static final String IPORT = HEAD + IP + ":" + PORT;
 //    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
+        public static final String IPORT = HEAD + "192.168.137.1" + ":" + PORT;
 
     /**
      * userInfo

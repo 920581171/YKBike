@@ -32,14 +32,7 @@ public class CommonCallback<T> implements Callback {
     public void onFailure(@NonNull Call call, @NonNull IOException e) {
         Log.d(TAG, "onFailure: ");
         MainHandler.getInstance().post(() -> {
-            if (onResponseListener instanceof OnCommonResponseListener) {
-                ((OnCommonResponseListener<T>) onResponseListener).onError("网络错误");
-                ((OnCommonResponseListener<T>) onResponseListener).onFinish();
-            } else if (onResponseListener instanceof OnBaseResponseListener) {
-                ((OnBaseResponseListener<T>) onResponseListener).onError("网络错误");
-            } else if (onResponseListener instanceof OnErrorResponseListener) {
-                ((OnErrorResponseListener<T>) onResponseListener).onError("网络错误");
-            }
+            onError("网络错误");
         });
     }
 
@@ -66,14 +59,18 @@ public class CommonCallback<T> implements Callback {
                 }
             });
         } catch (IOException e) {
-            if (onResponseListener instanceof OnCommonResponseListener) {
-                ((OnCommonResponseListener<T>) onResponseListener).onError("数据解析错误");
-                ((OnCommonResponseListener<T>) onResponseListener).onFinish();
-            } else if (onResponseListener instanceof OnBaseResponseListener) {
-                ((OnBaseResponseListener<T>) onResponseListener).onError("数据解析错误");
-            } else if (onResponseListener instanceof OnErrorResponseListener) {
-                ((OnErrorResponseListener<T>) onResponseListener).onError("数据解析错误");
-            }
+            onError("数据解析错误");
+        }
+    }
+
+    private void onError(String errorMsg){
+        if (onResponseListener instanceof OnCommonResponseListener) {
+            ((OnCommonResponseListener<T>) onResponseListener).onError(errorMsg);
+            ((OnCommonResponseListener<T>) onResponseListener).onFinish();
+        } else if (onResponseListener instanceof OnBaseResponseListener) {
+            ((OnBaseResponseListener<T>) onResponseListener).onError(errorMsg);
+        } else if (onResponseListener instanceof OnErrorResponseListener) {
+            ((OnErrorResponseListener<T>) onResponseListener).onError(errorMsg);
         }
     }
 }
