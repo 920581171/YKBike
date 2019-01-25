@@ -3,14 +3,10 @@ package com.yk.bike.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.yk.bike.R;
 import com.yk.bike.activity.MainActivity;
@@ -29,19 +25,20 @@ public class BikeInfoFragment extends BaseFragment {
 
     private MainActivity mainActivity;
 
-    private View mRootView;
     private RecyclerView recyclerView;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_bikeinfo, container, false);
-        init();
-        return mRootView;
+    public int initLayout() {
+        return R.layout.fragment_bikeinfo;
     }
 
-    public void init() {
-        recyclerView = mRootView.findViewById(R.id.recyclerView);
+    @Override
+    public void initView(View rootView, Bundle savedInstanceState) {
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+    }
+
+    @Override
+    public void initData() {
         initRecyclerView();
     }
 

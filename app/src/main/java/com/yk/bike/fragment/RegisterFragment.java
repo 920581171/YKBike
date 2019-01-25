@@ -1,16 +1,10 @@
 package com.yk.bike.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yk.bike.R;
@@ -35,29 +29,23 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
     private TextInputEditText etInputPassword;
     private TextInputEditText etConfirmPassword;
     private Button btnRigister;
-    private TextView tvUserLogin;
-    private TextView tvPhoneLogin;
 
-    private View mRootView;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_register, container, false);
-        init();
-        return mRootView;
+    public int initLayout() {
+        return R.layout.fragment_register;
     }
 
-    public void init() {
-        tilInputName = mRootView.findViewById(R.id.til_input_name);
-        tilInputPassword = mRootView.findViewById(R.id.til_input_password);
-        tilConfirmPassword = mRootView.findViewById(R.id.til_confirm_password);
-        etInputName = mRootView.findViewById(R.id.et_input_name);
-        etInputPassword = mRootView.findViewById(R.id.et_input_password);
-        etConfirmPassword = mRootView.findViewById(R.id.et_confirm_password);
-        btnRigister = mRootView.findViewById(R.id.btn_register);
-        tvUserLogin = mRootView.findViewById(R.id.tv_user_login);
-        tvPhoneLogin = mRootView.findViewById(R.id.tv_phone_login);
+    @Override
+    public void initView(View rootView, Bundle savedInstanceState) {
+        tilInputName = rootView.findViewById(R.id.til_input_name);
+        tilInputPassword = rootView.findViewById(R.id.til_input_password);
+        tilConfirmPassword = rootView.findViewById(R.id.til_confirm_password);
+        etInputName = rootView.findViewById(R.id.et_input_name);
+        etInputPassword = rootView.findViewById(R.id.et_input_password);
+        etConfirmPassword = rootView.findViewById(R.id.et_confirm_password);
+        btnRigister = rootView.findViewById(R.id.btn_register);
+        TextView tvUserLogin = rootView.findViewById(R.id.tv_user_login);
+        TextView tvPhoneLogin = rootView.findViewById(R.id.tv_phone_login);
 
         btnRigister.setOnClickListener(this);
         tvUserLogin.setOnClickListener(this);
@@ -66,6 +54,11 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
         etInputName.setOnFocusChangeListener(this);
         etInputPassword.setOnFocusChangeListener(this);
         etConfirmPassword.setOnFocusChangeListener(this);
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     @Override

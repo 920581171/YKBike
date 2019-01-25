@@ -3,15 +3,37 @@ package com.yk.bike.base;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.yk.bike.response.BaseResponse;
 import com.yk.bike.response.CommonResponse;
 
 public abstract class BaseFragment extends Fragment {
+
+    public abstract int initLayout();
+
+    public abstract void initView(View rootView,Bundle savedInstanceState);
+
+    public abstract void initData();
+
+    private View mRootView;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mRootView = inflater.inflate(initLayout(),container,false);
+        initView(mRootView,savedInstanceState);
+        initData();
+        return mRootView;
+    }
+
     @SuppressLint("ShowToast")
     public void showShort(String text) {
         if (getActivity() != null)
@@ -70,5 +92,14 @@ public abstract class BaseFragment extends Fragment {
         if (getActivity()!=null){
             ((BaseActivity) getActivity()).switchFragment(newFragment,currentFragment);
         }
+    }
+
+    public View getmRootView() {
+        return mRootView;
+    }
+
+    public BaseFragment setmRootView(View mRootView) {
+        this.mRootView = mRootView;
+        return this;
     }
 }

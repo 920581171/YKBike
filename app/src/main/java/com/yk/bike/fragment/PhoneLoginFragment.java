@@ -1,16 +1,11 @@
 package com.yk.bike.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,18 +27,15 @@ import java.util.HashMap;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
-import okhttp3.Response;
 
 public class PhoneLoginFragment extends BaseFragment implements View.OnClickListener {
 
-    private View mRootView;
     private TextInputLayout tilInputPhone;
     private TextInputLayout tilInputCode;
     private EditText etInputPhone;
     private EditText etInputCode;
     private Button btnGetCode;
     private Button btnRigister;
-    private TextView tvUserLogin;
     private Handler handler;
 
     private long timeOut;
@@ -63,23 +55,20 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
         }
     };
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_phone_login, container, false);
-        initView();
-        init();
-        return mRootView;
+    public int initLayout() {
+        return R.layout.fragment_phone_login;
     }
 
-    public void initView() {
-        tilInputPhone = mRootView.findViewById(R.id.til_input_phone);
-        tilInputCode = mRootView.findViewById(R.id.til_input_code);
-        etInputPhone = mRootView.findViewById(R.id.et_input_phone);
-        etInputCode = mRootView.findViewById(R.id.et_input_code);
-        btnGetCode = mRootView.findViewById(R.id.btn_get_code);
-        btnRigister = mRootView.findViewById(R.id.btn_register);
-        tvUserLogin = mRootView.findViewById(R.id.tv_user_login);
+    @Override
+    public void initView(View rootView, Bundle savedInstanceState) {
+        tilInputPhone = rootView.findViewById(R.id.til_input_phone);
+        tilInputCode = rootView.findViewById(R.id.til_input_code);
+        etInputPhone = rootView.findViewById(R.id.et_input_phone);
+        etInputCode = rootView.findViewById(R.id.et_input_code);
+        btnGetCode = rootView.findViewById(R.id.btn_get_code);
+        btnRigister = rootView.findViewById(R.id.btn_register);
+        TextView tvUserLogin = rootView.findViewById(R.id.tv_user_login);
 
         etInputPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -138,8 +127,8 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
         handler.postDelayed(runnable, 1000);
     }
 
-    public void init() {
-
+    @Override
+    public void initData() {
         EventHandler eh = new EventHandler() {
             @Override
             public void afterEvent(int event, int result, Object data) {
@@ -181,7 +170,7 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                     MobResponse mobResponse = (MobResponse) GsonUtils.fromJson(s,MobResponse.class);
                     runOnUiThread(() -> {
                         if (mobResponse!=null)
-                        tilInputCode.setError(mobResponse.getDetail());
+                            tilInputCode.setError(mobResponse.getDetail());
                     });
                     ((Throwable) data).printStackTrace();
                 }

@@ -7,6 +7,7 @@ public class UrlConsts {
 //    public static final String IPORT = HEAD + IP + ":" + PORT;
 //    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
         public static final String IPORT = HEAD + "192.168.137.1" + ":" + PORT;
+//    public static final String IPORT = HEAD + "192.168.1.232" + ":" + PORT;
 
     /**
      * userInfo

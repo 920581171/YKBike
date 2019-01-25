@@ -1,14 +1,8 @@
 package com.yk.bike.fragment;
 
-import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,8 +12,6 @@ import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.OnCommonResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.AdminInfoResponse;
-import com.yk.bike.response.CommonResponse;
-import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.SharedPreferencesUtils;
@@ -31,28 +23,28 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
     private EditText etInputAdminOrPhone;
     private EditText etInputPassword;
     private Button btnLogin;
-    private TextView tvToStart;
 
-    private View mRootView;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_admin_login, container, false);
-        init();
-        return mRootView;
+    public int initLayout() {
+        return R.layout.fragment_admin_login;
     }
 
-    public void init() {
-        tilInputAdminOrPhone = mRootView.findViewById(R.id.til_input_admin_or_phone);
-        tilInputPassword = mRootView.findViewById(R.id.til_input_password);
-        etInputAdminOrPhone = mRootView.findViewById(R.id.et_input_admin_or_phone);
-        etInputPassword = mRootView.findViewById(R.id.et_input_password);
-        btnLogin = mRootView.findViewById(R.id.btn_login);
-        tvToStart = mRootView.findViewById(R.id.tv_to_start);
+    @Override
+    public void initView(View rootView, Bundle savedInstanceState) {
+        tilInputAdminOrPhone = rootView.findViewById(R.id.til_input_admin_or_phone);
+        tilInputPassword = rootView.findViewById(R.id.til_input_password);
+        etInputAdminOrPhone = rootView.findViewById(R.id.et_input_admin_or_phone);
+        etInputPassword = rootView.findViewById(R.id.et_input_password);
+        btnLogin = rootView.findViewById(R.id.btn_login);
+        TextView tvToStart = rootView.findViewById(R.id.tv_to_start);
 
         btnLogin.setOnClickListener(this);
         tvToStart.setOnClickListener(this);
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     @Override

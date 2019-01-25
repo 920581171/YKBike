@@ -1,11 +1,7 @@
 package com.yk.bike.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.yk.bike.R;
@@ -13,28 +9,25 @@ import com.yk.bike.base.BaseFragment;
 
 public class StartFragment extends BaseFragment implements View.OnClickListener {
 
-    private View mRootView;
-
-    private Button btnLogin;
-    private Button btnRegister;
-    private Button btnAdminLogin;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_start, container, false);
-        init();
-        return mRootView;
+    public int initLayout() {
+        return R.layout.fragment_start;
     }
 
-    public void init() {
-        btnLogin = mRootView.findViewById(R.id.btn_login);
-        btnRegister = mRootView.findViewById(R.id.btn_register);
-        btnAdminLogin = mRootView.findViewById(R.id.btn_admin_login);
+    @Override
+    public void initView(View rootView, Bundle savedInstanceState) {
+        Button btnLogin = rootView.findViewById(R.id.btn_login);
+        Button btnRegister = rootView.findViewById(R.id.btn_register);
+        Button btnAdminLogin = rootView.findViewById(R.id.btn_admin_login);
 
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
         btnAdminLogin.setOnClickListener(this);
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     @Override

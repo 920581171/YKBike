@@ -6,5 +6,6 @@
 
     <color name="bg_btn_nor">#ffffffff</color>
     <color name="bg_btn_enabled">#ffbfbfbf</color>
+    <color name="bg_btn_white_pressed">#ffdfdfdf</color>
     <color name="bg_btn_pressed">#C70A5F</color>
 </resources>

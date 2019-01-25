@@ -32,5 +32,7 @@
     <string name="string_show_mileage">里程：</string>
     <string name="string_mileage_unit">公里</string>
     <string name="string_show_bike_id">车辆编号：</string>
+    <string name="string_version_code">1</string>
+    <string name="string_version_name">1.0.0</string>
     <string name="string_id">ID</string>
 </resources>

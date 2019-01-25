@@ -8,31 +8,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
-import android.util.Log;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.amap.api.location.AMapLocation;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
+import com.yk.bike.base.BaseFragment;
 import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.fragment.AboutFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.MapFragment;
-import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.service.LocationService;
@@ -42,21 +42,22 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
-import java.util.List;
-
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public final int FRAGMENT_MAP = 0;
     public final int FRAGMENT_BIKEINFO = 1;
+    public final int FRAGMENT_ABOUT = 2;
 
     private int currentFragmentNum = 0;
 
     private static final String TAG = "MainActivity";
 
-    private Fragment[] fragments;
+    private BaseFragment[] fragments;
 
     private int REQUEST_CODE_SCAN = 0;
+
+    private FloatingActionButton fab;
 
     private LocationService.LocationBinder binder;
 
@@ -91,18 +92,18 @@ public class MainActivity extends BaseActivity
         intentFilter.addAction(Consts.BR_ACTION_EXIT);
         registerReceiver(br, intentFilter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             startQRCode();
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         initFragment();
@@ -111,15 +112,21 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new Fragment[2];
+        fragments = new BaseFragment[3];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKEINFO] = new BikeInfoFragment();
+        fragments[FRAGMENT_ABOUT] = new AboutFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        for (Fragment f : fragments)
-            fragmentTransaction.add(R.id.ll_main, f);
+        for (Fragment f : fragments) {
+            if (f instanceof MapFragment) {
+                fragmentTransaction.add(R.id.ll_main, f);
+                continue;
+            }
+            fragmentTransaction.add(R.id.ll_main, f).hide(f);
+        }
         fragmentTransaction.commit();
     }
 
@@ -128,8 +135,9 @@ public class MainActivity extends BaseActivity
             initFragment();
             return;
         }
-        ((MapFragment) fragments[FRAGMENT_MAP]).initBikeLocation();
-        ((BikeInfoFragment) fragments[FRAGMENT_BIKEINFO]).init();
+
+        for (BaseFragment f:fragments)
+            f.initData();
     }
 
     public void init() {
@@ -147,12 +155,23 @@ public class MainActivity extends BaseActivity
 
         bindService(new Intent(MainActivity.this, LocationService.class), connection, BIND_AUTO_CREATE);
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+
+        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE))) {
+            menu.setGroupVisible(R.id.group_user, false);
+            menu.setGroupVisible(R.id.group_admin, true);
+        } else {
+            menu.setGroupVisible(R.id.group_user, true);
+            menu.setGroupVisible(R.id.group_admin, false);
+        }
+
         refreshFragment();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -207,24 +226,24 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            ((MapFragment)switchFragment(FRAGMENT_MAP)).initBikeLocation();
+            ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
         } else if (id == R.id.nav_user) {
         } else if (id == R.id.nav_admin) {
 
         } else if (id == R.id.nav_count) {
-            ((BikeInfoFragment)switchFragment(FRAGMENT_BIKEINFO)).init();
+            switchFragment(FRAGMENT_BIKEINFO).initData();
         } else if (id == R.id.nav_settings) {
-
-        } else if (id == R.id.nav_info) {
             SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
             switchFragment(FRAGMENT_MAP);
             startActivity(new Intent(this, LoginActivity.class));
+        } else if (id == R.id.nav_info) {
+            switchFragment(FRAGMENT_ABOUT).initData();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -418,16 +437,25 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    public Fragment switchFragment(int newFragment) {
+    public BaseFragment switchFragment(int newFragment) {
+        if (newFragment == FRAGMENT_MAP)
+            fab.show();
+        else
+            fab.hide();
+
         super.switchFragment(fragments[newFragment], fragments[currentFragmentNum]);
         currentFragmentNum = newFragment;
         return fragments[newFragment];
     }
 
-    public Fragment getFragment(int position) {
+    public BaseFragment getFragment(int position) {
         return position < fragments.length ?
                 fragments[position] :
                 fragments[fragments.length - 1];
+    }
+
+    public AMapLocation getAMapLocation() {
+        return binder.getAMapLocation();
     }
 }
 
