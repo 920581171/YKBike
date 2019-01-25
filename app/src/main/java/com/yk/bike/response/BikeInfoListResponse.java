@@ -2,7 +2,7 @@ package com.yk.bike.response;
 
 import java.util.List;
 
-public class BikeInfoListResponse extends BaseResponse{
+public class BikeInfoListResponse extends BaseResponse {
 
     /**
      * data : {"id":5,"bikeId":"123456","latitude":123456,"longitude":123456,"mileage":0,"fix":"0"}

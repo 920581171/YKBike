@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yk.bike.R;
-import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
 
     private List<BikeInfoResponse.BikeInfo> list;
 
-    private OnItemClickListener onItemClickListener;
+    private OnItemClickListener<BikeInfoResponse.BikeInfo> onItemClickListener;
 
     public BikeInfoAdapter(List<BikeInfoResponse.BikeInfo> list) {
         this.list = list;
@@ -27,7 +26,7 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bikeinfo, viewGroup, false));
+        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bike_info, viewGroup, false));
     }
 
     @Override
@@ -50,26 +49,26 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
 
         viewHolder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onClick(viewHolder, i);
+                onItemClickListener.onClick(v,viewHolder, i);
             }
         });
 
         viewHolder.itemView.setOnLongClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onLongClick(viewHolder, i);
+                onItemClickListener.onLongClick(v,viewHolder, i);
             }
             return true;
         });
 
         viewHolder.ivShowInMap.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onShowInMapClick(viewHolder, list.get(i));
+                onItemClickListener.onRightButtonClick(v,viewHolder, list.get(i));
             }
         });
 
         viewHolder.tvShowInMap.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onShowInMapClick(viewHolder, list.get(i));
+                onItemClickListener.onRightButtonClick(v,viewHolder, list.get(i));
             }
         });
     }
@@ -88,11 +87,11 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
         return this;
     }
 
-    public OnItemClickListener getOnItemClickListener() {
+    public OnItemClickListener<BikeInfoResponse.BikeInfo> getOnItemClickListener() {
         return onItemClickListener;
     }
 
-    public BikeInfoAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    public BikeInfoAdapter setOnItemClickListener(OnItemClickListener<BikeInfoResponse.BikeInfo> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
         return this;
     }
@@ -114,13 +113,5 @@ public class BikeInfoAdapter extends RecyclerView.Adapter<BikeInfoAdapter.ViewHo
             ivShowInMap = itemView.findViewById(R.id.iv_show_in_map);
             tvShowInMap = itemView.findViewById(R.id.tv_show_in_map);
         }
-    }
-
-    public interface OnItemClickListener {
-        void onClick(ViewHolder holder, int position);
-
-        void onLongClick(ViewHolder holder, int position);
-
-        void onShowInMapClick(ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo);
     }
 }

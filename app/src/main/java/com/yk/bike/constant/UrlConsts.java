@@ -36,9 +36,10 @@ public class UrlConsts {
     /**
      * adminInfo
      */
-    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_USER_ID = "/adminInfo/findAdminByUserId";//根据adminId查找管理员
-    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_USER_NAME= "/adminInfo/findAdminByUserName";//根据AdminName查找管理员
-    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_USER_PHONE = "/adminInfo/findAdminByUserPhone";//根据AdminPhone查找管理员
+    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_ADMIN_ID = "/adminInfo/findAdminByAdminId";//根据adminId查找管理员
+    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_ACCOUNT = "/adminInfo/findAdminByAdminAccount";
+    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_NAME = "/adminInfo/findAdminByAdminName";//根据AdminName查找管理员
+    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_PHONE = "/adminInfo/findAdminByAdminPhone";//根据AdminPhone查找管理员
     public static final String POST_ADMIN_INFO_FIND_ALL_ADMIN_INFO = "/adminInfo/findAllAdminInfo";//查找所有管理员信息
     public static final String POST_ADMIN_INFO_REGISTER_ADMIN_INFO = "/adminInfo/registerAdminInfo";//添加管理员
     public static final String POST_ADMIN_INFO_UPDATE_INFO = "/adminInfo/updateAdminInfo";//更新管理员信息

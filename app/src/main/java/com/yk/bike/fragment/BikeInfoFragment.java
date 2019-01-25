@@ -11,6 +11,7 @@ import android.view.View;
 import com.yk.bike.R;
 import com.yk.bike.activity.MainActivity;
 import com.yk.bike.adapter.BikeInfoAdapter;
+import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
@@ -29,7 +30,7 @@ public class BikeInfoFragment extends BaseFragment {
 
     @Override
     public int initLayout() {
-        return R.layout.fragment_bikeinfo;
+        return R.layout.fragment_recycler;
     }
 
     @Override
@@ -53,18 +54,18 @@ public class BikeInfoFragment extends BaseFragment {
             public void onSuccess(BikeInfoListResponse bikeInfoListResponse) {
                 if (isResponseSuccess(bikeInfoListResponse)) {
                     BikeInfoAdapter adapter = new BikeInfoAdapter(bikeInfoListResponse.getData());
-                    adapter.setOnItemClickListener(new BikeInfoAdapter.OnItemClickListener() {
+                    adapter.setOnItemClickListener(new OnItemClickListener<BikeInfoResponse.BikeInfo>() {
                         @Override
-                        public void onClick(BikeInfoAdapter.ViewHolder holder, int position) {
+                        public void onClick(View v, RecyclerView.ViewHolder holder, int position) {
 
                         }
 
                         @Override
-                        public void onLongClick(BikeInfoAdapter.ViewHolder holder, int position) {
+                        public void onLongClick(View v, RecyclerView.ViewHolder holder, int position) {
                             showAlertDialog("删除自行车", "是否删除自行车？", new String[]{"删除", "取消"}, new OnAlertDialogButtonClickListener() {
                                 @Override
                                 public void positiveClick() {
-                                    deleteBike(holder);
+                                    deleteBike((BikeInfoAdapter.ViewHolder) holder);
                                 }
 
                                 @Override
@@ -90,7 +91,7 @@ public class BikeInfoFragment extends BaseFragment {
                         }
 
                         @Override
-                        public void onShowInMapClick(BikeInfoAdapter.ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo) {
+                        public void onRightButtonClick(View v, RecyclerView.ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo) {
                             MapFragment mapFragment = (MapFragment) mainActivity.getFragment(mainActivity.FRAGMENT_MAP);
                             mapFragment.showBikeLocation(bikeInfo.getLatitude(), bikeInfo.getLongitude());
                         }

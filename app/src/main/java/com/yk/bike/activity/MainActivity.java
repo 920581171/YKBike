@@ -31,6 +31,7 @@ import com.yk.bike.base.OnAlertDialogButtonClickListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
+import com.yk.bike.fragment.AdminInfoFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.response.BikeInfoResponse;
@@ -46,8 +47,9 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public final int FRAGMENT_MAP = 0;
-    public final int FRAGMENT_BIKEINFO = 1;
+    public final int FRAGMENT_BIKE_INFO = 1;
     public final int FRAGMENT_ABOUT = 2;
+    public final int FRAGMENT_ADMIN_INFO = 3;
 
     private int currentFragmentNum = 0;
 
@@ -112,10 +114,11 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new BaseFragment[3];
+        fragments = new BaseFragment[4];
         fragments[FRAGMENT_MAP] = new MapFragment();
-        fragments[FRAGMENT_BIKEINFO] = new BikeInfoFragment();
+        fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
+        fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -229,9 +232,9 @@ public class MainActivity extends BaseActivity
             ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
         } else if (id == R.id.nav_user) {
         } else if (id == R.id.nav_admin) {
-
+            switchFragment(FRAGMENT_ADMIN_INFO).initData();
         } else if (id == R.id.nav_count) {
-            switchFragment(FRAGMENT_BIKEINFO).initData();
+            switchFragment(FRAGMENT_BIKE_INFO).initData();
         } else if (id == R.id.nav_settings) {
             SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
             SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
