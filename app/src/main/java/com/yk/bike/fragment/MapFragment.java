@@ -3,10 +3,11 @@ package com.yk.bike.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,10 +15,11 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.Projection;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
@@ -30,8 +32,10 @@ import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
+import com.yk.bike.widght.SitePlanView;
 
 import java.util.List;
+import java.util.zip.DeflaterOutputStream;
 
 public class MapFragment extends BaseFragment implements View.OnClickListener {
 
@@ -52,14 +56,37 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
         ImageView showLocation = rootView.findViewById(R.id.show_location);
+        ImageView sitePlan = rootView.findViewById(R.id.site_plan);
         ImageView ivEnlarge = rootView.findViewById(R.id.iv_enlarge);
         ImageView ivNarrow = rootView.findViewById(R.id.iv_narrow);
+        SitePlanView sitePlanView = rootView.findViewById(R.id.sitePlanView);
 
         showLocation.setOnClickListener(this);
+        sitePlan.setOnClickListener(this);
         ivEnlarge.setOnClickListener(this);
         ivNarrow.setOnClickListener(this);
 
         initMap(savedInstanceState);
+
+        sitePlanView.setOnSitePlanClickListener(new SitePlanView.OnSitePlanClickListener() {
+            @Override
+            public void onCheckClick() {
+                Log.d(TAG, "onCheckClick: ");
+                if (mAMap != null) {
+                    int radius = (int) (sitePlanView.getRadius() * mAMap.getScalePerPixel());
+                    setSitePlan(sitePlanView.getCx(), sitePlanView.getCy(), radius);
+                }
+                sitePlanView.reset();
+                sitePlanView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelClick() {
+                Log.d(TAG, "onCancelClick: ");
+                sitePlanView.reset();
+                sitePlanView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -88,20 +115,6 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
             mAMap.setOnMapLoadedListener(() -> {
                 AMapLocation aMapLocation = mainActivity.getAMapLocation();
                 animateCamera(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            });
-
-            mAMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
-                @Override
-                public void onCameraChange(CameraPosition cameraPosition) {
-                    Log.d(TAG, "onCameraChange: " + cameraPosition.zoom);
-                }
-
-                @Override
-                public void onCameraChangeFinish(CameraPosition cameraPosition) {
-                    float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 10, getResources().getDisplayMetrics());
-                    Log.d(TAG, "onCameraChangeFinish: " + px);
-                    Log.d(TAG, "onCameraChangeFinish: " + mAMap.getScalePerPixel() * px);
-                }
             });
         }
     }
@@ -173,10 +186,34 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    public void setZOOM() {
+        Projection projection = mAMap.getProjection();
+        Point point = projection.toScreenLocation(getLatLng());
+        Log.d(TAG, "setZOOM: " + point.x + "----" + point.y);
+    }
+
+    public void setSitePlan(int x, int y, double radius) {
+        if (mAMap != null) {
+            Point point = new Point(x, y);
+            Projection projection = mAMap.getProjection();
+            LatLng latLng = projection.fromScreenLocation(point);
+            CircleOptions circleOptions = new CircleOptions();
+            circleOptions.center(latLng);
+            circleOptions.radius(radius);
+            circleOptions.fillColor(ContextCompat.getColor(mainActivity,R.color.colorAccent_50));
+            circleOptions.strokeWidth(0f);
+            mAMap.addCircle(circleOptions);
+        }
+    }
+
     public void animateCamera(double latitude, double longitude) {
         if (mAMap != null) {
             mAMap.animateCamera((CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), ZOOM)));
         }
+    }
+
+    public void animateCamera(LatLng latLng) {
+        mAMap.animateCamera((CameraUpdateFactory.newLatLngZoom(latLng, ZOOM)));
     }
 
     public void cameraEnlarge() {
@@ -194,6 +231,12 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
     public void clearAMap() {
         if (mAMap != null)
             mAMap.clear();
+    }
+
+    public LatLng getLatLng() {
+        if (mAMap != null)
+            return new LatLng(mAMap.getMyLocation().getLatitude(), mAMap.getMyLocation().getLongitude());
+        return null;
     }
 
     @Override
@@ -237,8 +280,8 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
         mainActivity = null;
     }
 
-    public String getApprovalNumber(){
-        if (mAMap!=null)
+    public String getApprovalNumber() {
+        if (mAMap != null)
             return mAMap.getMapContentApprovalNumber();
         return null;
     }
@@ -247,8 +290,12 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.show_location:
-                AMapLocation aMapLocation = mainActivity.getAMapLocation();
-                animateCamera(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                animateCamera(getLatLng());
+                break;
+            case R.id.site_plan:
+                SitePlanView sitePlanView = getmRootView().findViewById(R.id.sitePlanView);
+                sitePlanView.setScalePerPixel(mAMap.getScalePerPixel());
+                sitePlanView.setVisibility(View.VISIBLE);
                 break;
             case R.id.iv_enlarge:
                 cameraEnlarge();
