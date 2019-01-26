@@ -7,6 +7,7 @@ import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
+import com.yk.bike.response.BikeRecordListResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
 
@@ -208,5 +209,16 @@ public class ApiUtils {
                 .build();
 
         post(formBody,UrlConsts.POST_BIKE_INFO_DELETE_BIKE_INFO,new CommonCallback<>(onResponseListener,CommonResponse.class));
+    }
+
+    /*-------------------------------------------BikeRecord----------------------------------------------------*/
+
+    /**
+     * 查找所有记录
+     * @param onResponseListener
+     */
+    public void findAllBikeRecord(OnResponseListener<BikeRecordListResponse> onResponseListener){
+        FormBody formBody = new FormBody.Builder().build();
+        post(formBody,UrlConsts.POST_BIKE_RECORD_ALL_BIKE_RECORD,new CommonCallback<>(onResponseListener,BikeRecordListResponse.class));
     }
 }

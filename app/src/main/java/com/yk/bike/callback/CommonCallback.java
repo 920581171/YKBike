@@ -58,8 +58,9 @@ public class CommonCallback<T> implements Callback {
                     ((OnSuccessResponseListener<T>) onResponseListener).onSuccess(t);
                 }
             });
-        } catch (IOException e) {
+        } catch (IOException|IllegalStateException e) {
             onError("数据解析错误");
+            e.printStackTrace();
         }
     }
 

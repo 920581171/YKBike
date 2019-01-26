@@ -33,6 +33,7 @@ import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
 import com.yk.bike.fragment.AdminInfoFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
+import com.yk.bike.fragment.BikeRecordFragment;
 import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity
     public final int FRAGMENT_BIKE_INFO = 1;
     public final int FRAGMENT_ABOUT = 2;
     public final int FRAGMENT_ADMIN_INFO = 3;
+    public final int FRAGMENT_BIKE_RECORD = 4;
 
     private int currentFragmentNum = 0;
 
@@ -114,11 +116,12 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new BaseFragment[4];
+        fragments = new BaseFragment[5];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
         fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoFragment();
+        fragments[FRAGMENT_BIKE_RECORD] = new BikeRecordFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -231,6 +234,7 @@ public class MainActivity extends BaseActivity
         if (id == R.id.nav_map) {
             ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
         } else if (id == R.id.nav_user) {
+            switchFragment(FRAGMENT_BIKE_RECORD).initData();
         } else if (id == R.id.nav_admin) {
             switchFragment(FRAGMENT_ADMIN_INFO).initData();
         } else if (id == R.id.nav_count) {
