@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
@@ -60,7 +60,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                 } else if (isEmptyString(password)) {
                     tilInputPassword.setError("密码不能为空");
                 } else {
-                    ApiUtils.getInstance().appLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<UserInfoResponse>() {
+                    ApiUtils.getInstance().appLogin(name, MD5Utils.getMD5(password), new ResponseListener<UserInfoResponse>() {
                         @Override
                         public void onStart() {
                             showShort("登陆中");

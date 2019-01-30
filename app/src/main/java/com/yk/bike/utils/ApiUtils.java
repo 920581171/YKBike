@@ -2,6 +2,7 @@ package com.yk.bike.utils;
 
 import com.yk.bike.callback.CommonCallback;
 import com.yk.bike.callback.OnResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoListResponse;

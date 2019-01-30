@@ -23,16 +23,15 @@ public class CommonCallback<T> implements Callback {
     public CommonCallback(OnResponseListener<T> onResponseListener, Class<T> tClass) {
         this.onResponseListener = onResponseListener;
         this.tClass = tClass;
-        if (onResponseListener instanceof OnCommonResponseListener) {
-            ((OnCommonResponseListener<T>) onResponseListener).onStart();
-        }
+        onResponseListener.onStart();
     }
 
     @Override
     public void onFailure(@NonNull Call call, @NonNull IOException e) {
         Log.d(TAG, "onFailure: ");
         MainHandler.getInstance().post(() -> {
-            onError("网络错误");
+            onResponseListener.onError("网络错误");
+            onResponseListener.onFinish();
         });
     }
 
@@ -49,29 +48,13 @@ public class CommonCallback<T> implements Callback {
                 t = null;
             }
             MainHandler.getInstance().post(() -> {
-                if (onResponseListener instanceof OnCommonResponseListener) {
-                    ((OnCommonResponseListener<T>) onResponseListener).onSuccess(t);
-                    ((OnCommonResponseListener<T>) onResponseListener).onFinish();
-                } else if (onResponseListener instanceof OnBaseResponseListener) {
-                    ((OnBaseResponseListener<T>) onResponseListener).onSuccess(t);
-                } else if (onResponseListener instanceof OnSuccessResponseListener) {
-                    ((OnSuccessResponseListener<T>) onResponseListener).onSuccess(t);
-                }
+                onResponseListener.onSuccess(t);
+               onResponseListener.onFinish();
             });
-        } catch (IOException|IllegalStateException e) {
-            onError("数据解析错误");
+        } catch (IOException | IllegalStateException e) {
+            onResponseListener.onError("数据解析错误");
+            onResponseListener.onFinish();
             e.printStackTrace();
-        }
-    }
-
-    private void onError(String errorMsg){
-        if (onResponseListener instanceof OnCommonResponseListener) {
-            ((OnCommonResponseListener<T>) onResponseListener).onError(errorMsg);
-            ((OnCommonResponseListener<T>) onResponseListener).onFinish();
-        } else if (onResponseListener instanceof OnBaseResponseListener) {
-            ((OnBaseResponseListener<T>) onResponseListener).onError(errorMsg);
-        } else if (onResponseListener instanceof OnErrorResponseListener) {
-            ((OnErrorResponseListener<T>) onResponseListener).onError(errorMsg);
         }
     }
 }

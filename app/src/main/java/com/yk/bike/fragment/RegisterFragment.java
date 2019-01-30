@@ -9,8 +9,7 @@ import android.widget.TextView;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnBaseResponseListener;
-import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -66,7 +65,7 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_register:
                 if (checkInput())
-                    ApiUtils.getInstance().findUserByUserName(etInputName.getText().toString(), new OnBaseResponseListener<CommonResponse>() {
+                    ApiUtils.getInstance().findUserByUserName(etInputName.getText().toString(), new ResponseListener<CommonResponse>() {
                         @Override
                         public void onError(String errorMsg) {
                             showShort(errorMsg);
@@ -129,7 +128,7 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
     public void register(){
         String name = etInputName.getText().toString();
         String password = etInputPassword.getText().toString();
-        ApiUtils.getInstance().registerUserByName(name, MD5Utils.getMD5(password), new OnCommonResponseListener<UserInfoResponse>() {
+        ApiUtils.getInstance().registerUserByName(name, MD5Utils.getMD5(password), new ResponseListener<UserInfoResponse>() {
             @Override
             public void onStart() {
                 showShort("请稍后");

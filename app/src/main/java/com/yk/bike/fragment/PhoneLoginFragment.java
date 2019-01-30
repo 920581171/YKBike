@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MobResponse;
@@ -79,7 +79,7 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().length()==11){
-                    ApiUtils.getInstance().findUserByUserPhone(s.toString(), new OnBaseResponseListener<CommonResponse>() {
+                    ApiUtils.getInstance().findUserByUserPhone(s.toString(), new ResponseListener<CommonResponse>() {
                         @Override
                         public void onError(String errorMsg) {
                             showShort(errorMsg);
@@ -139,7 +139,7 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                         HashMap<String, Object> phoneMap = (HashMap<String, Object>) data;
                         String country = (String) phoneMap.get("country"); // 国家代码，如“86”
                         String phone = (String) phoneMap.get("phone"); // 手机号码，如“13800138000”
-                        ApiUtils.getInstance().registerUserByPhone(phone, new OnBaseResponseListener<UserInfoResponse>() {
+                        ApiUtils.getInstance().registerUserByPhone(phone, new ResponseListener<UserInfoResponse>() {
                             @Override
                             public void onError(String errorMsg) {
                                 showShort(errorMsg);

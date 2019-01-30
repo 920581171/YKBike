@@ -10,7 +10,7 @@ import android.view.WindowManager;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
-import com.yk.bike.callback.OnSuccessResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.StartFragment;
 import com.yk.bike.response.AdminInfoResponse;
@@ -35,10 +35,13 @@ public class LoginActivity extends BaseActivity {
         if ((!isEmptyString(name) || !isEmptyString(password)) && !isEmptyString(type))
             switch (type) {
                 case Consts.LOGIN_TYPE_USER:
-                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<UserInfoResponse>) userInfoResponse -> {
-                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                        showShort("登陆成功");
-                        finish();
+                    ApiUtils.getInstance().appLogin(name, password, new ResponseListener<UserInfoResponse>(){
+                        @Override
+                        public void onSuccess(UserInfoResponse userInfoResponse) {
+                            sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
+                            showShort("登陆成功");
+                            finish();
+                        }
                     });
                     break;
 //                case Consts.LOGIN_TYPE_PHONE:
@@ -49,10 +52,13 @@ public class LoginActivity extends BaseActivity {
 //                    });
 //                    break;
                 case Consts.LOGIN_TYPE_ADMIN:
-                    ApiUtils.getInstance().appAdminLogin(name, password, (OnSuccessResponseListener<AdminInfoResponse>) adminInfoResponse -> {
-                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                        showShort("登陆成功");
-                        finish();
+                    ApiUtils.getInstance().appAdminLogin(name, password, new ResponseListener<AdminInfoResponse>(){
+                        @Override
+                        public void onSuccess(AdminInfoResponse adminInfoResponse) {
+                            sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
+                            showShort("登陆成功");
+                            finish();
+                        }
                     });
                     break;
             }

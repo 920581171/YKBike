@@ -26,8 +26,9 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.yk.bike.R;
 import com.yk.bike.activity.MainActivity;
+import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
@@ -39,7 +40,6 @@ import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yk.bike.widght.SitePlanView;
 
-import java.time.chrono.IsoChronology;
 import java.util.List;
 
 public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickListener, View.OnClickListener {
@@ -82,21 +82,24 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                     LatLng latLng = pointToLatLng(sitePlanView.getCx(), sitePlanView.getCy());
                     showAlertDialog("添加站点",
                             "纬度：" + latLng.latitude + "\n经度：" + latLng.longitude + "\n半径范围：" + radius + "m",
-                            new String[]{"添加", "取消"}, (DialogInterface dialog, int which) -> {
-                                ApiUtils.getInstance().addSiteLocation(latLng.latitude, latLng.longitude, radius, new OnBaseResponseListener<CommonResponse>() {
-                                    @Override
-                                    public void onError(String errorMsg) {
-                                        showShort(errorMsg);
-                                    }
-
-                                    @Override
-                                    public void onSuccess(CommonResponse commonResponse) {
-                                        if (isResponseSuccess(commonResponse)) {
-                                            showShort("添加成功");
-                                            setSitePlan(latLng, radius);
+                            new String[]{"添加", "取消"},new AlertDialogListener(){
+                                @Override
+                                public void positiveClick(DialogInterface dialog, int which) {
+                                    ApiUtils.getInstance().addSiteLocation(latLng.latitude, latLng.longitude, radius, new ResponseListener<CommonResponse>() {
+                                        @Override
+                                        public void onError(String errorMsg) {
+                                            showShort(errorMsg);
                                         }
-                                    }
-                                });
+
+                                        @Override
+                                        public void onSuccess(CommonResponse commonResponse) {
+                                            if (isResponseSuccess(commonResponse)) {
+                                                showShort("添加成功");
+                                                setSitePlan(latLng, radius);
+                                            }
+                                        }
+                                    });
+                                }
                             });
                 }
                 sitePlanView.reset();
@@ -145,7 +148,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
     }
 
     public void initBikeLocation() {
-        ApiUtils.getInstance().findAllBikeInfo(new OnBaseResponseListener<BikeInfoListResponse>() {
+        ApiUtils.getInstance().findAllBikeInfo(new ResponseListener<BikeInfoListResponse>() {
             @Override
             public void onError(String errorMsg) {
                 showShort(errorMsg);
@@ -194,7 +197,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
     }
 
     public void initSite() {
-        ApiUtils.getInstance().findAllSiteLocation(new OnBaseResponseListener<SiteLocationListResponse>() {
+        ApiUtils.getInstance().findAllSiteLocation(new ResponseListener<SiteLocationListResponse>() {
             @Override
             public void onError(String errorMsg) {
                 showShort(errorMsg);
@@ -363,77 +366,80 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
         String[] s = marker.getSnippet().equals(getString(R.string.string_status_fix)) ?
                 new String[]{"更新位置", "重置信息", "删除"} :
                 new String[]{"更新位置", "需要维修", "删除"};
-        showAlertDialogList("修改信息", null, s, (dialog, which) -> {
-            switch (which) {
-                case 0:
-                    ApiUtils.getInstance().updateBikeLocation(bikeId, getLatLng().latitude, getLatLng().longitude, new OnBaseResponseListener<CommonResponse>() {
-                        @Override
-                        public void onError(String errorMsg) {
-                            showShort(errorMsg);
-                        }
-
-                        @Override
-                        public void onSuccess(CommonResponse commonResponse) {
-                            if (isResponseSuccess(commonResponse)) {
-                                showShort("更新成功");
-                                initBikeLocation();
-                            } else {
-                                showShort(commonResponse.getMsg());
+        showAlertDialogList("修改信息", null, s,new AlertDialogListener(){
+            @Override
+            public void positiveClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        ApiUtils.getInstance().updateBikeLocation(bikeId, getLatLng().latitude, getLatLng().longitude, new ResponseListener<CommonResponse>() {
+                            @Override
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
                             }
-                        }
-                    });
-                    break;
-                case 1:
-                    String fix = s[1].equals("重置信息") ? "0" : "1";
-                    ApiUtils.getInstance().updateBikeFix(bikeId, fix, new OnBaseResponseListener<CommonResponse>() {
-                        @Override
-                        public void onError(String errorMsg) {
-                            showShort(errorMsg);
-                        }
 
-                        @Override
-                        public void onSuccess(CommonResponse commonResponse) {
-                            if (isResponseSuccess(commonResponse)) {
-                                showShort("提交成功");
-                                initBikeLocation();
-                            } else {
-                                showShort(commonResponse.getMsg());
+                            @Override
+                            public void onSuccess(CommonResponse commonResponse) {
+                                if (isResponseSuccess(commonResponse)) {
+                                    showShort("更新成功");
+                                    initBikeLocation();
+                                } else {
+                                    showShort(commonResponse.getMsg());
+                                }
                             }
-                        }
-                    });
-                    break;
-                case 2:
-                    if (marker.getSnippet().equals(getString(R.string.string_status_using))) {
-                        showShort("车辆正在使用中！");
+                        });
                         break;
-                    }
-                    if (getActivity() != null)
-                        Snackbar.make(getActivity().findViewById(R.id.fab), "车辆即将删除", Snackbar.LENGTH_LONG)
-                                .setAction("撤销", v -> {
-                                    showShort("撤销删除");
-                                })
-                                .addCallback(new Snackbar.Callback() {
-                                    @Override
-                                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                                        super.onDismissed(transientBottomBar, event);
-                                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
-                                            ApiUtils.getInstance().deleteBikeInfo(bikeId, new OnBaseResponseListener<CommonResponse>() {
-                                                @Override
-                                                public void onError(String errorMsg) {
-                                                    showShort(errorMsg);
-                                                }
+                    case 1:
+                        String fix = s[1].equals("重置信息") ? "0" : "1";
+                        ApiUtils.getInstance().updateBikeFix(bikeId, fix, new ResponseListener<CommonResponse>() {
+                            @Override
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
+                            }
 
-                                                @Override
-                                                public void onSuccess(CommonResponse commonResponse) {
-                                                    if (isResponseSuccess(commonResponse)) {
-                                                        showShort("删除成功！");
-                                                        initBikeLocation();
+                            @Override
+                            public void onSuccess(CommonResponse commonResponse) {
+                                if (isResponseSuccess(commonResponse)) {
+                                    showShort("提交成功");
+                                    initBikeLocation();
+                                } else {
+                                    showShort(commonResponse.getMsg());
+                                }
+                            }
+                        });
+                        break;
+                    case 2:
+                        if (marker.getSnippet().equals(getString(R.string.string_status_using))) {
+                            showShort("车辆正在使用中！");
+                            break;
+                        }
+                        if (getActivity() != null)
+                            Snackbar.make(getActivity().findViewById(R.id.fab), "车辆即将删除", Snackbar.LENGTH_LONG)
+                                    .setAction("撤销", v -> {
+                                        showShort("撤销删除");
+                                    })
+                                    .addCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                                            super.onDismissed(transientBottomBar, event);
+                                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                                                ApiUtils.getInstance().deleteBikeInfo(bikeId, new ResponseListener<CommonResponse>() {
+                                                    @Override
+                                                    public void onError(String errorMsg) {
+                                                        showShort(errorMsg);
                                                     }
-                                                }
-                                            });
-                                    }
-                                }).show();
-                    break;
+
+                                                    @Override
+                                                    public void onSuccess(CommonResponse commonResponse) {
+                                                        if (isResponseSuccess(commonResponse)) {
+                                                            showShort("删除成功！");
+                                                            initBikeLocation();
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    }).show();
+                        break;
+                }
             }
         });
         Log.d(TAG, "onMarkerClick: " + bikeId);

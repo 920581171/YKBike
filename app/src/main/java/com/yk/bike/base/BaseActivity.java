@@ -45,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener) {
+    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogListener onAlertDialogListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -54,58 +54,37 @@ public class BaseActivity extends AppCompatActivity {
         if (buttonText.length > 3)
             buttonText = new String[]{buttonText[0], buttonText[1], buttonText[2]};
 
-        if (baseListener != null) {
+        if (onAlertDialogListener != null) {
             switch (buttonText.length) {
                 case 3:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], (dialog, which) -> {
-                        if (baseListener instanceof OnAlertDialogWithNeutralListener) {
-                            ((OnAlertDialogWithNeutralListener) baseListener).negativeClick(dialog,which);
-                        }
-                        if (baseListener instanceof OnAlertDialogListener) {
-                            ((OnAlertDialogListener) baseListener).negativeClick(dialog,which);
-                        }
-                        if (baseListener instanceof OnAlertDialogWithNegativeListener) {
-                            ((OnAlertDialogWithNegativeListener) baseListener).negativeClick(dialog,which);
-                        }
-                    });
+                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], onAlertDialogListener::negativeClick);
                 case 2:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], (dialog, which) -> {
-                        if (baseListener instanceof OnAlertDialogWithNeutralListener) {
-                            ((OnAlertDialogWithNeutralListener) baseListener).neutralClick(dialog,which);
-                        }
-                        if (baseListener instanceof OnAlertDialogListener) {
-                            ((OnAlertDialogListener) baseListener).neutralClick(dialog,which);
-                        }
-                    });
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], onAlertDialogListener::neutralClick);
                 case 1:
-                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], baseListener::positiveClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], onAlertDialogListener::positiveClick);
                 case 0:
                     break;
             }
 
-            if (baseListener instanceof OnAlertDialogListener) {
-                alertDialog.setOnDismissListener((OnAlertDialogListener) baseListener);
-                alertDialog.setOnCancelListener((OnAlertDialogListener) baseListener);
-            }
+            alertDialog.setOnDismissListener(onAlertDialogListener);
+            alertDialog.setOnCancelListener(onAlertDialogListener);
         }
 
         alertDialog.show();
     }
 
-    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener){
+    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogListener onAlertDialogListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setItems(buttonText, (dialog, which) -> {
-                    if (baseListener!=null)
-                        baseListener.positiveClick(dialog,which);
+                    if (onAlertDialogListener != null)
+                        onAlertDialogListener.positiveClick(dialog, which);
                 })
                 .create();
 
-        if (baseListener instanceof OnAlertDialogListener) {
-            alertDialog.setOnDismissListener((OnAlertDialogListener) baseListener);
-            alertDialog.setOnCancelListener((OnAlertDialogListener) baseListener);
-        }
+        alertDialog.setOnDismissListener(onAlertDialogListener);
+        alertDialog.setOnCancelListener(onAlertDialogListener);
 
         alertDialog.show();
     }

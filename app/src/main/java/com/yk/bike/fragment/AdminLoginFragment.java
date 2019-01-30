@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.yk.bike.R;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnCommonResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.utils.ApiUtils;
@@ -58,7 +58,7 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                 } else if (isEmptyString(password)) {
                     tilInputPassword.setError("密码不能为空");
                 } else {
-                    ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new OnCommonResponseListener<AdminInfoResponse>() {
+                    ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new ResponseListener<AdminInfoResponse>() {
                         @Override
                         public void onStart() {
                             showShort("登陆中");

@@ -8,9 +8,8 @@ import android.view.View;
 import com.yk.bike.R;
 import com.yk.bike.adapter.BikeRecordAdapter;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.BikeRecordListResponse;
-import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.utils.ApiUtils;
 
 public class BikeRecordFragment extends BaseFragment {
@@ -29,12 +28,7 @@ public class BikeRecordFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        ApiUtils.getInstance().findAllBikeRecord(new OnBaseResponseListener<BikeRecordListResponse>() {
-            @Override
-            public void onError(String errorMsg) {
-
-            }
-
+        ApiUtils.getInstance().findAllBikeRecord(new ResponseListener<BikeRecordListResponse>() {
             @Override
             public void onSuccess(BikeRecordListResponse bikeRecordListResponse) {
                 if (isResponseSuccess(bikeRecordListResponse)) {

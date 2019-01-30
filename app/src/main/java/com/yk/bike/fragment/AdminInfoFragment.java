@@ -13,14 +13,10 @@ import com.yk.bike.activity.MainActivity;
 import com.yk.bike.adapter.AdminInfoAdapter;
 import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
-import com.yk.bike.response.BikeInfoListResponse;
-import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.utils.ApiUtils;
-
-import java.util.List;
 
 public class AdminInfoFragment extends BaseFragment {
 
@@ -42,12 +38,7 @@ public class AdminInfoFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        ApiUtils.getInstance().findAllAdminInfo(new OnBaseResponseListener<AdminInfoListResponse>() {
-            @Override
-            public void onError(String errorMsg) {
-
-            }
-
+        ApiUtils.getInstance().findAllAdminInfo(new ResponseListener<AdminInfoListResponse>() {
             @Override
             public void onSuccess(AdminInfoListResponse adminInfoListResponse) {
                 if (isResponseSuccess(adminInfoListResponse)){

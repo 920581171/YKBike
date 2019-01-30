@@ -75,14 +75,14 @@ public abstract class BaseFragment extends Fragment {
             ((BaseActivity) getActivity()).sendBroadcast(action);
     }
 
-    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener) {
+    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogListener onAlertDialogListener) {
         if (getActivity() != null)
-            ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, baseListener);
+            ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, onAlertDialogListener);
     }
 
-    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener){
+    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogListener onAlertDialogListener){
         if (getActivity() != null)
-            ((BaseActivity) getActivity()).showAlertDialogList(title, message, buttonText, baseListener);
+            ((BaseActivity) getActivity()).showAlertDialogList(title, message, buttonText, onAlertDialogListener);
     }
 
     public void replaceFragment(int layoutId, Fragment fragment) {

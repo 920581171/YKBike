@@ -25,10 +25,10 @@ import android.view.MenuItem;
 
 import com.amap.api.location.AMapLocation;
 import com.yk.bike.R;
+import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.base.OnAlertDialogWithNeutralListener;
-import com.yk.bike.callback.OnBaseResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
 import com.yk.bike.fragment.AdminInfoFragment;
@@ -266,7 +266,7 @@ public class MainActivity extends BaseActivity
                 if (!content.contains("bike"))
                     showShort("不是正确的二维码");
                 else
-                    ApiUtils.getInstance().findBikeByBikeId(content, new OnBaseResponseListener<BikeInfoResponse>() {
+                    ApiUtils.getInstance().findBikeByBikeId(content, new ResponseListener<BikeInfoResponse>() {
                         @Override
                         public void onError(String errorMsg) {
                             showShort(errorMsg);
@@ -348,7 +348,7 @@ public class MainActivity extends BaseActivity
                 type = Consts.CODE_RESULT_TYPE_USER_NO_BIKE;
             }
         }
-        showAlertDialog(title, message, buttonText, new OnAlertDialogWithNeutralListener() {
+        showAlertDialog(title, message, buttonText, new AlertDialogListener() {
             @Override
             public void positiveClick(DialogInterface dialog, int which) {
                 switch (type) {
@@ -357,7 +357,7 @@ public class MainActivity extends BaseActivity
                         break;
                     case Consts.CODE_RESULT_TYPE_ADMIN_NEW_ADD:
                         ApiUtils.getInstance().addBikeInfo(content, aMapLocation.getLatitude(), aMapLocation.getLongitude(),
-                                new OnBaseResponseListener<CommonResponse>() {
+                                new ResponseListener<CommonResponse>() {
                                     @Override
                                     public void onError(String errorMsg) {
                                         showShort(errorMsg);
@@ -378,7 +378,7 @@ public class MainActivity extends BaseActivity
                                 .setLatitude(aMapLocation.getLatitude())
                                 .setLongitude(aMapLocation.getLongitude())
                                 .setFix("0");
-                        ApiUtils.getInstance().updateBikeInfo(bikeInfo, new OnBaseResponseListener<CommonResponse>() {
+                        ApiUtils.getInstance().updateBikeInfo(bikeInfo, new ResponseListener<CommonResponse>() {
                             @Override
                             public void onError(String errorMsg) {
                                 showShort(errorMsg);
@@ -403,11 +403,6 @@ public class MainActivity extends BaseActivity
             }
 
             @Override
-            public void negativeClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "negativeClick: ");
-            }
-
-            @Override
             public void neutralClick(DialogInterface dialog, int which) {
                 if (Consts.CODE_RESULT_TYPE_ADMIN_ADDED.equals(type) || Consts.CODE_RESULT_TYPE_USER_BIKE.equals(type)) {
                     BikeInfoResponse.BikeInfo bikeInfo = bikeInfoResponse.getData();
@@ -415,7 +410,7 @@ public class MainActivity extends BaseActivity
                             .setLatitude(aMapLocation.getLatitude())
                             .setLongitude(aMapLocation.getLongitude())
                             .setFix("1");
-                    ApiUtils.getInstance().updateBikeInfo(bikeInfo, new OnBaseResponseListener<CommonResponse>() {
+                    ApiUtils.getInstance().updateBikeInfo(bikeInfo, new ResponseListener<CommonResponse>() {
                         @Override
                         public void onError(String errorMsg) {
                             showShort(errorMsg);
