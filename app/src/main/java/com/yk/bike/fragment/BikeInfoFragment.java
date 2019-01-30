@@ -13,12 +13,15 @@ import com.yk.bike.activity.MainActivity;
 import com.yk.bike.adapter.BikeInfoAdapter;
 import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.base.OnAlertDialogButtonClickListener;
+import com.yk.bike.base.OnAlertDialogListener;
+import com.yk.bike.base.OnAlertDialogPositiveListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.utils.ApiUtils;
+
+import java.util.List;
 
 public class BikeInfoFragment extends BaseFragment {
 
@@ -53,47 +56,25 @@ public class BikeInfoFragment extends BaseFragment {
             @Override
             public void onSuccess(BikeInfoListResponse bikeInfoListResponse) {
                 if (isResponseSuccess(bikeInfoListResponse)) {
-                    BikeInfoAdapter adapter = new BikeInfoAdapter(bikeInfoListResponse.getData());
+                    List<BikeInfoResponse.BikeInfo> list = bikeInfoListResponse.getData();
+                    BikeInfoAdapter adapter = new BikeInfoAdapter(list);
                     adapter.setOnItemClickListener(new OnItemClickListener<BikeInfoResponse.BikeInfo>() {
                         @Override
                         public void onClick(View v, RecyclerView.ViewHolder holder, int position) {
-
+                            onItemClick(list.get(position));
                         }
 
                         @Override
                         public void onLongClick(View v, RecyclerView.ViewHolder holder, int position) {
-                            showAlertDialog("删除自行车", "是否删除自行车？", new String[]{"删除", "取消"}, new OnAlertDialogButtonClickListener() {
-                                @Override
-                                public void positiveClick() {
-                                    deleteBike((BikeInfoAdapter.ViewHolder) holder);
-                                }
-
-                                @Override
-                                public void negativeClick() {
-
-                                }
-
-                                @Override
-                                public void neutralClick() {
-
-                                }
-
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-
-                                }
-
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-
-                                }
-                            });
+                            showAlertDialog("删除自行车", "是否删除自行车？",
+                                    new String[]{"删除", "取消"},
+                                    (dialog, which) -> deleteBike(list.get(position)));
                         }
 
                         @Override
                         public void onRightButtonClick(View v, RecyclerView.ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo) {
                             MapFragment mapFragment = (MapFragment) mainActivity.getFragment(mainActivity.FRAGMENT_MAP);
-                            mapFragment.showBikeLocation(bikeInfo.getLatitude(), bikeInfo.getLongitude());
+                            mapFragment.showBikeLocation(bikeInfo);
                         }
                     });
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -117,9 +98,9 @@ public class BikeInfoFragment extends BaseFragment {
         mainActivity = null;
     }
 
-    private void deleteBike(BikeInfoAdapter.ViewHolder holder) {
+    private void deleteBike(BikeInfoResponse.BikeInfo bikeInfo) {
 
-        if (getResources().getString(R.string.string_status_using).equals(holder.status.getText().toString())) {
+        if (bikeInfo.getUserId() != null && !"".equals(bikeInfo.getUserId())) {
             showShort("车辆正在使用中！");
             return;
         }
@@ -134,7 +115,7 @@ public class BikeInfoFragment extends BaseFragment {
                         public void onDismissed(Snackbar transientBottomBar, int event) {
                             super.onDismissed(transientBottomBar, event);
                             if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
-                                ApiUtils.getInstance().deleteBikeInfo(holder.bikeId.getText().toString(), new OnBaseResponseListener<CommonResponse>() {
+                                ApiUtils.getInstance().deleteBikeInfo(bikeInfo.getBikeId(), new OnBaseResponseListener<CommonResponse>() {
                                     @Override
                                     public void onError(String errorMsg) {
                                         showShort(errorMsg);
@@ -144,10 +125,62 @@ public class BikeInfoFragment extends BaseFragment {
                                     public void onSuccess(CommonResponse commonResponse) {
                                         if (isResponseSuccess(commonResponse)) {
                                             showShort("删除成功！");
+                                            initData();
                                         }
                                     }
                                 });
                         }
                     }).show();
+    }
+
+    public void onItemClick(BikeInfoResponse.BikeInfo bikeInfo) {
+        String bikeId = bikeInfo.getBikeId();
+        String[] s = bikeInfo.getFix().equals("1") ?
+                new String[]{"更新位置", "重置信息", "删除"} :
+                new String[]{"更新位置", "需要维修", "删除"};
+        showAlertDialogList("修改信息", null, s, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    ApiUtils.getInstance().updateBikeLocation(bikeId, bikeInfo.getLatitude(), bikeInfo.getLongitude(), new OnBaseResponseListener<CommonResponse>() {
+                        @Override
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
+                        }
+
+                        @Override
+                        public void onSuccess(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)) {
+                                showShort("更新成功");
+                                initData();
+                            } else {
+                                showShort(commonResponse.getMsg());
+                            }
+                        }
+                    });
+                    break;
+                case 1:
+                    String fix = s[1].equals("重置信息") ? "0" : "1";
+                    ApiUtils.getInstance().updateBikeFix(bikeId, fix, new OnBaseResponseListener<CommonResponse>() {
+                        @Override
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
+                        }
+
+                        @Override
+                        public void onSuccess(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)) {
+                                showShort("提交成功");
+                                initData();
+                            } else {
+                                showShort(commonResponse.getMsg());
+                            }
+                        }
+                    });
+                    break;
+                case 2:
+                    deleteBike(bikeInfo);
+                    break;
+            }
+        });
     }
 }

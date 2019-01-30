@@ -1,24 +1,15 @@
 package com.yk.bike.base;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.yk.bike.R;
 import com.yk.bike.constant.Consts;
-import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.BaseResponse;
-import com.yk.bike.response.CommonResponse;
-
-import cn.smssdk.gui.util.Const;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
@@ -44,17 +35,17 @@ public class BaseActivity extends AppCompatActivity {
         mToast.show();
     }
 
-    public void replaceFragment(int layoutId, Fragment fragment){
-        getSupportFragmentManager().beginTransaction().replace(layoutId,fragment).commit();
+    public void replaceFragment(int layoutId, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().replace(layoutId, fragment).commit();
     }
 
-    public void switchFragment(Fragment newFragment,Fragment currentFragment){
-        if (newFragment!=null&&currentFragment!=null&&newFragment!=currentFragment){
+    public void switchFragment(Fragment newFragment, Fragment currentFragment) {
+        if (newFragment != null && currentFragment != null && newFragment != currentFragment) {
             getSupportFragmentManager().beginTransaction().show(newFragment).hide(currentFragment).commit();
         }
     }
 
-    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {
+    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
@@ -63,27 +54,57 @@ public class BaseActivity extends AppCompatActivity {
         if (buttonText.length > 3)
             buttonText = new String[]{buttonText[0], buttonText[1], buttonText[2]};
 
-        if (onAlertDialogButtonClickListener != null) {
+        if (baseListener != null) {
             switch (buttonText.length) {
                 case 3:
                     alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], (dialog, which) -> {
-                        onAlertDialogButtonClickListener.neutralClick();
+                        if (baseListener instanceof OnAlertDialogWithNeutralListener) {
+                            ((OnAlertDialogWithNeutralListener) baseListener).negativeClick(dialog,which);
+                        }
+                        if (baseListener instanceof OnAlertDialogListener) {
+                            ((OnAlertDialogListener) baseListener).negativeClick(dialog,which);
+                        }
+                        if (baseListener instanceof OnAlertDialogWithNegativeListener) {
+                            ((OnAlertDialogWithNegativeListener) baseListener).negativeClick(dialog,which);
+                        }
                     });
                 case 2:
                     alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], (dialog, which) -> {
-                        onAlertDialogButtonClickListener.negativeClick();
+                        if (baseListener instanceof OnAlertDialogWithNeutralListener) {
+                            ((OnAlertDialogWithNeutralListener) baseListener).neutralClick(dialog,which);
+                        }
+                        if (baseListener instanceof OnAlertDialogListener) {
+                            ((OnAlertDialogListener) baseListener).neutralClick(dialog,which);
+                        }
                     });
                 case 1:
-                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], (dialog, which) -> {
-                        onAlertDialogButtonClickListener.positiveClick();
-                    });
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], baseListener::positiveClick);
                 case 0:
                     break;
             }
 
-            alertDialog.setOnDismissListener(onAlertDialogButtonClickListener);
-            alertDialog.setOnCancelListener(onAlertDialogButtonClickListener);
+            if (baseListener instanceof OnAlertDialogListener) {
+                alertDialog.setOnDismissListener((OnAlertDialogListener) baseListener);
+                alertDialog.setOnCancelListener((OnAlertDialogListener) baseListener);
+            }
+        }
 
+        alertDialog.show();
+    }
+
+    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener){
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setItems(buttonText, (dialog, which) -> {
+                    if (baseListener!=null)
+                        baseListener.positiveClick(dialog,which);
+                })
+                .create();
+
+        if (baseListener instanceof OnAlertDialogListener) {
+            alertDialog.setOnDismissListener((OnAlertDialogListener) baseListener);
+            alertDialog.setOnCancelListener((OnAlertDialogListener) baseListener);
         }
 
         alertDialog.show();

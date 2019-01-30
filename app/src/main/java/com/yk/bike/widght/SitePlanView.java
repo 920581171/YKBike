@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.yk.bike.R;
+import com.yk.bike.utils.BitmapCache;
 
 import java.text.DecimalFormat;
 
@@ -67,26 +68,15 @@ public class SitePlanView extends View {
             cy = getHeight() / 2;
 
             mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-            mBitmap.eraseColor(ContextCompat.getColor(getContext(), R.color.colorBlack_25));
+            mBitmap.eraseColor(ContextCompat.getColor(getContext(), R.color.colorBlack_50));
             mPaint = new Paint();
             mPaint.setAntiAlias(true);//设置画笔为无锯齿
             mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
-            Drawable drawableCheck = ContextCompat.getDrawable(getContext(), R.drawable.ic_check);
-            check = Bitmap.createBitmap(drawableCheck.getIntrinsicWidth(),
-                    drawableCheck.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvasCheck = new Canvas(check);
-            drawableCheck.setBounds(0, 0, canvasCheck.getWidth(), canvasCheck.getHeight());
-            drawableCheck.draw(canvasCheck);
+            check = BitmapCache.getBitmapByDrawable(R.drawable.ic_check);
+            cancel = BitmapCache.getBitmapByDrawable(R.drawable.ic_cancel);
 
-            Drawable drawableCancel = ContextCompat.getDrawable(getContext(), R.drawable.ic_cancel);
-            cancel = Bitmap.createBitmap(drawableCancel.getIntrinsicWidth(),
-                    drawableCancel.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvasCancel = new Canvas(cancel);
-            drawableCancel.setBounds(0, 0, canvasCancel.getWidth(), canvasCancel.getHeight());
-            drawableCancel.draw(canvasCancel);
-
-            buttonSize = canvasCheck.getWidth();
+            buttonSize = check.getWidth();
             decimalFormat = new DecimalFormat("0.0");
         }
     }
@@ -96,7 +86,7 @@ public class SitePlanView extends View {
         super.onDraw(canvas);
         canvas.drawBitmap(mBitmap, 0, 0, null);
         canvas.drawCircle(cx, cy, radius, mPaint);
-        int scale = (int) (radius * scalePerPixel)*2;
+        int scale = (int) (radius * scalePerPixel);
         String scaleText = scale < 1000 ? +scale + "m" : decimalFormat.format((double) scale / 1000d) + "km";
         drawText(cx - radius, cy - radius, cx + radius, cy + radius, scaleText, canvas);
         if (!isMove) {
@@ -128,6 +118,8 @@ public class SitePlanView extends View {
                 if (canMove) {
                     if (event.getPointerCount() >= 2) {
                         radius = (int) Math.sqrt((event.getX(0) - event.getX(1)) * (event.getX(0) - event.getX(1)) + (event.getY(0) - event.getY(1)) * (event.getY(0) - event.getY(1))) / 2;
+                        if (radius >= getWidth() / 2 - buttonSize)
+                            radius = getWidth() / 2 - buttonSize;
                         isMultiTouch = true;
                     }
 
@@ -191,9 +183,9 @@ public class SitePlanView extends View {
         return true;
     }
 
-    public void reset(){
-        cx= getWidth()/2;
-        cx = getWidth()/2;
+    public void reset() {
+        cx = getWidth() / 2;
+        cx = getWidth() / 2;
         radius = 200;
         scalePerPixel = 0f;
         invalidate();

@@ -1,11 +1,11 @@
 package com.yk.bike.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +21,7 @@ import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.yk.bike.R;
@@ -30,14 +31,18 @@ import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
+import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.SiteLocationListResponse;
+import com.yk.bike.response.SiteLocationResponse;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yk.bike.widght.SitePlanView;
 
+import java.time.chrono.IsoChronology;
 import java.util.List;
-import java.util.zip.DeflaterOutputStream;
 
-public class MapFragment extends BaseFragment implements View.OnClickListener {
+public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickListener, View.OnClickListener {
 
     private static final String TAG = "MapFragment";
 
@@ -74,7 +79,25 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
                 Log.d(TAG, "onCheckClick: ");
                 if (mAMap != null) {
                     int radius = (int) (sitePlanView.getRadius() * mAMap.getScalePerPixel());
-                    setSitePlan(sitePlanView.getCx(), sitePlanView.getCy(), radius);
+                    LatLng latLng = pointToLatLng(sitePlanView.getCx(), sitePlanView.getCy());
+                    showAlertDialog("添加站点",
+                            "纬度：" + latLng.latitude + "\n经度：" + latLng.longitude + "\n半径范围：" + radius + "m",
+                            new String[]{"添加", "取消"}, (DialogInterface dialog, int which) -> {
+                                ApiUtils.getInstance().addSiteLocation(latLng.latitude, latLng.longitude, radius, new OnBaseResponseListener<CommonResponse>() {
+                                    @Override
+                                    public void onError(String errorMsg) {
+                                        showShort(errorMsg);
+                                    }
+
+                                    @Override
+                                    public void onSuccess(CommonResponse commonResponse) {
+                                        if (isResponseSuccess(commonResponse)) {
+                                            showShort("添加成功");
+                                            setSitePlan(latLng, radius);
+                                        }
+                                    }
+                                });
+                            });
                 }
                 sitePlanView.reset();
                 sitePlanView.setVisibility(View.GONE);
@@ -116,6 +139,8 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
                 AMapLocation aMapLocation = mainActivity.getAMapLocation();
                 animateCamera(aMapLocation.getLatitude(), aMapLocation.getLongitude());
             });
+
+            mAMap.setOnInfoWindowClickListener(this);
         }
     }
 
@@ -131,13 +156,6 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
                 if (isResponseSuccess(bikeInfoListResponse)) {
                     List<BikeInfoResponse.BikeInfo> list = bikeInfoListResponse.getData();
 
-                    Drawable vectorDrawable = mainActivity.getResources().getDrawable(R.drawable.ic_location_on, null);
-                    Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                            vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-                    Canvas canvas = new Canvas(bitmap);
-                    vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                    vectorDrawable.draw(canvas);
-
                     if (mAMap != null) {
                         mAMap.clear();
                         for (BikeInfoResponse.BikeInfo b : list) {
@@ -149,9 +167,22 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
                                     ((userId != null && !"".equals(userId)) || fix == null || "1".equals(fix)))
                                 continue;
                             LatLng latLng = new LatLng(b.getLatitude(), b.getLongitude());
+                            String snippet = "1".equals(b.getFix()) ?
+                                    getResources().getString(R.string.string_status_fix) :
+                                    userId == null || "".equals(userId) ?
+                                            getResources().getString(R.string.string_status_unused) :
+                                            getResources().getString(R.string.string_status_using);
+
+                            Bitmap bitmap = "1".equals(b.getFix()) ?
+                                    BitmapCache.getInstance().getLocationOff() :
+                                    userId == null || "".equals(userId) ?
+                                            BitmapCache.getInstance().getLocationOn() :
+                                            BitmapCache.getInstance().getLocationUser();
+
                             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .title(getString(R.string.string_show_bike_id) + bikeId)
+                                    .snippet(snippet)
                                     .position(latLng)
                                     .icon(bitmapDescriptor);
                             mAMap.addMarker(markerOptions);
@@ -162,48 +193,88 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
         });
     }
 
-    public void showBikeLocation(double latitude, double longitude) {
+    public void initSite() {
+        ApiUtils.getInstance().findAllSiteLocation(new OnBaseResponseListener<SiteLocationListResponse>() {
+            @Override
+            public void onError(String errorMsg) {
+                showShort(errorMsg);
+            }
+
+            @Override
+            public void onSuccess(SiteLocationListResponse siteLocationListResponse) {
+                if (isResponseSuccess(siteLocationListResponse)) {
+                    List<SiteLocationResponse.SiteLocation> locations = siteLocationListResponse.getData();
+
+                    if (mAMap != null) {
+                        mAMap.clear();
+                        for (SiteLocationResponse.SiteLocation s : locations) {
+                            LatLng latLng = new LatLng(s.getLatitude(), s.getLongitude());
+                            setSitePlan(latLng, s.getRadius());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void showBikeLocation(BikeInfoResponse.BikeInfo bikeInfo) {
         if (mAMap != null) {
             mAMap.clear();
 
             mainActivity.switchFragment(mainActivity.FRAGMENT_MAP);
 
-            animateCamera(latitude, longitude);
+            animateCamera(bikeInfo.getLatitude(), bikeInfo.getLongitude());
 
-            Drawable vectorDrawable = mainActivity.getResources().getDrawable(R.drawable.ic_location_on, null);
-            vectorDrawable.mutate().setTint(getResources().getColor(R.color.colorAccent, null));
-            Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            vectorDrawable.draw(canvas);
+            LatLng latLng = new LatLng(bikeInfo.getLatitude(), bikeInfo.getLongitude());
+            String snippet = "1".equals(bikeInfo.getFix()) ?
+                    getResources().getString(R.string.string_status_fix) :
+                    bikeInfo.getUserId() == null || "".equals(bikeInfo.getBikeId()) ?
+                            getResources().getString(R.string.string_status_unused) :
+                            getResources().getString(R.string.string_status_using);
+
+            Bitmap bitmap = "1".equals(bikeInfo.getFix()) ?
+                    BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_off,
+                            getResources().getColor(R.color.colorAccent, null)) :
+                    bikeInfo.getUserId() == null || "".equals(bikeInfo.getUserId()) ?
+                            BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_on,
+                                    getResources().getColor(R.color.colorAccent, null)) :
+                            BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_user,
+                                    getResources().getColor(R.color.colorAccent, null));
 
             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
             MarkerOptions markerOptions = new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
+                    .title(getString(R.string.string_show_bike_id) + bikeInfo.getBikeId())
+                    .snippet(snippet)
+                    .position(latLng)
                     .icon(bitmapDescriptor);
             mAMap.addMarker(markerOptions);
         }
     }
 
-    public void setZOOM() {
-        Projection projection = mAMap.getProjection();
-        Point point = projection.toScreenLocation(getLatLng());
-        Log.d(TAG, "setZOOM: " + point.x + "----" + point.y);
+    public Point latLngToPoint(LatLng latLng) {
+        if (mAMap != null) {
+            Projection projection = mAMap.getProjection();
+            return projection.toScreenLocation(latLng);
+        }
+        return null;
     }
 
-    public void setSitePlan(int x, int y, double radius) {
+    public LatLng pointToLatLng(int x, int y) {
         if (mAMap != null) {
             Point point = new Point(x, y);
             Projection projection = mAMap.getProjection();
-            LatLng latLng = projection.fromScreenLocation(point);
-            CircleOptions circleOptions = new CircleOptions();
-            circleOptions.center(latLng);
-            circleOptions.radius(radius);
-            circleOptions.fillColor(ContextCompat.getColor(mainActivity,R.color.colorAccent_50));
-            circleOptions.strokeWidth(0f);
-            mAMap.addCircle(circleOptions);
+            return projection.fromScreenLocation(point);
         }
+        return null;
+    }
+
+    public void setSitePlan(LatLng latLng, double radius) {
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(latLng);
+        circleOptions.radius(radius);
+        circleOptions.fillColor(ContextCompat.getColor(mainActivity, R.color.colorAccent_50));
+        circleOptions.strokeWidth(0f);
+        mAMap.addCircle(circleOptions);
     }
 
     public void animateCamera(double latitude, double longitude) {
@@ -284,6 +355,88 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
         if (mAMap != null)
             return mAMap.getMapContentApprovalNumber();
         return null;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String bikeId = marker.getTitle().replace(getString(R.string.string_show_bike_id), "");
+        String[] s = marker.getSnippet().equals(getString(R.string.string_status_fix)) ?
+                new String[]{"更新位置", "重置信息", "删除"} :
+                new String[]{"更新位置", "需要维修", "删除"};
+        showAlertDialogList("修改信息", null, s, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    ApiUtils.getInstance().updateBikeLocation(bikeId, getLatLng().latitude, getLatLng().longitude, new OnBaseResponseListener<CommonResponse>() {
+                        @Override
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
+                        }
+
+                        @Override
+                        public void onSuccess(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)) {
+                                showShort("更新成功");
+                                initBikeLocation();
+                            } else {
+                                showShort(commonResponse.getMsg());
+                            }
+                        }
+                    });
+                    break;
+                case 1:
+                    String fix = s[1].equals("重置信息") ? "0" : "1";
+                    ApiUtils.getInstance().updateBikeFix(bikeId, fix, new OnBaseResponseListener<CommonResponse>() {
+                        @Override
+                        public void onError(String errorMsg) {
+                            showShort(errorMsg);
+                        }
+
+                        @Override
+                        public void onSuccess(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)) {
+                                showShort("提交成功");
+                                initBikeLocation();
+                            } else {
+                                showShort(commonResponse.getMsg());
+                            }
+                        }
+                    });
+                    break;
+                case 2:
+                    if (marker.getSnippet().equals(getString(R.string.string_status_using))) {
+                        showShort("车辆正在使用中！");
+                        break;
+                    }
+                    if (getActivity() != null)
+                        Snackbar.make(getActivity().findViewById(R.id.fab), "车辆即将删除", Snackbar.LENGTH_LONG)
+                                .setAction("撤销", v -> {
+                                    showShort("撤销删除");
+                                })
+                                .addCallback(new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                                        super.onDismissed(transientBottomBar, event);
+                                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                                            ApiUtils.getInstance().deleteBikeInfo(bikeId, new OnBaseResponseListener<CommonResponse>() {
+                                                @Override
+                                                public void onError(String errorMsg) {
+                                                    showShort(errorMsg);
+                                                }
+
+                                                @Override
+                                                public void onSuccess(CommonResponse commonResponse) {
+                                                    if (isResponseSuccess(commonResponse)) {
+                                                        showShort("删除成功！");
+                                                        initBikeLocation();
+                                                    }
+                                                }
+                                            });
+                                    }
+                                }).show();
+                    break;
+            }
+        });
+        Log.d(TAG, "onMarkerClick: " + bikeId);
     }
 
     @Override

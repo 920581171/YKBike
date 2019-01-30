@@ -27,7 +27,7 @@ import com.amap.api.location.AMapLocation;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.base.OnAlertDialogButtonClickListener;
+import com.yk.bike.base.OnAlertDialogWithNeutralListener;
 import com.yk.bike.callback.OnBaseResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
@@ -348,9 +348,9 @@ public class MainActivity extends BaseActivity
                 type = Consts.CODE_RESULT_TYPE_USER_NO_BIKE;
             }
         }
-        showAlertDialog(title, message, buttonText, new OnAlertDialogButtonClickListener() {
+        showAlertDialog(title, message, buttonText, new OnAlertDialogWithNeutralListener() {
             @Override
-            public void positiveClick() {
+            public void positiveClick(DialogInterface dialog, int which) {
                 switch (type) {
                     case Consts.CODE_RESULT_TYPE_ADMIN_ADDED:
                         showShort("查看");
@@ -403,12 +403,12 @@ public class MainActivity extends BaseActivity
             }
 
             @Override
-            public void negativeClick() {
+            public void negativeClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "negativeClick: ");
             }
 
             @Override
-            public void neutralClick() {
+            public void neutralClick(DialogInterface dialog, int which) {
                 if (Consts.CODE_RESULT_TYPE_ADMIN_ADDED.equals(type) || Consts.CODE_RESULT_TYPE_USER_BIKE.equals(type)) {
                     BikeInfoResponse.BikeInfo bikeInfo = bikeInfoResponse.getData();
                     bikeInfo.setUserId("")
@@ -430,16 +430,6 @@ public class MainActivity extends BaseActivity
                         }
                     });
                 }
-            }
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Log.d(TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                Log.d(TAG, "onDismiss: ");
             }
         });
     }

@@ -5,15 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.yk.bike.response.BaseResponse;
-import com.yk.bike.response.CommonResponse;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -78,9 +75,14 @@ public abstract class BaseFragment extends Fragment {
             ((BaseActivity) getActivity()).sendBroadcast(action);
     }
 
-    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogButtonClickListener onAlertDialogButtonClickListener) {
+    public void showAlertDialog(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener) {
         if (getActivity() != null)
-            ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, onAlertDialogButtonClickListener);
+            ((BaseActivity) getActivity()).showAlertDialog(title, message, buttonText, baseListener);
+    }
+
+    public void showAlertDialogList(String title, String message, String[] buttonText, OnAlertDialogPositiveListener baseListener){
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).showAlertDialogList(title, message, buttonText, baseListener);
     }
 
     public void replaceFragment(int layoutId, Fragment fragment) {

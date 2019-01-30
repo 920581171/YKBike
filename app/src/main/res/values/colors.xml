@@ -9,5 +9,6 @@
     <color name="bg_btn_white_pressed">#ffdfdfdf</color>
     <color name="bg_btn_pressed">#C70A5F</color>
     <color name="colorAccent_50">#7fD81B60</color>
+    <color name="colorBlack_50">#7f000000</color>
     <color name="colorBlack_25">#3f000000</color>
 </resources>

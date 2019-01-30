@@ -5,8 +5,8 @@ public class UrlConsts {
     public static final String IP = "192.168.43.151";
     public static final String PORT = "8080";
 //    public static final String IPORT = HEAD + IP + ":" + PORT;
-//    public static final String IPORT = HEAD + "192.168.3.223" + ":" + PORT;
-        public static final String IPORT = HEAD + "192.168.137.1" + ":" + PORT;
+    public static final String IPORT = HEAD + "192.168.3.120" + ":" + PORT;
+//        public static final String IPORT = HEAD + "192.168.137.1" + ":" + PORT;
 //    public static final String IPORT = HEAD + "192.168.1.232" + ":" + PORT;
 
     /**
@@ -31,6 +31,7 @@ public class UrlConsts {
     public static final String POST_BIKE_INFO_FIND_BIKE_BY_BIKE_ID = "/bikeinfo/findBikeInfoByBikeId";//根据bikeId查询自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_INFO = "/bikeinfo/updateBikeInfo";//更新自行车信息
     public static final String POST_BIKE_INFO_UPDATE_BIKE_LOCATION = "/bikeinfo/updateBikeLocation";//更新自行车位置信息
+    public static final String POST_BIKE_INFO_UPDATE_BIKE_FIX = "/bikeinfo/updateBikeFix";//更新自行车维修状态
     public static final String POST_BIKE_INFO_DELETE_BIKE_INFO = "/bikeinfo/deleteBikeInfo";
 
     /**
@@ -54,4 +55,13 @@ public class UrlConsts {
     public static final String POST_BIKE_RECORD_ADD_BIKE_RECORD = "/bikeRecord/addBikeRecord";
     public static final String POST_BIKE_RECORD_UPDATE_BIKE_RECORD = "/bikeRecord/updateBikeRecord";
     public static final String POST_BIKE_RECORD_DELETE_BIKE_RECORD = "/bikeRecord/deleteBikeRecord";
+
+    /**
+     * siteLocation
+     */
+    public static final String POST_SITE_LOCATION_ADD_SITE = "/siteLocation/addSiteLocation";
+    public static final String POST_SITE_LOCATION_DELETE_SITE = "/siteLocation/deleteSiteLocation";
+    public static final String POST_SITE_LOCATION_FIND_ALL_SITE = "/siteLocation/findAllSiteLocation";
+    public static final String POST_SITE_LOCATION_FIND_BY_SITE_ID = "/siteLocation/findSiteLocationById";
+    public static final String POST_SITE_LOCATION_UPDATE_SITE = "/siteLocation/updateSiteLocation";
 }
