@@ -1,6 +1,5 @@
 package com.yk.bike.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,12 +9,11 @@ import com.yk.bike.R;
 import com.yk.bike.activity.MainActivity;
 import com.yk.bike.base.BaseFragment;
 
-public class AboutFragment extends BaseFragment {
+public class AboutFragment extends BaseFragment<MainActivity> {
 
     private ImageView ivLauncher;
     private TextView tvVersion;
     private TextView tvApprovalNumber;
-    private MainActivity mainActivity;
 
     @Override
     public int initLayout() {
@@ -32,22 +30,8 @@ public class AboutFragment extends BaseFragment {
     @Override
     public void initData() {
         String version = "版本号：V" + getString(R.string.string_version_name);
-        String number = "审图号：" + ((MapFragment) mainActivity.getFragment(mainActivity.FRAGMENT_MAP)).getApprovalNumber();
+        String number = "审图号：" + ((MapFragment) getActivityContext().getFragment(getActivityContext().FRAGMENT_MAP)).getApprovalNumber();
         tvVersion.setText(version);
         tvApprovalNumber.setText(number);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity) {
-            mainActivity = (MainActivity) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mainActivity = null;
     }
 }

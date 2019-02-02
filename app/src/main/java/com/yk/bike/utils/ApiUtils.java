@@ -309,4 +309,18 @@ public class ApiUtils {
                 .build();
         post(formBody, UrlConsts.POST_SITE_LOCATION_ADD_SITE, new CommonCallback<>(onResponseListener, CommonResponse.class));
     }
+
+    /**
+     * 删除自行车信息
+     *
+     * @param siteId
+     * @param onResponseListener
+     */
+    public void deleteSiteLocation(String siteId, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("bikeId", siteId)
+                .build();
+
+        post(formBody, UrlConsts.POST_SITE_LOCATION_DELETE_SITE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
 }

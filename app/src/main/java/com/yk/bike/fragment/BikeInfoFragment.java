@@ -3,7 +3,9 @@ package com.yk.bike.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.MainHandler;
 
 import java.util.List;
 
@@ -31,6 +34,8 @@ public class BikeInfoFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public int initLayout() {
         return R.layout.fragment_recycler;
@@ -39,6 +44,11 @@ public class BikeInfoFragment extends BaseFragment {
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
         recyclerView = rootView.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            MainHandler.getInstance().postDelayed(this::initData,500);
+        });
     }
 
     @Override
@@ -48,6 +58,11 @@ public class BikeInfoFragment extends BaseFragment {
 
     private void initRecyclerView() {
         ApiUtils.getInstance().findAllBikeInfo(new ResponseListener<BikeInfoListResponse>() {
+            @Override
+            public void onFinish() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
             @Override
             public void onError(String errorMsg) {
                 showShort(errorMsg);

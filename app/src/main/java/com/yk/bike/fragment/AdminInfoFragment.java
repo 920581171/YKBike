@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,14 +18,15 @@ import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.MainHandler;
 
 public class AdminInfoFragment extends BaseFragment {
 
     private static final String TAG = "AdminInfoFragment";
 
-    MainActivity mainActivity;
+    private RecyclerView recyclerView;
 
-    RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public int initLayout() {
@@ -34,14 +36,24 @@ public class AdminInfoFragment extends BaseFragment {
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
         recyclerView = rootView.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            MainHandler.getInstance().postDelayed(this::initData, 500);
+        });
     }
 
     @Override
     public void initData() {
         ApiUtils.getInstance().findAllAdminInfo(new ResponseListener<AdminInfoListResponse>() {
             @Override
+            public void onFinish() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
             public void onSuccess(AdminInfoListResponse adminInfoListResponse) {
-                if (isResponseSuccess(adminInfoListResponse)){
+                if (isResponseSuccess(adminInfoListResponse)) {
                     AdminInfoAdapter adapter = new AdminInfoAdapter(adminInfoListResponse.getData());
                     adapter.setOnItemClickListener(new OnItemClickListener<AdminInfoResponse.AdminInfo>() {
                         @Override
@@ -68,18 +80,5 @@ public class AdminInfoFragment extends BaseFragment {
                 }
             }
         });
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity)
-            mainActivity = (MainActivity)context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mainActivity = null;
     }
 }

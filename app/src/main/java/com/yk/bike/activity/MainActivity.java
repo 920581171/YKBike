@@ -35,6 +35,7 @@ import com.yk.bike.fragment.AdminInfoFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.BikeRecordFragment;
 import com.yk.bike.fragment.MapFragment;
+import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.service.LocationService;
@@ -52,6 +53,7 @@ public class MainActivity extends BaseActivity
     public final int FRAGMENT_ABOUT = 2;
     public final int FRAGMENT_ADMIN_INFO = 3;
     public final int FRAGMENT_BIKE_RECORD = 4;
+    public final int FRAGMENT_SITE_LOCATION = 5;
 
     private int currentFragmentNum = 0;
 
@@ -77,7 +79,6 @@ public class MainActivity extends BaseActivity
                         finish();
                         break;
                     case Consts.BR_ACTION_LOGIN:
-                        Log.d(TAG, "onReceive: login");
                         init();
                         break;
                 }
@@ -115,13 +116,20 @@ public class MainActivity extends BaseActivity
         startActivity(new Intent(this, LoginActivity.class));
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        switchFragment(FRAGMENT_MAP);
+    }
+
     public void initFragment() {
-        fragments = new BaseFragment[5];
+        fragments = new BaseFragment[6];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
         fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoFragment();
         fragments[FRAGMENT_BIKE_RECORD] = new BikeRecordFragment();
+        fragments[FRAGMENT_SITE_LOCATION] = new SiteLocationFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -142,7 +150,7 @@ public class MainActivity extends BaseActivity
             return;
         }
 
-        for (BaseFragment f:fragments)
+        for (BaseFragment f : fragments)
             f.initData();
     }
 
@@ -217,11 +225,16 @@ public class MainActivity extends BaseActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add:
+                ((MapFragment)fragments[FRAGMENT_MAP]).sitePlan();
+                break;
+            case R.id.action_forward:
+                switchFragment(FRAGMENT_MAP);
+                break;
         }
 
+        //noinspection SimplifiableIfStatement
         return super.onOptionsItemSelected(item);
     }
 
@@ -237,15 +250,16 @@ public class MainActivity extends BaseActivity
             switchFragment(FRAGMENT_BIKE_RECORD).initData();
         } else if (id == R.id.nav_admin) {
             switchFragment(FRAGMENT_ADMIN_INFO).initData();
-        } else if (id == R.id.nav_count) {
+        } else if (id == R.id.nav_bike_info) {
             switchFragment(FRAGMENT_BIKE_INFO).initData();
+
+        } else if (id == R.id.nav_site_plan) {
+            switchFragment(FRAGMENT_SITE_LOCATION).initData();
+
+        } else if (id == R.id.nav_count) {
+
         } else if (id == R.id.nav_settings) {
-            SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
-            SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
-            SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
-            SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
-            switchFragment(FRAGMENT_MAP);
-            startActivity(new Intent(this, LoginActivity.class));
+            logout();
         } else if (id == R.id.nav_info) {
             switchFragment(FRAGMENT_ABOUT).initData();
         }
@@ -427,6 +441,15 @@ public class MainActivity extends BaseActivity
                 }
             }
         });
+    }
+
+    public void logout(){
+        SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
+        SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
+        SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
+        SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
+        switchFragment(FRAGMENT_ABOUT);
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     public BaseFragment switchFragment(int newFragment) {

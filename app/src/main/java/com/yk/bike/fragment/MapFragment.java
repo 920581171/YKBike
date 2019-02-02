@@ -1,6 +1,5 @@
 package com.yk.bike.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -42,16 +41,17 @@ import com.yk.bike.widght.SitePlanView;
 
 import java.util.List;
 
-public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickListener, View.OnClickListener {
+public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnInfoWindowClickListener, View.OnClickListener {
 
     private static final String TAG = "MapFragment";
 
     private final float ZOOM = 15;
 
-    private MainActivity mainActivity;
-
     private MapView mMapView;
+    private ImageView sitePlan;
     private AMap mAMap;
+
+    private boolean isShowSite = false;
 
     @Override
     public int initLayout() {
@@ -61,7 +61,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
         ImageView showLocation = rootView.findViewById(R.id.show_location);
-        ImageView sitePlan = rootView.findViewById(R.id.site_plan);
+        sitePlan = rootView.findViewById(R.id.site_plan);
         ImageView ivEnlarge = rootView.findViewById(R.id.iv_enlarge);
         ImageView ivNarrow = rootView.findViewById(R.id.iv_narrow);
         SitePlanView sitePlanView = rootView.findViewById(R.id.sitePlanView);
@@ -82,7 +82,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                     LatLng latLng = pointToLatLng(sitePlanView.getCx(), sitePlanView.getCy());
                     showAlertDialog("添加站点",
                             "纬度：" + latLng.latitude + "\n经度：" + latLng.longitude + "\n半径范围：" + radius + "m",
-                            new String[]{"添加", "取消"},new AlertDialogListener(){
+                            new String[]{"添加", "取消"}, new AlertDialogListener() {
                                 @Override
                                 public void positiveClick(DialogInterface dialog, int which) {
                                     ApiUtils.getInstance().addSiteLocation(latLng.latitude, latLng.longitude, radius, new ResponseListener<CommonResponse>() {
@@ -104,6 +104,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                 }
                 sitePlanView.reset();
                 sitePlanView.setVisibility(View.GONE);
+                initSite();
             }
 
             @Override
@@ -111,6 +112,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                 Log.d(TAG, "onCancelClick: ");
                 sitePlanView.reset();
                 sitePlanView.setVisibility(View.GONE);
+                initBikeLocation();
             }
         });
     }
@@ -139,7 +141,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
             mUiSettings.setScaleControlsEnabled(true);
 
             mAMap.setOnMapLoadedListener(() -> {
-                AMapLocation aMapLocation = mainActivity.getAMapLocation();
+                AMapLocation aMapLocation = getActivityContext().getAMapLocation();
                 animateCamera(aMapLocation.getLatitude(), aMapLocation.getLongitude());
             });
 
@@ -194,6 +196,9 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                 }
             }
         });
+
+        sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorPrimary));
+        isShowSite = false;
     }
 
     public void initSite() {
@@ -224,7 +229,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
         if (mAMap != null) {
             mAMap.clear();
 
-            mainActivity.switchFragment(mainActivity.FRAGMENT_MAP);
+            getActivityContext().switchFragment(getActivityContext().FRAGMENT_MAP);
 
             animateCamera(bikeInfo.getLatitude(), bikeInfo.getLongitude());
 
@@ -237,12 +242,12 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
 
             Bitmap bitmap = "1".equals(bikeInfo.getFix()) ?
                     BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_off,
-                            getResources().getColor(R.color.colorAccent, null)) :
+                            ContextCompat.getColor(getActivityContext(), R.color.colorAccent)) :
                     bikeInfo.getUserId() == null || "".equals(bikeInfo.getUserId()) ?
                             BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_on,
-                                    getResources().getColor(R.color.colorAccent, null)) :
+                                    ContextCompat.getColor(getActivityContext(), R.color.colorAccent)) :
                             BitmapCache.getBitmapByDrawableWithColor(R.drawable.ic_location_user,
-                                    getResources().getColor(R.color.colorAccent, null));
+                                    ContextCompat.getColor(getActivityContext(), R.color.colorAccent));
 
             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
             MarkerOptions markerOptions = new MarkerOptions()
@@ -275,7 +280,7 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
         CircleOptions circleOptions = new CircleOptions();
         circleOptions.center(latLng);
         circleOptions.radius(radius);
-        circleOptions.fillColor(ContextCompat.getColor(mainActivity, R.color.colorAccent_50));
+        circleOptions.fillColor(ContextCompat.getColor(getActivityContext(), R.color.colorAccent_50));
         circleOptions.strokeWidth(0f);
         mAMap.addCircle(circleOptions);
     }
@@ -314,13 +319,6 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity)
-            mainActivity = (MainActivity) context;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
@@ -348,12 +346,6 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mainActivity = null;
-    }
-
     public String getApprovalNumber() {
         if (mAMap != null)
             return mAMap.getMapContentApprovalNumber();
@@ -362,11 +354,13 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
 
     @Override
     public void onInfoWindowClick(Marker marker) {
+        if (!SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN))
+            return;
         String bikeId = marker.getTitle().replace(getString(R.string.string_show_bike_id), "");
         String[] s = marker.getSnippet().equals(getString(R.string.string_status_fix)) ?
                 new String[]{"更新位置", "重置信息", "删除"} :
                 new String[]{"更新位置", "需要维修", "删除"};
-        showAlertDialogList("修改信息", null, s,new AlertDialogListener(){
+        showAlertDialogList("修改信息", null, s, new AlertDialogListener() {
             @Override
             public void positiveClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -445,6 +439,13 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
         Log.d(TAG, "onMarkerClick: " + bikeId);
     }
 
+    public void sitePlan() {
+        SitePlanView sitePlanView = getmRootView().findViewById(R.id.sitePlanView);
+        sitePlanView.setScalePerPixel(mAMap.getScalePerPixel());
+        sitePlanView.setVisibility(View.VISIBLE);
+        initSite();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -452,9 +453,15 @@ public class MapFragment extends BaseFragment implements AMap.OnInfoWindowClickL
                 animateCamera(getLatLng());
                 break;
             case R.id.site_plan:
-                SitePlanView sitePlanView = getmRootView().findViewById(R.id.sitePlanView);
-                sitePlanView.setScalePerPixel(mAMap.getScalePerPixel());
-                sitePlanView.setVisibility(View.VISIBLE);
+                if (isShowSite) {
+                    initBikeLocation();
+                    sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorPrimary));
+                    isShowSite = false;
+                } else {
+                    initSite();
+                    sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorAccent));
+                    isShowSite = true;
+                }
                 break;
             case R.id.iv_enlarge:
                 cameraEnlarge();

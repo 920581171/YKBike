@@ -46,4 +46,11 @@
     <string name="string_show_duration">计时：</string>
     <string name="string_show_create_time">创建时间：</string>
     <string name="string_create_time">2019-01-01 12:00:00</string>
+    <string name="string_show_latitude">纬度：</string>
+    <string name="string_latlng">123.456789</string>
+    <string name="string_show_longitude">经度：</string>
+    <string name="string_show_radius">半径：</string>
+    <string name="string_radius_unit">米</string>
+    <string name="string_add">添加</string>
+    <string name="string_forward">前往</string>
 </resources>
