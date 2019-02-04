@@ -7,6 +7,8 @@
     <color name="bg_btn_nor">#ffffffff</color>
     <color name="bg_btn_enabled">#ffbfbfbf</color>
     <color name="bg_btn_white_pressed">#ffdfdfdf</color>
+    <color name="colorF8F8F8">#f8f8f8</color>
+    <color name="colorF0F0F0">#f0f0f0</color>
     <color name="bg_btn_pressed">#C70A5F</color>
     <color name="colorAccent_50">#7fD81B60</color>
     <color name="colorBlack_50">#7f000000</color>

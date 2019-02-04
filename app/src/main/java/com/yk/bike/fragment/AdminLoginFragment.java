@@ -14,6 +14,7 @@ import com.yk.bike.constant.Consts;
 import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
+import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 
 public class AdminLoginFragment extends BaseFragment implements View.OnClickListener {
@@ -53,9 +54,9 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
         String password = etInputPassword.getText().toString();
         switch (v.getId()) {
             case R.id.btn_login:
-                if (isEmptyString(name)) {
+                if (NullObjectUtils.isEmptyString(name)) {
                     tilInputAdminOrPhone.setError("管理员或手机号不能为空");
-                } else if (isEmptyString(password)) {
+                } else if (NullObjectUtils.isEmptyString(password)) {
                     tilInputPassword.setError("密码不能为空");
                 } else {
                     ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new ResponseListener<AdminInfoResponse>() {
@@ -82,10 +83,11 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                                 showShort("登陆成功");
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,adminInfo.getAdminId());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, adminInfo.getAdminName());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE,adminInfo.getAdminPhone());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, adminInfo.getAdminPassword());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_ADMIN);
                                 sendBroadcast(Consts.BR_ACTION_LOGIN);
-                                getActivity().finish();
+                                getActivityContext().finish();
                             } else {
                                 showShort(adminInfoResponse.getMsg());
                             }
@@ -95,7 +97,7 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.tv_to_start:
                 if (getActivity()!=null)
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new StartFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment,new StartFragment()).commit();
                 break;
         }
     }

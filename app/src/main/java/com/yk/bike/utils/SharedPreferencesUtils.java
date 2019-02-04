@@ -23,7 +23,9 @@ public class SharedPreferencesUtils {
 
         SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-        if (object instanceof String) {
+        if (object == null) {
+            editor.putString(key, "");
+        } else if (object instanceof String) {
             editor.putString(key, (String) object);
         } else if (object instanceof Integer) {
             editor.putInt(key, (Integer) object);

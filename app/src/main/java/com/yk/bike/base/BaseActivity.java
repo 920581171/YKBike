@@ -89,10 +89,6 @@ public class BaseActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public boolean isEmptyString(String s) {
-        return "".equals(s);
-    }
-
     public boolean isResponseSuccess(BaseResponse baseResponse) {
         return Consts.COMMON_RESPONSE_SUCCESS_MSG.equals(baseResponse.getMsg());
     }

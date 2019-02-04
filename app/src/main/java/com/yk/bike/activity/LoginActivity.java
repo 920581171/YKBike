@@ -14,8 +14,10 @@ import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.StartFragment;
 import com.yk.bike.response.AdminInfoResponse;
+import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 
 public class LoginActivity extends BaseActivity {
@@ -26,16 +28,18 @@ public class LoginActivity extends BaseActivity {
 
         transparentWindow();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.ll_login, new StartFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new StartFragment()).commit();
 
         String name = SharedPreferencesUtils.getString(Consts.SP_LOGIN_NAME);
+        String phone = SharedPreferencesUtils.getString(Consts.SP_LOGIN_PHONE);
         String password = SharedPreferencesUtils.getString(Consts.SP_LOGIN_PASSWORD);
         String type = SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE);
 
-        if ((!isEmptyString(name) || !isEmptyString(password)) && !isEmptyString(type))
+
+        if ((NullObjectUtils.isNotEmptyString(name) || NullObjectUtils.isNotEmptyString(phone)) && NullObjectUtils.isNotEmptyString(type))
             switch (type) {
                 case Consts.LOGIN_TYPE_USER:
-                    ApiUtils.getInstance().appLogin(name, password, new ResponseListener<UserInfoResponse>(){
+                    ApiUtils.getInstance().appLogin(name, password, new ResponseListener<UserInfoResponse>() {
                         @Override
                         public void onSuccess(UserInfoResponse userInfoResponse) {
                             sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
@@ -44,15 +48,22 @@ public class LoginActivity extends BaseActivity {
                         }
                     });
                     break;
-//                case Consts.LOGIN_TYPE_PHONE:
-//                    ApiUtils.getInstance().appLogin(name, password, (OnSuccessResponseListener<UserInfoResponse>) userInfoResponse -> {
-//                        sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-//                        showShort("登陆成功");
-//                        finish();
-//                    });
-//                    break;
+                case Consts.LOGIN_TYPE_PHONE:
+                    ApiUtils.getInstance().findUserByUserPhone(phone, new ResponseListener<CommonResponse>() {
+                        @Override
+                        public void onSuccess(CommonResponse commonResponse) {
+                            if (isResponseSuccess(commonResponse)) {
+                                sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
+                                showShort("登陆成功");
+                                finish();
+                            } else {
+                                showShort(commonResponse.getMsg());
+                            }
+                        }
+                    });
+                    break;
                 case Consts.LOGIN_TYPE_ADMIN:
-                    ApiUtils.getInstance().appAdminLogin(name, password, new ResponseListener<AdminInfoResponse>(){
+                    ApiUtils.getInstance().appAdminLogin(name, password, new ResponseListener<AdminInfoResponse>() {
                         @Override
                         public void onSuccess(AdminInfoResponse adminInfoResponse) {
                             sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));

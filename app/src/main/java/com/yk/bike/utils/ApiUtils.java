@@ -2,8 +2,6 @@ package com.yk.bike.utils;
 
 import com.yk.bike.callback.CommonCallback;
 import com.yk.bike.callback.OnResponseListener;
-import com.yk.bike.callback.ResponseListener;
-import com.yk.bike.constant.Consts;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
@@ -108,6 +106,20 @@ public class ApiUtils {
     }
 
     /**
+     * 根据用户ID查找
+     *
+     * @param userId
+     * @param onResponseListener
+     */
+    public void findUserByUserId(String userId, OnResponseListener<UserInfoResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_USER_INFO_FIND_USER_BY_ID, new CommonCallback<>(onResponseListener, UserInfoResponse.class));
+    }
+
+    /**
      * 根据用户名查找
      *
      * @param userName
@@ -148,7 +160,26 @@ public class ApiUtils {
                 .add("userPassword", userPassword)
                 .build();
 
-        post(formBody, UrlConsts.POST_USER_INFO_UPDATE_APP_LOGIN, new CommonCallback<>(onResponseListener, UserInfoResponse.class));
+        post(formBody, UrlConsts.POST_USER_INFO_APP_LOGIN, new CommonCallback<>(onResponseListener, UserInfoResponse.class));
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param userInfo
+     * @param onResponseListener
+     */
+    public void updateUserInfo(UserInfoResponse.UserInfo userInfo, OnResponseListener<UserInfoResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", NullObjectUtils.emptyString(userInfo.getUserId()))
+                .add("userName", NullObjectUtils.emptyString(userInfo.getUserName()))
+                .add("userPhone", NullObjectUtils.emptyString(userInfo.getUserPhone()))
+                .add("userPassword", NullObjectUtils.emptyString(userInfo.getUserPassword()))
+                .add("deposit", String.valueOf(userInfo.getDeposit()))
+                .add("balance", String.valueOf(userInfo.getBalance()))
+                .build();
+
+        post(formBody, UrlConsts.POST_USER_INFO_UPDATE_USER_INFO, new CommonCallback<>(onResponseListener, UserInfoResponse.class));
     }
 
     /*-----------------------------------------------AdminInfo-----------------------------------------------*/
@@ -169,9 +200,22 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_ADMIN_INFO_APP_ADMIN_LOGIN, new CommonCallback<>(onResponseListener, AdminInfoResponse.class));
     }
 
+    /**
+     * 查找所有管理员
+     *
+     * @param onResponseListener
+     */
     public void findAllAdminInfo(OnResponseListener<AdminInfoListResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder().build();
         post(formBody, UrlConsts.POST_ADMIN_INFO_FIND_ALL_ADMIN_INFO, new CommonCallback<>(onResponseListener, AdminInfoListResponse.class));
+    }
+
+    public void findAdminByAdminId(String adminId, OnResponseListener<AdminInfoResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("adminId", adminId)
+                .build();
+
+        post(formBody, UrlConsts.POST_ADMIN_INFO_FIND_ADMIN_BY_ID, new CommonCallback<>(onResponseListener, AdminInfoResponse.class));
     }
 
     /*---------------------------------------------BikeInfo---------------------------------------------*/
@@ -210,12 +254,13 @@ public class ApiUtils {
 
     /**
      * 更新自行车位置
+     *
      * @param bikeId
      * @param latitude
      * @param longitude
      * @param onResponseListener
      */
-    public void updateBikeLocation(String bikeId,double latitude,double longitude, OnResponseListener<CommonResponse> onResponseListener) {
+    public void updateBikeLocation(String bikeId, double latitude, double longitude, OnResponseListener<CommonResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("bikeId", bikeId)
                 .add("latitude", String.valueOf(latitude))
@@ -244,7 +289,7 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_BIKE_INFO_UPDATE_BIKE_INFO, new CommonCallback<>(onResponseListener, CommonResponse.class));
     }
 
-    public void updateBikeFix(String bikeId,String fix, OnResponseListener<CommonResponse> onResponseListener) {
+    public void updateBikeFix(String bikeId, String fix, OnResponseListener<CommonResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("bikeId", bikeId)
                 .add("fix", fix)

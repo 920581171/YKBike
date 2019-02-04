@@ -16,13 +16,13 @@ public class UrlConsts {
     public static final String GET_USER_INFO_DOWNLOAD_AVATAR = "/userinfo/downloadAvatar";//下载头像
     public static final String POST_USER_INFO_UPLOAD_AVATAR = "/userinfo/uploadAvatar";//上传头像
     public static final String POST_USER_INFO_FIND_ALL_USER_INFO = "/userinfo/userinfo/findAllUserInfo";//查找所有用户信息
-    public static final String POST_USER_INFO_FIND_USER_BY_USER_ID = "/userinfo/findUserByUserId";//根据UserId查找用户
+    public static final String POST_USER_INFO_FIND_USER_BY_ID = "/userinfo/findUserByUserId";//根据UserId查找用户
     public static final String POST_USER_INFO_FIND_USER_BY_NAME = "/userinfo/findUserByUserName ";//根据UserName查找用户
     public static final String POST_USER_INFO_FIND_USER_BY_PHONE = "/userinfo/findUserByUserPhone";//根据UserName查找用户
     public static final String POST_USER_INFO_REGISTER_USER_BY_PHONE = "/userinfo/registerUserByPhone";//通过手机号注册用户
     public static final String POST_USER_INFO_REGISTER_USER_BY_NAME = "/userinfo/registerUserByName";//通过用户名和密码注册用户
     public static final String POST_USER_INFO_UPDATE_USER_INFO = "/userinfo/updateUserInfo";//更新用户信息
-    public static final String POST_USER_INFO_UPDATE_APP_LOGIN = "/userinfo/appLogin";//用户登陆
+    public static final String POST_USER_INFO_APP_LOGIN = "/userinfo/appLogin";//用户登陆
 
     /**
      * bikeInfo
@@ -38,7 +38,7 @@ public class UrlConsts {
     /**
      * adminInfo
      */
-    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_ADMIN_ID = "/adminInfo/findAdminByAdminId";//根据adminId查找管理员
+    public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_ID = "/adminInfo/findAdminByAdminId";//根据adminId查找管理员
     public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_ACCOUNT = "/adminInfo/findAdminByAdminAccount";
     public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_NAME = "/adminInfo/findAdminByAdminName";//根据AdminName查找管理员
     public static final String POST_ADMIN_INFO_FIND_ADMIN_BY_PHONE = "/adminInfo/findAdminByAdminPhone";//根据AdminPhone查找管理员

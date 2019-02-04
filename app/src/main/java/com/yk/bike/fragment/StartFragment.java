@@ -35,15 +35,15 @@ public class StartFragment extends BaseFragment implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.btn_login:
                 if (getActivity()!=null)
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new LoginFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment,new LoginFragment()).commit();
                 break;
             case R.id.btn_register:
                 if (getActivity()!=null)
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new RegisterFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment,new RegisterFragment()).commit();
                 break;
             case R.id.btn_admin_login:
                 if (getActivity()!=null)
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new AdminLoginFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment,new AdminLoginFragment()).commit();
                 break;
         }
     }

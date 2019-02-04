@@ -19,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -61,8 +60,6 @@ public class MainActivity extends BaseActivity
 
     private BaseFragment[] fragments;
 
-    private int REQUEST_CODE_SCAN = 0;
-
     private FloatingActionButton fab;
 
     private LocationService.LocationBinder binder;
@@ -81,6 +78,9 @@ public class MainActivity extends BaseActivity
                     case Consts.BR_ACTION_LOGIN:
                         init();
                         break;
+                    case Consts.BR_ACTION_LOGOUT:
+                        logout();
+                        break;
                 }
         }
     };
@@ -93,8 +93,9 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Consts.BR_ACTION_LOGIN);
         intentFilter.addAction(Consts.BR_ACTION_EXIT);
+        intentFilter.addAction(Consts.BR_ACTION_LOGIN);
+        intentFilter.addAction(Consts.BR_ACTION_LOGOUT);
         registerReceiver(br, intentFilter);
 
         fab = findViewById(R.id.fab);
@@ -136,10 +137,10 @@ public class MainActivity extends BaseActivity
 
         for (Fragment f : fragments) {
             if (f instanceof MapFragment) {
-                fragmentTransaction.add(R.id.ll_main, f);
+                fragmentTransaction.add(R.id.ll_fragment, f);
                 continue;
             }
-            fragmentTransaction.add(R.id.ll_main, f).hide(f);
+            fragmentTransaction.add(R.id.ll_fragment, f).hide(f);
         }
         fragmentTransaction.commit();
     }
@@ -227,7 +228,7 @@ public class MainActivity extends BaseActivity
 
         switch (id) {
             case R.id.action_add:
-                ((MapFragment)fragments[FRAGMENT_MAP]).sitePlan();
+                ((MapFragment) fragments[FRAGMENT_MAP]).sitePlan();
                 break;
             case R.id.action_forward:
                 switchFragment(FRAGMENT_MAP);
@@ -246,20 +247,17 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nav_map) {
             ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
-        } else if (id == R.id.nav_user) {
+        } else if (id == R.id.nav_record) {
             switchFragment(FRAGMENT_BIKE_RECORD).initData();
         } else if (id == R.id.nav_admin) {
             switchFragment(FRAGMENT_ADMIN_INFO).initData();
         } else if (id == R.id.nav_bike_info) {
             switchFragment(FRAGMENT_BIKE_INFO).initData();
-
         } else if (id == R.id.nav_site_plan) {
             switchFragment(FRAGMENT_SITE_LOCATION).initData();
-
         } else if (id == R.id.nav_count) {
-
-        } else if (id == R.id.nav_settings) {
-            logout();
+        } else if (id == R.id.nav_account) {
+            startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), Consts.REQUEST_CODE_ACCOUNT);
         } else if (id == R.id.nav_info) {
             switchFragment(FRAGMENT_ABOUT).initData();
         }
@@ -273,7 +271,7 @@ public class MainActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // 扫描二维码/条码回传
-        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+        if (requestCode == Consts.REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String qrCode = data.getStringExtra(Constant.CODED_CONTENT);
                 String content = new String(Base64.decode(qrCode, Base64.DEFAULT));
@@ -292,6 +290,8 @@ public class MainActivity extends BaseActivity
                         }
                     });
             }
+        } else if (requestCode == Consts.REQUEST_CODE_ACCOUNT && resultCode == Consts.RESULT_CODE_LOGOUT) {
+            logout();
         }
     }
 
@@ -313,7 +313,7 @@ public class MainActivity extends BaseActivity
         config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
         config.setShowAlbum(false);
         intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-        startActivityForResult(intent, REQUEST_CODE_SCAN);
+        startActivityForResult(intent, Consts.REQUEST_CODE_SCAN);
     }
 
     public void onQRCodeResult(String content, BikeInfoResponse bikeInfoResponse) {
@@ -443,9 +443,10 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    public void logout(){
+    public void logout() {
         SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
         SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
+        SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE, "");
         SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
         SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
         switchFragment(FRAGMENT_ABOUT);

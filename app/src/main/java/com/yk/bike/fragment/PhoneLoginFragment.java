@@ -2,12 +2,12 @@ package com.yk.bike.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yk.bike.R;
@@ -32,8 +32,8 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
 
     private TextInputLayout tilInputPhone;
     private TextInputLayout tilInputCode;
-    private EditText etInputPhone;
-    private EditText etInputCode;
+    private TextInputEditText etInputPhone;
+    private TextInputEditText etInputCode;
     private Button btnGetCode;
     private Button btnRigister;
     private Handler handler;
@@ -151,7 +151,8 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
                                 showShort(btnRigister.getText().toString()+"成功");
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,userInfo.getUserId());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,userInfo.getUserPhone());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,userInfo.getUserName());
+                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE,userInfo.getUserPhone());
                                 SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_PHONE);
                                 sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivity().finish();
@@ -215,7 +216,7 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                 break;
             case R.id.tv_user_login:
                 if (getActivity()!=null)
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login,new LoginFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment,new LoginFragment()).commit();
                 break;
         }
     }

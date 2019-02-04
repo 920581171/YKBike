@@ -1,6 +1,8 @@
 package com.yk.bike.response;
 
-public class UserInfoResponse extends BaseResponse{
+import com.yk.bike.utils.NullObjectUtils;
+
+public class UserInfoResponse extends BaseResponse {
 
     /**
      * data : {"id":14,"userId":"1901139739","userName":"bbq","userPassword":"25d55ad283aa400af464c76d713c07ad","deposit":0,"balance":0}
@@ -31,8 +33,8 @@ public class UserInfoResponse extends BaseResponse{
         private String userName;
         private String userPhone;
         private String userPassword;
-        private int deposit;
-        private int balance;
+        private float deposit;
+        private float balance;
 
         public int getId() {
             return id;
@@ -79,22 +81,33 @@ public class UserInfoResponse extends BaseResponse{
             return this;
         }
 
-        public int getDeposit() {
+        public float getDeposit() {
             return deposit;
         }
 
-        public UserInfo setDeposit(int deposit) {
+        public UserInfo setDeposit(float deposit) {
             this.deposit = deposit;
             return this;
         }
 
-        public int getBalance() {
+        public float getBalance() {
             return balance;
         }
 
-        public UserInfo setBalance(int balance) {
+        public UserInfo setBalance(float balance) {
             this.balance = balance;
             return this;
+        }
+
+        public UserInfo copy() {
+            return new UserInfoResponse.UserInfo()
+                    .setId(getId())
+                    .setUserId(getUserId())
+                    .setUserName(getUserName())
+                    .setUserPassword(getUserPassword())
+                    .setUserPhone(getUserPhone())
+                    .setDeposit(getDeposit())
+                    .setBalance(getBalance());
         }
     }
 }

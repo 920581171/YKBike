@@ -15,6 +15,7 @@ import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MD5Utils;
+import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 
 import java.util.Objects;
@@ -82,11 +83,11 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
                 break;
             case R.id.tv_user_login:
                 if (getActivity() != null)
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login, new LoginFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new LoginFragment()).commit();
                 break;
             case R.id.tv_phone_login:
                 if (getActivity() != null)
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_login, new PhoneLoginFragment()).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new PhoneLoginFragment()).commit();
                 break;
         }
     }
@@ -109,13 +110,13 @@ public class RegisterFragment extends BaseFragment implements View.OnClickListen
         tilInputName.setErrorEnabled(false);
         tilInputPassword.setErrorEnabled(false);
         tilConfirmPassword.setErrorEnabled(false);
-        if (isEmptyString(name)) {
+        if (NullObjectUtils.isEmptyString(name)) {
             tilInputName.setError("用户名不能为空");
-        } else if (isEmptyString(password)) {
+        } else if (NullObjectUtils.isEmptyString(password)) {
             tilInputPassword.setError("密码不能为空");
         } else if (password.length() < 8) {
             tilInputPassword.setError("密码不能少于8位");
-        } else if (isEmptyString(confirm)) {
+        } else if (NullObjectUtils.isEmptyString(confirm)) {
             tilConfirmPassword.setError("确认密码不能为空");
         } else if (!password.equals(confirm)) {
             tilConfirmPassword.setError("两次密码不相同");

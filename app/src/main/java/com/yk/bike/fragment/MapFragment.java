@@ -51,8 +51,6 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
     private ImageView sitePlan;
     private AMap mAMap;
 
-    private boolean isShowSite = false;
-
     @Override
     public int initLayout() {
         return R.layout.fragment_map;
@@ -197,8 +195,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
             }
         });
 
-        sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorPrimary));
-        isShowSite = false;
+        sitePlan.setSelected(false);
     }
 
     public void initSite() {
@@ -453,14 +450,12 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 animateCamera(getLatLng());
                 break;
             case R.id.site_plan:
-                if (isShowSite) {
+                if (sitePlan.isSelected()) {
                     initBikeLocation();
-                    sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorPrimary));
-                    isShowSite = false;
+                    sitePlan.setSelected(false);
                 } else {
                     initSite();
-                    sitePlan.getDrawable().mutate().setTint(ContextCompat.getColor(getActivityContext(), R.color.colorAccent));
-                    isShowSite = true;
+                    sitePlan.setSelected(true);
                 }
                 break;
             case R.id.iv_enlarge:

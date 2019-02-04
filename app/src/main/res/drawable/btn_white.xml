@@ -19,6 +19,12 @@
             <solid android:color="@color/bg_btn_enabled"/>
         </shape>
     </item>
+    <item android:state_selected="true">
+        <shape>
+            <corners android:radius="10dp"/>
+            <solid android:color="@color/bg_btn_white_pressed"/>
+        </shape>
+    </item>
     <item>
         <shape>
             <corners android:radius="10dp"/>
