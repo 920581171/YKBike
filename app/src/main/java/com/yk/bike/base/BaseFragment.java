@@ -47,8 +47,8 @@ public abstract class BaseFragment<T extends BaseActivity> extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        boolean isShowAddSite =  BaseFragment.this instanceof MapFragment && SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN);
-        menu.setGroupVisible(R.id.group_add,isShowAddSite);
+        boolean isShowAddSite = BaseFragment.this instanceof MapFragment && SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN);
+        menu.setGroupVisible(R.id.group_add, isShowAddSite);
         menu.setGroupVisible(R.id.group_forward, BaseFragment.this instanceof SiteLocationFragment);
     }
 
@@ -107,11 +107,11 @@ public abstract class BaseFragment<T extends BaseActivity> extends Fragment {
         getActivityContext().showAlertDialogList(title, message, buttonText, onAlertDialogListener);
     }
 
-    public void replaceFragment(int layoutId, Fragment fragment) {
-        getActivityContext().replaceFragment(layoutId, fragment);
+    public void replaceFragment(int layoutId, BaseFragment baseFragment) {
+        getActivityContext().replaceFragment(layoutId, baseFragment);
     }
 
-    public void switchFragment(Fragment newFragment, Fragment currentFragment) {
+    public void switchFragment(BaseFragment newFragment, BaseFragment currentFragment) {
         getActivityContext().switchFragment(newFragment, currentFragment);
     }
 

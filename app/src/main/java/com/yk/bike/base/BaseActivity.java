@@ -35,11 +35,11 @@ public class BaseActivity extends AppCompatActivity {
         mToast.show();
     }
 
-    public void replaceFragment(int layoutId, Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(layoutId, fragment).commit();
+    public void replaceFragment(int layoutId, BaseFragment baseFragment) {
+        getSupportFragmentManager().beginTransaction().replace(layoutId, baseFragment).commit();
     }
 
-    public void switchFragment(Fragment newFragment, Fragment currentFragment) {
+    public void switchFragment(BaseFragment newFragment, BaseFragment currentFragment) {
         if (newFragment != null && currentFragment != null && newFragment != currentFragment) {
             getSupportFragmentManager().beginTransaction().show(newFragment).hide(currentFragment).commit();
         }

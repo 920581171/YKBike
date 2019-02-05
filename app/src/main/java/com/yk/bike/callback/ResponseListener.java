@@ -1,6 +1,10 @@
 package com.yk.bike.callback;
 
-public class ResponseListener<T> implements OnResponseListener<T>{
+import com.yk.bike.base.BaseFragment;
+import com.yk.bike.response.BaseResponse;
+import com.yk.bike.response.CommonResponse;
+
+public class ResponseListener<T extends BaseResponse> implements OnResponseListener<T>{
     @Override
     public void onStart() {
 

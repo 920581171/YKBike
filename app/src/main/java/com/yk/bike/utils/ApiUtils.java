@@ -57,10 +57,10 @@ public class ApiUtils {
      * 上传头像
      *
      * @param file
-     * @param userId
+     * @param id
      * @param onResponseListener
      */
-    public void uploadAvatar(File file, String userId, OnResponseListener<CommonResponse> onResponseListener) {
+    public void uploadAvatar(File file, String id, OnResponseListener<CommonResponse> onResponseListener) {
         if (!file.exists()) {
             return;
         }
@@ -69,10 +69,10 @@ public class ApiUtils {
 
         MultipartBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), body)
-                .addFormDataPart("userId", userId)
+                .addFormDataPart("id", id)
                 .build();
 
-        post(requestBody, UrlConsts.POST_USER_INFO_UPLOAD_AVATAR, new CommonCallback<>(onResponseListener, CommonResponse.class));
+        post(requestBody, UrlConsts.POST_FILE_UPLOAD_AVATAR, new CommonCallback<>(onResponseListener, CommonResponse.class));
     }
 
     /**
@@ -201,6 +201,24 @@ public class ApiUtils {
     }
 
     /**
+     * 更新管理员信息
+     *
+     * @param adminInfo
+     * @param onResponseListener
+     */
+    public void updateAdminInfo(AdminInfoResponse.AdminInfo adminInfo, OnResponseListener<AdminInfoResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("adminId", NullObjectUtils.emptyString(adminInfo.getAdminId()))
+                .add("adminAccount", NullObjectUtils.emptyString(adminInfo.getAdminAccount()))
+                .add("adminName", NullObjectUtils.emptyString(adminInfo.getAdminName()))
+                .add("adminPhone", NullObjectUtils.emptyString(adminInfo.getAdminPhone()))
+                .add("adminPassword", NullObjectUtils.emptyString(adminInfo.getAdminPassword()))
+                .build();
+
+        post(formBody, UrlConsts.POST_ADMIN_INFO_UPDATE_INFO, new CommonCallback<>(onResponseListener, AdminInfoResponse.class));
+    }
+
+    /**
      * 查找所有管理员
      *
      * @param onResponseListener
@@ -210,12 +228,25 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_ADMIN_INFO_FIND_ALL_ADMIN_INFO, new CommonCallback<>(onResponseListener, AdminInfoListResponse.class));
     }
 
+    /**
+     * 根据ID查找管理员
+     * @param adminId
+     * @param onResponseListener
+     */
     public void findAdminByAdminId(String adminId, OnResponseListener<AdminInfoResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("adminId", adminId)
                 .build();
 
         post(formBody, UrlConsts.POST_ADMIN_INFO_FIND_ADMIN_BY_ID, new CommonCallback<>(onResponseListener, AdminInfoResponse.class));
+    }
+
+    public void findAdminByAdminPhone(String adminPhone, OnResponseListener<AdminInfoResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("adminPhone", adminPhone)
+                .build();
+
+        post(formBody, UrlConsts.POST_ADMIN_INFO_FIND_ADMIN_BY_PHONE, new CommonCallback<>(onResponseListener, AdminInfoResponse.class));
     }
 
     /*---------------------------------------------BikeInfo---------------------------------------------*/

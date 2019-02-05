@@ -11,10 +11,14 @@ public class UrlConsts {
 //    public static final String IPORT = HEAD + "192.168.1.232" + ":" + PORT;
 
     /**
+     * file
+     */
+    public static final String GET_FILE_DOWNLOAD_AVATAR = "/file/downloadAvatar";//下载头像
+    public static final String POST_FILE_UPLOAD_AVATAR = "/file/uploadAvatar";//上传头像
+
+    /**
      * userInfo
      */
-    public static final String GET_USER_INFO_DOWNLOAD_AVATAR = "/userinfo/downloadAvatar";//下载头像
-    public static final String POST_USER_INFO_UPLOAD_AVATAR = "/userinfo/uploadAvatar";//上传头像
     public static final String POST_USER_INFO_FIND_ALL_USER_INFO = "/userinfo/userinfo/findAllUserInfo";//查找所有用户信息
     public static final String POST_USER_INFO_FIND_USER_BY_ID = "/userinfo/findUserByUserId";//根据UserId查找用户
     public static final String POST_USER_INFO_FIND_USER_BY_NAME = "/userinfo/findUserByUserName ";//根据UserName查找用户

@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.constraint.Guideline;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,16 +22,22 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.yk.bike.R;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.fragment.AboutFragment;
-import com.yk.bike.fragment.AdminInfoFragment;
+import com.yk.bike.fragment.AdminInfoListFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.BikeRecordFragment;
 import com.yk.bike.fragment.MapFragment;
@@ -43,6 +50,10 @@ import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
+
+import org.w3c.dom.Text;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -128,7 +139,7 @@ public class MainActivity extends BaseActivity
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
-        fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoFragment();
+        fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoListFragment();
         fragments[FRAGMENT_BIKE_RECORD] = new BikeRecordFragment();
         fragments[FRAGMENT_SITE_LOCATION] = new SiteLocationFragment();
 
@@ -173,13 +184,33 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
+        int avatarId;
+
         if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE))) {
             menu.setGroupVisible(R.id.group_user, false);
             menu.setGroupVisible(R.id.group_admin, true);
+            avatarId = R.drawable.admin;
         } else {
             menu.setGroupVisible(R.id.group_user, true);
             menu.setGroupVisible(R.id.group_admin, false);
+            avatarId = R.drawable.avatar;
         }
+
+        View view = navigationView.getHeaderView(0);
+        CircleImageView cvAvatar = view.findViewById(R.id.cv_avatar);
+        TextView tvId = view.findViewById(R.id.tv_id);
+
+        Glide.with(this)
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .error(avatarId)
+                        //禁用内存缓存
+                        .skipMemoryCache(true)
+                        //硬盘缓存功能
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
+                .load(UrlConsts.IPORT + UrlConsts.GET_FILE_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID))
+                .into(cvAvatar);
+
+        tvId.setText(SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID));
 
         refreshFragment();
     }

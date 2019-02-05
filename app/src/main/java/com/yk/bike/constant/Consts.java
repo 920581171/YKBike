@@ -9,6 +9,8 @@ public class Consts {
 
     public static final int REQUEST_CODE_SCAN = 0;//二维码
     public static final int REQUEST_CODE_ACCOUNT = 1;//用户信息管理
+    public static final int REQUEST_CODE_FROM_CAMERA = 100;
+    public static final int REQUEST_CODE_FROM_ALBUM = 101;
 
     public static final int RESULT_CODE_LOGOUT = 10;//注销
 

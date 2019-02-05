@@ -72,9 +72,10 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                     userInfo = userInfoResponse.getData();
                     tvBalance.setText(String.valueOf(userInfo.getBalance()));
                     tvBalance.setTextColor(userInfo.getBalance() <= 10 ? Color.RED : Color.BLACK);
-                    tvDeposit.setText(String.valueOf(userInfo.getDeposit()));
+                    tvDeposit.setText(userInfo.getDeposit() < 0 ? "押金退还中" : String.valueOf(userInfo.getDeposit()));
                     tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? Color.RED : Color.BLACK);
-                    tvDepositCharge.setText(userInfo.getDeposit() <= 0 ? "支付押金" : "申请退还押金");
+                    tvDepositCharge.setText(userInfo.getDeposit() < 0 ? "已申请退还押金" :
+                            userInfo.getDeposit() == 0 ? "支付押金" : "申请退还押金");
                 } else {
                     showShort(userInfoResponse.getMsg());
                 }
@@ -106,6 +107,26 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                                 }
                             });
                         }
+                    });
+                else if (tvDepositCharge.getText().toString().equals("申请退还押金"))
+                    showAlertDialog("押金", "确认申请退还押金？", new String[]{"申请", "取消"}, new AlertDialogListener() {
+                        @Override
+                        public void positiveClick(DialogInterface dialog, int which) {
+                            ApiUtils.getInstance().updateUserInfo(userInfo.copy().setDeposit(-199), new ResponseListener<UserInfoResponse>() {
+                                @Override
+                                public void onSuccess(UserInfoResponse userInfoResponse) {
+                                    if (isResponseSuccess(userInfoResponse)) {
+                                        showShort("申请成功");
+                                        initData();
+                                    } else {
+                                        showShort(userInfoResponse.getMsg());
+                                    }
+                                }
+                            });
+                        }
+                    });
+                else
+                    showAlertDialog("退还押金", "已提交申请，请耐心等待", new String[]{"确定", "取消"}, new AlertDialogListener() {
                     });
                 break;
             case R.id.charge10:

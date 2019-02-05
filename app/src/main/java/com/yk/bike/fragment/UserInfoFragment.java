@@ -11,12 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.yk.bike.R;
 import com.yk.bike.activity.AccountActivity;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MobResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -37,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfoFragment extends BaseFragment<AccountActivity> implements View.OnClickListener {
 
-    private CircleImageView cvAvtvar;
+    private CircleImageView cvAvatar;
     private TextView tvId;
     private TextView tvName;
     private TextView tvPhone;
@@ -53,18 +57,21 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
 
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
-        cvAvtvar = rootView.findViewById(R.id.cv_avtvar);
+        cvAvatar = rootView.findViewById(R.id.cv_avatar);
         tvId = rootView.findViewById(R.id.tv_id);
         tvName = rootView.findViewById(R.id.tv_name);
         tvPhone = rootView.findViewById(R.id.tv_phone);
         tvDeposit = rootView.findViewById(R.id.tv_deposit);
         tvBalance = rootView.findViewById(R.id.tv_balance);
+
+        ConstraintLayout ctlAvatar = rootView.findViewById(R.id.ctl_avatar);
         ConstraintLayout ctlName = rootView.findViewById(R.id.ctl_name);
         ConstraintLayout ctlPhone = rootView.findViewById(R.id.ctl_phone);
         ConstraintLayout ctlBalance = rootView.findViewById(R.id.ctl_balance);
         ConstraintLayout ctlPassword = rootView.findViewById(R.id.ctl_password);
         ConstraintLayout ctlLogout = rootView.findViewById(R.id.ctl_logout);
 
+        ctlAvatar.setOnClickListener(this);
         ctlName.setOnClickListener(this);
         ctlPhone.setOnClickListener(this);
         ctlBalance.setOnClickListener(this);
@@ -96,8 +103,18 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                     }
                     tvBalance.setText(String.valueOf(userInfo.getBalance()));
                     tvBalance.setTextColor(userInfo.getBalance() <= 10 ? Color.RED : Color.BLACK);
-                    tvDeposit.setText(String.valueOf(userInfo.getDeposit()));
+                    tvDeposit.setText(userInfo.getDeposit() < 0 ? "押金退还中" : String.valueOf(userInfo.getDeposit()));
                     tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? Color.RED : Color.BLACK);
+
+                    Glide.with(getActivityContext())
+                            .applyDefaultRequestOptions(new RequestOptions()
+                                    .error(R.drawable.avatar)
+                                    //禁用内存缓存
+                                    .skipMemoryCache(true)
+                                    //硬盘缓存功能
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE))
+                            .load(UrlConsts.IPORT + UrlConsts.GET_FILE_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
+                            .into(cvAvatar);
                 } else {
                     showShort(userInfoResponse.getMsg());
                 }
@@ -108,6 +125,9 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ctl_avatar:
+                getActivityContext().showSelectAvatar();
+                break;
             case R.id.ctl_name:
                 if (NullObjectUtils.isEmptyString(userInfo.getUserName()))
                     improveInfo();
@@ -169,6 +189,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                                 if (isResponseSuccess(userInfoResponse)) {
                                     showShort("验证成功");
                                     alertDialog.dismiss();
+                                    initData();
                                 } else {
                                     showShort(userInfoResponse.getMsg());
                                 }
@@ -275,7 +296,6 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
             } else if (!password.equals(confirm)) {
                 tilConfirmPassword.setError("两次密码不相同");
             } else {
-
                 ApiUtils.getInstance().findUserByUserName(name, new ResponseListener<CommonResponse>() {
                     @Override
                     public void onSuccess(CommonResponse commonResponse) {
@@ -288,6 +308,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                                     if (isResponseSuccess(userInfoResponse)) {
                                         showShort("提交成功");
                                         alertDialog.dismiss();
+                                        initData();
                                     } else {
                                         showShort(userInfoResponse.getMsg());
                                     }
