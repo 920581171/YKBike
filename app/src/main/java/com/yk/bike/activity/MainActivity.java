@@ -305,8 +305,9 @@ public class MainActivity extends BaseActivity
             switchFragment(FRAGMENT_SITE_LOCATION).initData();
         } else if (id == R.id.nav_deposit) {
             switchFragment(FRAGMENT_DEPOSIT).initData();
-        } else if (id == R.id.nav_count) {
-        } else if (id == R.id.nav_account) {
+        }
+        //        else if (id == R.id.nav_count) { }
+        else if (id == R.id.nav_account) {
             startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), Consts.REQUEST_CODE_ACCOUNT);
         } else if (id == R.id.nav_info) {
             switchFragment(FRAGMENT_ABOUT).initData();
