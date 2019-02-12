@@ -43,6 +43,17 @@
         app:srcCompat="@drawable/ic_site_plan"/>
 
     <ImageView
+        android:id="@+id/iv_narrow"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        android:background="@drawable/btn_down_white"
+        app:layout_constraintEnd_toEndOf="@+id/iv_enlarge"
+        app:layout_constraintStart_toStartOf="@+id/iv_enlarge"
+        app:layout_constraintTop_toBottomOf="@+id/iv_enlarge"
+        app:srcCompat="@drawable/ic_remove"/>
+
+    <ImageView
         android:id="@+id/iv_enlarge"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -54,16 +65,36 @@
         app:layout_constraintTop_toBottomOf="@+id/show_location"
         app:srcCompat="@drawable/ic_add"/>
 
-    <ImageView
-        android:id="@+id/iv_narrow"
-        android:layout_width="48dp"
+    <TextView
+        android:id="@+id/tv_show_bike_time"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:padding="8dp"
-        android:background="@drawable/btn_down_white"
-        app:layout_constraintEnd_toEndOf="@+id/iv_enlarge"
-        app:layout_constraintStart_toStartOf="@+id/iv_enlarge"
-        app:layout_constraintTop_toBottomOf="@+id/iv_enlarge"
-        app:srcCompat="@drawable/ic_remove"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_white"
+        android:gravity="center"
+        android:text="00:00"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_stop_bike"
+        android:layout_width="128dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/string_stop_bike"
+        android:background="@drawable/btn_white"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <com.yk.bike.widght.SitePlanView
         android:id="@+id/sitePlanView"

@@ -30,10 +30,11 @@ public class BikeRecordResponse extends BaseResponse {
         private String orderId;
         private String userId;
         private String bikeId;
-        private int charge;
-        private int mileage;
+        private float charge;
+        private float mileage;
         private Date createTime;
         private Date endTime;
+        private String orderStatus;
 
         public int getId() {
             return id;
@@ -71,20 +72,20 @@ public class BikeRecordResponse extends BaseResponse {
             return this;
         }
 
-        public int getCharge() {
+        public float getCharge() {
             return charge;
         }
 
-        public BikeRecord setCharge(int charge) {
+        public BikeRecord setCharge(float charge) {
             this.charge = charge;
             return this;
         }
 
-        public int getMileage() {
+        public float getMileage() {
             return mileage;
         }
 
-        public BikeRecord setMileage(int mileage) {
+        public BikeRecord setMileage(float mileage) {
             this.mileage = mileage;
             return this;
         }
@@ -105,6 +106,28 @@ public class BikeRecordResponse extends BaseResponse {
         public BikeRecord setEndTime(Date endTime) {
             this.endTime = endTime;
             return this;
+        }
+
+        public String getOrderStatus() {
+            return orderStatus;
+        }
+
+        public BikeRecord setOrderStatus(String orderStatus) {
+            this.orderStatus = orderStatus;
+            return this;
+        }
+
+        public BikeRecord copy() {
+            return new BikeRecord()
+                    .setUserId(userId)
+                    .setBikeId(bikeId)
+                    .setCharge(charge)
+                    .setCreateTime(createTime)
+                    .setEndTime(endTime)
+                    .setId(id)
+                    .setMileage(mileage)
+                    .setOrderStatus(orderStatus)
+                    .setOrderId(orderId);
         }
     }
 }

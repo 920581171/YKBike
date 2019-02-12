@@ -57,9 +57,9 @@ public class BaseActivity extends AppCompatActivity {
         if (onAlertDialogListener != null) {
             switch (buttonText.length) {
                 case 3:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], onAlertDialogListener::negativeClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], onAlertDialogListener::neutralClick);
                 case 2:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], onAlertDialogListener::neutralClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], onAlertDialogListener::negativeClick);
                 case 1:
                     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], onAlertDialogListener::positiveClick);
                 case 0:

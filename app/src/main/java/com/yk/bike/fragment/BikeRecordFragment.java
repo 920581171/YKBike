@@ -11,8 +11,11 @@ import com.yk.bike.adapter.BikeRecordAdapter;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.BikeRecordListResponse;
+import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MainHandler;
+
+import java.util.List;
 
 public class BikeRecordFragment extends BaseFragment {
 
@@ -31,7 +34,7 @@ public class BikeRecordFragment extends BaseFragment {
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            MainHandler.getInstance().postDelayed(this::initData,500);
+            MainHandler.getInstance().postDelayed(this::initData, 500);
         });
     }
 

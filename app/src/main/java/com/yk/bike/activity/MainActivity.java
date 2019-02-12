@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.constraint.Guideline;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -43,15 +42,17 @@ import com.yk.bike.fragment.BikeRecordFragment;
 import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
+import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
-import org.w3c.dom.Text;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -123,6 +124,20 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                MainActivity.this.binder = (LocationService.LocationBinder) service;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
+        bindService(new Intent(MainActivity.this, LocationService.class), connection, BIND_AUTO_CREATE);
+
         initFragment();
 
         startActivity(new Intent(this, LoginActivity.class));
@@ -167,26 +182,12 @@ public class MainActivity extends BaseActivity
     }
 
     public void init() {
-        connection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                MainActivity.this.binder = (LocationService.LocationBinder) service;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-
-        bindService(new Intent(MainActivity.this, LocationService.class), connection, BIND_AUTO_CREATE);
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
         int avatarId;
 
-        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE))) {
+        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE))) {
             menu.setGroupVisible(R.id.group_user, false);
             menu.setGroupVisible(R.id.group_admin, true);
             avatarId = R.drawable.admin;
@@ -207,12 +208,25 @@ public class MainActivity extends BaseActivity
                         .skipMemoryCache(true)
                         //硬盘缓存功能
                         .diskCacheStrategy(DiskCacheStrategy.NONE))
-                .load(UrlConsts.IPORT + UrlConsts.GET_FILE_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID))
+                .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
                 .into(cvAvatar);
 
-        tvId.setText(SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID));
+        tvId.setText(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
 
         refreshFragment();
+
+        initRecord();
+    }
+
+    public void initRecord() {
+        ApiUtils.getInstance().findBikeRecordIsCycling(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<BikeRecordResponse>() {
+            @Override
+            public void onSuccess(BikeRecordResponse bikeRecordResponse) {
+                if (isResponseSuccess(bikeRecordResponse)) {
+                    ((MapFragment) fragments[FRAGMENT_MAP]).startBike(bikeRecordResponse.getData());
+                }
+            }
+        });
     }
 
     @Override
@@ -353,7 +367,7 @@ public class MainActivity extends BaseActivity
         String message;
         String[] buttonText;
         AMapLocation aMapLocation = binder.getAMapLocation();
-        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.get(Consts.SP_LOGIN_TYPE, ""))) {
+        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.get(Consts.SP_STRING_LOGIN_TYPE, ""))) {
             if (isResponseSuccess(bikeInfoResponse)) {
                 if ("0".equals(bikeInfoResponse.getData().getFix())) {
                     title = "自行车已添加";
@@ -439,6 +453,26 @@ public class MainActivity extends BaseActivity
                         });
                         break;
                     case Consts.CODE_RESULT_TYPE_USER_BIKE:
+                        BikeRecordResponse.BikeRecord bikeRecord = new BikeRecordResponse.BikeRecord()
+                                .setBikeId(bikeInfoResponse.getData().getBikeId())
+                                .setUserId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
+
+                        ApiUtils.getInstance().addBikeRecord(bikeRecord, new ResponseListener<BikeRecordResponse>() {
+                            @Override
+                            public void onSuccess(BikeRecordResponse bikeRecordResponse) {
+                                if (isResponseSuccess(bikeRecordResponse)) {
+                                    ((MapFragment) fragments[FRAGMENT_MAP]).startBike(bikeRecordResponse.getData());
+                                    showShort("开始骑行");
+                                } else {
+                                    showShort(bikeRecordResponse.getMsg());
+                                }
+                            }
+
+                            @Override
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
+                            }
+                        });
                         break;
                     case Consts.CODE_RESULT_TYPE_USER_FIX:
                     case Consts.CODE_RESULT_TYPE_USER_NO_BIKE:
@@ -474,18 +508,28 @@ public class MainActivity extends BaseActivity
         });
     }
 
+    public FloatingActionButton getFab() {
+        return fab;
+    }
+
+    public MainActivity setFab(FloatingActionButton fab) {
+        this.fab = fab;
+        return this;
+    }
+
     public void logout() {
-        SharedPreferencesUtils.put(Consts.SP_LOGIN_ID, "");
-        SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, "");
-        SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE, "");
-        SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, "");
-        SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PHONE, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PASSWORD, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE, "");
+        SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, "");
         switchFragment(FRAGMENT_ABOUT);
         startActivity(new Intent(this, LoginActivity.class));
     }
 
     public BaseFragment switchFragment(int newFragment) {
-        if (newFragment == FRAGMENT_MAP)
+        if (newFragment == FRAGMENT_MAP && NullObjectUtils.isEmptyString(SharedPreferencesUtils.getString(Consts.SP_STRING_ORDER_ID)))
             fab.show();
         else
             fab.hide();
@@ -503,6 +547,14 @@ public class MainActivity extends BaseActivity
 
     public AMapLocation getAMapLocation() {
         return binder.getAMapLocation();
+    }
+
+    public void addOnServiceTimeListener(LocationService.OnServiceTimeListener onServiceTimeListener) {
+        binder.addOnServiceTimeListener(onServiceTimeListener);
+    }
+
+    public void removeOnServiceTimeListener(LocationService.OnServiceTimeListener onServiceTimeListener) {
+        binder.removeOnServiceTimeListener(onServiceTimeListener);
     }
 }
 

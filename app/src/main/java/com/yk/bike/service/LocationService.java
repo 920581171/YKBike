@@ -16,6 +16,12 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.LocationSource;
+import com.yk.bike.callback.ResponseListener;
+import com.yk.bike.response.CommonResponse;
+import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.NullObjectUtils;
+
+import java.util.LinkedList;
 
 public class LocationService extends Service {
 
@@ -32,6 +38,13 @@ public class LocationService extends Service {
 
     private AMapLocation aMapLocation;
 
+    private long serviceTime = 0;
+    private long t = 0;
+
+    private int count = 100;
+
+    private LinkedList<OnServiceTimeListener> onServiceTimeListeners = new LinkedList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,10 +54,24 @@ public class LocationService extends Service {
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
         //设置定位回调监听
+        //在监听的同时计算服务器时间
         mLocationListener = aMapLocation -> {
             this.aMapLocation = aMapLocation;
+            serviceTime += System.currentTimeMillis() - this.t;
+            this.t = System.currentTimeMillis();
+            count--;
+            //每隔一段时间同步一次服务器时间
+            if (count <= 0) {
+                count = 100;
+                initServiceTime(false);
+            }
+            for (OnServiceTimeListener listener : onServiceTimeListeners)
+                listener.onServiceTime(serviceTime);
+
+            Log.d(TAG, "mLocationListener: " + serviceTime);
         };
-        mLocationClient.setLocationListener(mLocationListener);
+
+        initServiceTime(true);
 
         //初始化AMapLocationClientOption对象
         mLocationOption = new AMapLocationClientOption();
@@ -53,7 +80,9 @@ public class LocationService extends Service {
         /**
          * 设置定位场景，目前支持三种场景（签到、出行、运动，默认无场景）
          */
-        option.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.Sport);
+        option.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.Sport)
+                .setInterval(1000);
+
         if (null != mLocationClient) {
             mLocationClient.setLocationOption(option);
             //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
@@ -65,11 +94,32 @@ public class LocationService extends Service {
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
     }
 
+    /**
+     * 获取服务器时间
+     *
+     * @param isFrist 是否为初始化
+     */
+    public void initServiceTime(boolean isFrist) {
+        ApiUtils.getInstance().getServiceTime(new ResponseListener<CommonResponse>() {
+            @Override
+            public void onSuccess(CommonResponse commonResponse) {
+                if (NullObjectUtils.isResponseSuccess(commonResponse)) {
+                    serviceTime = Long.parseLong((String) commonResponse.getData());
+                    t = System.currentTimeMillis();
+                    count = 60;
+                    if (isFrist)
+                        mLocationClient.setLocationListener(mLocationListener);
+                    Log.d(TAG, "onSuccess: initServiceTime");
+                }
+            }
+        });
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        if (locationBinder==null)
-            locationBinder=new LocationBinder();
+        if (locationBinder == null)
+            locationBinder = new LocationBinder();
         return locationBinder;
     }
 
@@ -81,8 +131,20 @@ public class LocationService extends Service {
     }
 
     public class LocationBinder extends Binder {
-        public AMapLocation getAMapLocation(){
+        public AMapLocation getAMapLocation() {
             return LocationService.this.aMapLocation;
         }
+
+        public void addOnServiceTimeListener(OnServiceTimeListener onServiceTimeListener) {
+            LocationService.this.onServiceTimeListeners.add(onServiceTimeListener);
+        }
+
+        public void removeOnServiceTimeListener(OnServiceTimeListener onServiceTimeListener) {
+            LocationService.this.onServiceTimeListeners.remove(onServiceTimeListener);
+        }
+    }
+
+    public interface OnServiceTimeListener {
+        void onServiceTime(long serviceTime);
     }
 }

@@ -18,12 +18,13 @@ public class Consts {
     public static final String BR_ACTION_LOGIN = "com.yk.bike.action.login";
     public static final String BR_ACTION_LOGOUT  = "com.yk,bike.action.logout";
 
-    public static final String SP_LOGIN_NAME = "loginName";
-    public static final String SP_LOGIN_PHONE = "loginPhone";
-    public static final String SP_LOGIN_PASSWORD = "loginPassword";
-    public static final String SP_LOGIN_TYPE = "loginType";
-    public static final String SP_LOGIN_ID = "loginId";
-    public static final String SP_LOGIN_GET_CODE_TIME = "getCodeTime";//获取验证码时间
+    public static final String SP_STRING_LOGIN_NAME = "loginName";
+    public static final String SP_STRING_LOGIN_PHONE = "loginPhone";
+    public static final String SP_STRING_LOGIN_PASSWORD = "loginPassword";
+    public static final String SP_STRING_LOGIN_TYPE = "loginType";
+    public static final String SP_STRING_LOGIN_ID = "loginId";
+    public static final String SP_STRING_LOGIN_GET_CODE_TIME = "getCodeTime";//获取验证码时间
+    public static final String SP_STRING_ORDER_ID = "orderId";
 
     public static final String LOGIN_TYPE_PHONE = "typePhone";
     public static final String LOGIN_TYPE_USER = "typeUser";

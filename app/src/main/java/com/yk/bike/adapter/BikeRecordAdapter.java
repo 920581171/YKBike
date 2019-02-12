@@ -57,7 +57,7 @@ public class BikeRecordAdapter extends RecyclerView.Adapter<BikeRecordAdapter.Vi
 
         Context context = viewHolder.itemView.getContext();
 
-        String charge = String.valueOf(list.get(i).getCharge())+ context.getResources().getString(R.string.string_charge);
+        String charge = String.valueOf(list.get(i).getCharge()) + context.getResources().getString(R.string.string_charge);
 
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
         String mileageText = decimalFormat.format(list.get(i).getMileage() / 1000f) + context.getResources().getString(R.string.string_mileage_unit);
@@ -67,6 +67,10 @@ public class BikeRecordAdapter extends RecyclerView.Adapter<BikeRecordAdapter.Vi
 
         long duration = list.get(i).getEndTime().getTime() - list.get(i).getCreateTime().getTime();
         String durationText = duration / 1000 / 60 + context.getResources().getString(R.string.string_duration);
+
+        if (list.get(i).getOrderStatus().equals("0")) {
+            charge = mileageText = durationText = "骑行中";
+        }
 
         viewHolder.tvOrderId.setText(list.get(i).getOrderId());
         viewHolder.tvBikeId.setText(list.get(i).getBikeId());

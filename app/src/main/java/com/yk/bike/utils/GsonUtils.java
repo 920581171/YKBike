@@ -14,7 +14,7 @@ public class GsonUtils {
         if (gson == null) {
             synchronized (GsonUtils.class) {
                 if (gson == null) {
-                    gson = new Gson();
+                    gson = new Gson().newBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                 }
             }
         }

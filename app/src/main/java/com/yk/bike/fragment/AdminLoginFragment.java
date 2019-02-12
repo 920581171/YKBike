@@ -81,11 +81,11 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                             if (isResponseSuccess(adminInfoResponse)) {
                                 AdminInfoResponse.AdminInfo adminInfo = adminInfoResponse.getData();
                                 showShort("登陆成功");
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,adminInfo.getAdminId());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, adminInfo.getAdminName());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE,adminInfo.getAdminPhone());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, adminInfo.getAdminPassword());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_ADMIN);
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID,adminInfo.getAdminId());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME, adminInfo.getAdminName());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PHONE,adminInfo.getAdminPhone());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PASSWORD, adminInfo.getAdminPassword());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE,Consts.LOGIN_TYPE_ADMIN);
                                 sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivityContext().finish();
                             } else {

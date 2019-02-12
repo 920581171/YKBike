@@ -65,6 +65,10 @@ public class SharedPreferencesUtils {
         return getSharedPreferences().getString(key, "");
     }
 
+    public static boolean getBoolean(String key){
+        return getSharedPreferences().getBoolean(key, false);
+    }
+
     /**
      * 移除某个key值已经对应的值
      */

@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -43,7 +42,7 @@ public class AccountActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         replaceFragment(R.id.ll_fragment,
-                SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN) ?
+                SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN) ?
                         new AdminInfoFragment() :
                         new UserInfoFragment());
     }
@@ -134,7 +133,7 @@ public class AccountActivity extends BaseActivity {
                     break;
                 }
                 Uri cropUri = UCrop.getOutput(data);
-                ApiUtils.getInstance().uploadAvatar(new File(Objects.requireNonNull(cropUri).getPath()), SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID), new ResponseListener<CommonResponse>() {
+                ApiUtils.getInstance().uploadAvatar(new File(Objects.requireNonNull(cropUri).getPath()), SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<CommonResponse>() {
                     @Override
                     public void onSuccess(CommonResponse commonResponse) {
                         if (isResponseSuccess(commonResponse)) {

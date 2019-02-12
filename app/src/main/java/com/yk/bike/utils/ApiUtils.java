@@ -2,12 +2,14 @@ package com.yk.bike.utils;
 
 import com.yk.bike.callback.CommonCallback;
 import com.yk.bike.callback.OnResponseListener;
+import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordListResponse;
+import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -51,7 +53,19 @@ public class ApiUtils {
         okHttpClient.newCall(request).enqueue(callback);
     }
 
-    /*---------------------------------------userInfo-----------------------------------------*/
+
+    /*--------------------------------------------common---------------------------------------------*/
+
+    /**
+     * 获取服务器时间
+     *
+     * @param onResponseListener
+     */
+    public void getServiceTime(OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder().build();
+
+        post(formBody, UrlConsts.POST_COMMON_GET_SERVICE_TIME, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
 
     /**
      * 上传头像
@@ -72,8 +86,10 @@ public class ApiUtils {
                 .addFormDataPart("id", id)
                 .build();
 
-        post(requestBody, UrlConsts.POST_FILE_UPLOAD_AVATAR, new CommonCallback<>(onResponseListener, CommonResponse.class));
+        post(requestBody, UrlConsts.POST_COMMON_UPLOAD_AVATAR, new CommonCallback<>(onResponseListener, CommonResponse.class));
     }
+
+    /*---------------------------------------userInfo-----------------------------------------*/
 
     /**
      * 根据用户名注册用户
@@ -230,6 +246,7 @@ public class ApiUtils {
 
     /**
      * 根据ID查找管理员
+     *
      * @param adminId
      * @param onResponseListener
      */
@@ -354,6 +371,59 @@ public class ApiUtils {
     }
 
     /*-------------------------------------------BikeRecord----------------------------------------------------*/
+
+    /**
+     * 根据订单id查找记录
+     *
+     * @param orderId
+     * @param onResponseListener
+     */
+    public void findBikeRecordByOrderId(String orderId, OnResponseListener<BikeRecordResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("orderId", orderId)
+                .build();
+        post(formBody, UrlConsts.POST_BIKE_RECORD_FIND_BY_ORDER_ID, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
+    }
+
+    public void findBikeRecordIsCycling(String userId, OnResponseListener<BikeRecordResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+        post(formBody, UrlConsts.POST_BIKE_RECORD_IS_CYCLING, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
+    }
+
+    /**
+     * 添加记录
+     *
+     * @param bikeRecord
+     * @param onResponseListener
+     */
+    public void addBikeRecord(BikeRecordResponse.BikeRecord bikeRecord, OnResponseListener<BikeRecordResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", NullObjectUtils.emptyString(bikeRecord.getUserId()))
+                .add("bikeId", NullObjectUtils.emptyString(bikeRecord.getBikeId()))
+                .build();
+        post(formBody, UrlConsts.POST_BIKE_RECORD_ADD_BIKE_RECORD, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
+    }
+
+    public void updateBikeRecord(BikeRecordResponse.BikeRecord bikeRecord, OnResponseListener<BikeRecordResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("orderId", NullObjectUtils.emptyString(bikeRecord.getOrderId()))
+                .add("userId", NullObjectUtils.emptyString(bikeRecord.getUserId()))
+                .add("bikeId", NullObjectUtils.emptyString(bikeRecord.getBikeId()))
+                .add("charge", String.valueOf(bikeRecord.getCharge()))
+                .add("mileage", String.valueOf(bikeRecord.getMileage()))
+                .add("orderStatus", String.valueOf(bikeRecord.getOrderStatus()))
+                .build();
+        post(formBody, UrlConsts.POST_BIKE_RECORD_UPDATE_BIKE_RECORD, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
+    }
+
+    public void finishBike(String orderId, OnResponseListener<BikeRecordResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("orderId", orderId)
+                .build();
+        post(formBody, UrlConsts.POST_BIKE_RECORD_FINISH_BIKE, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
+    }
 
     /**
      * 查找所有记录

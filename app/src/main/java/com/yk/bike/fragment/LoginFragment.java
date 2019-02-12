@@ -83,11 +83,11 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                             if (isResponseSuccess(userInfoResponse)) {
                                 showShort("登陆成功");
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,userInfo.getUserId());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME, userInfo.getUserName());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE,userInfo.getUserPhone());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PASSWORD, userInfo.getUserPassword());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_USER);
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID,userInfo.getUserId());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME, userInfo.getUserName());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PHONE,userInfo.getUserPhone());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PASSWORD, userInfo.getUserPassword());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE,Consts.LOGIN_TYPE_USER);
                                 sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivityContext().finish();
                             } else {

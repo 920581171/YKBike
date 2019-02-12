@@ -3,7 +3,8 @@ package com.yk.bike.constant;
 public class UrlConsts {
     public static final String HEAD = "http://";
 //    public static final String IP = "192.168.43.151";
-    public static final String IP = "192.168.0.112";
+//    public static final String IP = "192.168.0.112";
+    public static final String IP = "192.168.3.154";
     public static final String PORT = "8080";
     public static final String IPORT = HEAD + IP + ":" + PORT;
 //    public static final String IPORT = HEAD + "192.168.3.120" + ":" + PORT;
@@ -13,8 +14,9 @@ public class UrlConsts {
     /**
      * file
      */
-    public static final String GET_FILE_DOWNLOAD_AVATAR = "/file/downloadAvatar";//下载头像
-    public static final String POST_FILE_UPLOAD_AVATAR = "/file/uploadAvatar";//上传头像
+    public static final String GET_COMMON_DOWNLOAD_AVATAR = "/common/downloadAvatar";//下载头像
+    public static final String POST_COMMON_UPLOAD_AVATAR = "/common/uploadAvatar";//上传头像
+    public static final String POST_COMMON_GET_SERVICE_TIME = "/common/getServiceTime";//上传头像
 
     /**
      * userInfo
@@ -54,12 +56,15 @@ public class UrlConsts {
     /**
      * bikeRecord
      */
+    public static final String POST_BIKE_RECORD_FIND_BY_ORDER_ID = "/bikeRecord/findBikeRecordByOrderId";
     public static final String POST_BIKE_RECORD_FIND_BY_USER_ID = "/bikeRecord/findBikeRecordByUserId";
     public static final String POST_BIKE_RECORD_FIND_BY_BIKE_ID = "/bikeRecord/findBikeRecordByBikeId";
     public static final String POST_BIKE_RECORD_ALL_BIKE_RECORD = "/bikeRecord/findAllBikeRecord";
     public static final String POST_BIKE_RECORD_ADD_BIKE_RECORD = "/bikeRecord/addBikeRecord";
     public static final String POST_BIKE_RECORD_UPDATE_BIKE_RECORD = "/bikeRecord/updateBikeRecord";
     public static final String POST_BIKE_RECORD_DELETE_BIKE_RECORD = "/bikeRecord/deleteBikeRecord";
+    public static final String POST_BIKE_RECORD_IS_CYCLING = "/bikeRecord/findBikeRecordIsCycling";
+    public static final String POST_BIKE_RECORD_FINISH_BIKE = "/bikeRecord/finishBike";
 
     /**
      * siteLocation

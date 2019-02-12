@@ -4,8 +4,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,7 +63,7 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
 
     @Override
     public void initData() {
-        ApiUtils.getInstance().findUserByUserId(SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID), new ResponseListener<UserInfoResponse>() {
+        ApiUtils.getInstance().findUserByUserId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<UserInfoResponse>() {
             @Override
             public void onSuccess(UserInfoResponse userInfoResponse) {
                 if (isResponseSuccess(userInfoResponse)) {

@@ -30,10 +30,10 @@ public class LoginActivity extends BaseActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new StartFragment()).commit();
 
-        String name = SharedPreferencesUtils.getString(Consts.SP_LOGIN_NAME);
-        String phone = SharedPreferencesUtils.getString(Consts.SP_LOGIN_PHONE);
-        String password = SharedPreferencesUtils.getString(Consts.SP_LOGIN_PASSWORD);
-        String type = SharedPreferencesUtils.getString(Consts.SP_LOGIN_TYPE);
+        String name = SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME);
+        String phone = SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_PHONE);
+        String password = SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_PASSWORD);
+        String type = SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE);
 
 
         if ((NullObjectUtils.isNotEmptyString(name) || NullObjectUtils.isNotEmptyString(phone)) && NullObjectUtils.isNotEmptyString(type))

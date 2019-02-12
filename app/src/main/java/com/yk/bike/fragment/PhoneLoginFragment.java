@@ -150,10 +150,10 @@ public class PhoneLoginFragment extends BaseFragment implements View.OnClickList
                                 tilInputCode.setErrorEnabled(false);
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
                                 showShort(btnRigister.getText().toString()+"成功");
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_ID,userInfo.getUserId());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_NAME,userInfo.getUserName());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_PHONE,userInfo.getUserPhone());
-                                SharedPreferencesUtils.put(Consts.SP_LOGIN_TYPE,Consts.LOGIN_TYPE_PHONE);
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID,userInfo.getUserId());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME,userInfo.getUserName());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PHONE,userInfo.getUserPhone());
+                                SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE,Consts.LOGIN_TYPE_PHONE);
                                 sendBroadcast(Consts.BR_ACTION_LOGIN);
                                 getActivity().finish();
                             }

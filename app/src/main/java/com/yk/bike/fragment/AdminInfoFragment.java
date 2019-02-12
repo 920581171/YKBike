@@ -73,7 +73,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
 
     @Override
     public void initData() {
-        ApiUtils.getInstance().findAdminByAdminId(SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID), new ResponseListener<AdminInfoResponse>() {
+        ApiUtils.getInstance().findAdminByAdminId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<AdminInfoResponse>() {
             @Override
             public void onSuccess(AdminInfoResponse adminInfoResponse) {
                 if (isResponseSuccess(adminInfoResponse)) {
@@ -89,7 +89,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
                                     .skipMemoryCache(true)
                                     //硬盘缓存功能
                                     .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.IPORT + UrlConsts.GET_FILE_DOWNLOAD_AVATAR + "?id=" + adminInfo.getAdminId())
+                            .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + adminInfo.getAdminId())
                             .into(cvAvatar);
 
                 } else {
@@ -199,7 +199,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         //获取验证码成功
                         MainHandler.getInstance().post(() -> showShort("验证码已发送"));
-                        SharedPreferencesUtils.put(Consts.SP_LOGIN_GET_CODE_TIME, System.currentTimeMillis());
+                        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_GET_CODE_TIME, System.currentTimeMillis());
                     } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
@@ -220,7 +220,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
         btnGetCode.setOnClickListener(v1 -> {
             String phone = etInputPhone.getText().toString();
             String code = etInputCode.getText().toString();
-            long time = System.currentTimeMillis() - (long) SharedPreferencesUtils.get(Consts.SP_LOGIN_GET_CODE_TIME, 0L);
+            long time = System.currentTimeMillis() - (long) SharedPreferencesUtils.get(Consts.SP_STRING_LOGIN_GET_CODE_TIME, 0L);
             time /= 1000;
             if (time <= 60) {
                 showShort((60 - time) + "秒后可以重新发送");

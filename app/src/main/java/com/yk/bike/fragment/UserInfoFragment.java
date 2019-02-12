@@ -81,7 +81,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
 
     @Override
     public void initData() {
-        ApiUtils.getInstance().findUserByUserId(SharedPreferencesUtils.getString(Consts.SP_LOGIN_ID), new ResponseListener<UserInfoResponse>() {
+        ApiUtils.getInstance().findUserByUserId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<UserInfoResponse>() {
             @Override
             public void onSuccess(UserInfoResponse userInfoResponse) {
                 if (isResponseSuccess(userInfoResponse)) {
@@ -113,7 +113,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                                     .skipMemoryCache(true)
                                     //硬盘缓存功能
                                     .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.IPORT + UrlConsts.GET_FILE_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
+                            .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
                             .into(cvAvatar);
                 } else {
                     showShort(userInfoResponse.getMsg());
@@ -132,7 +132,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                 if (NullObjectUtils.isEmptyString(userInfo.getUserName()))
                     improveInfo();
                 else
-                    showAlertDialog("用户名", SharedPreferencesUtils.getString(Consts.SP_LOGIN_NAME), new String[]{"确定", "取消"}, new AlertDialogListener());
+                    showAlertDialog("用户名", SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME), new String[]{"确定", "取消"}, new AlertDialogListener());
                 break;
             case R.id.ctl_phone:
                 improvePhone();
@@ -147,7 +147,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                     resetPassword();
                 break;
             case R.id.ctl_logout:
-                showAlertDialog("注销账号", "是否注销：" + SharedPreferencesUtils.getString(Consts.SP_LOGIN_NAME) + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
+                showAlertDialog("注销账号", "是否注销：" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME) + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
                     @Override
                     public void positiveClick(DialogInterface dialog, int which) {
                         getActivityContext().setResult(Consts.RESULT_CODE_LOGOUT);
@@ -198,7 +198,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         //获取验证码成功
                         MainHandler.getInstance().post(() -> showShort("验证码已发送"));
-                        SharedPreferencesUtils.put(Consts.SP_LOGIN_GET_CODE_TIME, System.currentTimeMillis());
+                        SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_GET_CODE_TIME, System.currentTimeMillis());
                     } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
@@ -219,7 +219,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
         btnGetCode.setOnClickListener(v1 -> {
             String phone = etInputPhone.getText().toString();
             String code = etInputCode.getText().toString();
-            long time = System.currentTimeMillis() - (long) SharedPreferencesUtils.get(Consts.SP_LOGIN_GET_CODE_TIME, 0L);
+            long time = System.currentTimeMillis() - (long) SharedPreferencesUtils.get(Consts.SP_STRING_LOGIN_GET_CODE_TIME, 0L);
             time /= 1000;
             if (time <= 60) {
                 showShort((60 - time) + "秒后可以重新发送");
