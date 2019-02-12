@@ -43,7 +43,7 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void onSuccess(UserInfoResponse userInfoResponse) {
                             sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                            showShort("登陆成功");
+                            showShort(getString(R.string.string_log_success));
                             finish();
                         }
                     });
@@ -54,7 +54,7 @@ public class LoginActivity extends BaseActivity {
                         public void onSuccess(CommonResponse commonResponse) {
                             if (isResponseSuccess(commonResponse)) {
                                 sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                                showShort("登陆成功");
+                                showShort(getString(R.string.string_log_success));
                                 finish();
                             } else {
                                 showShort(commonResponse.getMsg());
@@ -67,7 +67,7 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void onSuccess(AdminInfoResponse adminInfoResponse) {
                             sendBroadcast(new Intent().setAction(Consts.BR_ACTION_LOGIN));
-                            showShort("登陆成功");
+                            showShort(getString(R.string.string_log_success));
                             finish();
                         }
                     });

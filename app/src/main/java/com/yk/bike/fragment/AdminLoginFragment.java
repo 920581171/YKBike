@@ -62,7 +62,7 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                     ApiUtils.getInstance().appAdminLogin(name, MD5Utils.getMD5(password), new ResponseListener<AdminInfoResponse>() {
                         @Override
                         public void onStart() {
-                            showShort("登陆中");
+                            showShort(getString(R.string.string_loging));
                             btnLogin.setEnabled(false);
                         }
 
@@ -80,7 +80,7 @@ public class AdminLoginFragment extends BaseFragment implements View.OnClickList
                         public void onSuccess(AdminInfoResponse adminInfoResponse) {
                             if (isResponseSuccess(adminInfoResponse)) {
                                 AdminInfoResponse.AdminInfo adminInfo = adminInfoResponse.getData();
-                                showShort("登陆成功");
+                                showShort(getString(R.string.string_log_success));
                                 SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID,adminInfo.getAdminId());
                                 SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME, adminInfo.getAdminName());
                                 SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PHONE,adminInfo.getAdminPhone());

@@ -12,6 +12,7 @@ import com.yk.bike.response.BikeRecordListResponse;
 import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.SiteLocationListResponse;
+import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
 
 import java.io.File;
@@ -164,7 +165,7 @@ public class ApiUtils {
     }
 
     /**
-     * 登陆验证
+     * 登录验证
      *
      * @param userName
      * @param userPassword
@@ -198,10 +199,20 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_USER_INFO_UPDATE_USER_INFO, new CommonCallback<>(onResponseListener, UserInfoResponse.class));
     }
 
+    /**
+     * 查找所有管理员
+     *
+     * @param onResponseListener
+     */
+    public void findDeposit(OnResponseListener<UserInfoListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder().build();
+        post(formBody, UrlConsts.POST_USER_INFO_FIND_DEPOSIT, new CommonCallback<>(onResponseListener, UserInfoListResponse.class));
+    }
+
     /*-----------------------------------------------AdminInfo-----------------------------------------------*/
 
     /**
-     * 管理员登陆验证
+     * 管理员登录验证
      *
      * @param adminAccountOrPhone
      * @param adminPassword

@@ -64,7 +64,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                     ApiUtils.getInstance().appLogin(name, MD5Utils.getMD5(password), new ResponseListener<UserInfoResponse>() {
                         @Override
                         public void onStart() {
-                            showShort("登陆中");
+                            showShort(getString(R.string.string_loging));
                             btnLogin.setEnabled(false);
                         }
 
@@ -81,7 +81,7 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                         @Override
                         public void onSuccess(UserInfoResponse userInfoResponse) {
                             if (isResponseSuccess(userInfoResponse)) {
-                                showShort("登陆成功");
+                                showShort(getString(R.string.string_log_success));
                                 UserInfoResponse.UserInfo userInfo = userInfoResponse.getData();
                                 SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_ID,userInfo.getUserId());
                                 SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_NAME, userInfo.getUserName());

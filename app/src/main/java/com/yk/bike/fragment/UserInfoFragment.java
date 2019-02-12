@@ -149,7 +149,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
             case R.id.ctl_logout:
                 showAlertDialog("注销账号", "是否注销：" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME) + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
                     @Override
-                    public void positiveClick(DialogInterface dialog, int which) {
+                    public void onPositiveClick(DialogInterface dialog, int which) {
                         getActivityContext().setResult(Consts.RESULT_CODE_LOGOUT);
                         getActivityContext().finish();
                     }

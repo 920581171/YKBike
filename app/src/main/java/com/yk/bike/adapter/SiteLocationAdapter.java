@@ -34,26 +34,32 @@ public class SiteLocationAdapter extends RecyclerView.Adapter<SiteLocationAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_site_location, viewGroup, false));
+        View view = list.size() == 0 ?
+                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_empty_list, viewGroup, false) :
+                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_site_location, viewGroup, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.setIsRecyclable(false);
 
+        if (list.size()==0)
+            return;
+
         viewHolder.tvLatitude.setText(String.valueOf(list.get(i).getLatitude()));
         viewHolder.tvLongitude.setText(String.valueOf(list.get(i).getLongitude()));
-        String radius = String.valueOf(list.get(i).getRadius())+"米";
+        String radius = String.valueOf(list.get(i).getRadius()) + "米";
         viewHolder.tvRadius.setText(radius);
 
         viewHolder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener!=null)
-                onItemClickListener.onClick(v,viewHolder,i);
+            if (onItemClickListener != null)
+                onItemClickListener.onClick(v, viewHolder, i);
         });
 
         viewHolder.itemView.setOnLongClickListener(v -> {
-            if (onItemClickListener!=null)
-                onItemClickListener.onLongClick(v,viewHolder,i);
+            if (onItemClickListener != null)
+                onItemClickListener.onLongClick(v, viewHolder, i);
             return true;
         });
     }
@@ -69,7 +75,7 @@ public class SiteLocationAdapter extends RecyclerView.Adapter<SiteLocationAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() == 0 ? 1 : list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

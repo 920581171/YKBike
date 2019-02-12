@@ -3,7 +3,6 @@ package com.yk.bike.base;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -57,11 +56,11 @@ public class BaseActivity extends AppCompatActivity {
         if (onAlertDialogListener != null) {
             switch (buttonText.length) {
                 case 3:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], onAlertDialogListener::neutralClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, buttonText[2], onAlertDialogListener::onNeutralClick);
                 case 2:
-                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], onAlertDialogListener::negativeClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, buttonText[1], onAlertDialogListener::onNegativeClick);
                 case 1:
-                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], onAlertDialogListener::positiveClick);
+                    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText[0], onAlertDialogListener::onPositiveClick);
                 case 0:
                     break;
             }
@@ -79,7 +78,7 @@ public class BaseActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setItems(buttonText, (dialog, which) -> {
                     if (onAlertDialogListener != null)
-                        onAlertDialogListener.positiveClick(dialog, which);
+                        onAlertDialogListener.onPositiveClick(dialog, which);
                 })
                 .create();
 

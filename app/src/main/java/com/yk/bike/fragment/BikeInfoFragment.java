@@ -26,11 +26,9 @@ import com.yk.bike.utils.MainHandler;
 
 import java.util.List;
 
-public class BikeInfoFragment extends BaseFragment {
+public class BikeInfoFragment extends BaseFragment<MainActivity> {
 
     private static final String TAG = "BikeInfoFragment";
-
-    private MainActivity mainActivity;
 
     private RecyclerView recyclerView;
 
@@ -85,7 +83,7 @@ public class BikeInfoFragment extends BaseFragment {
                                     new String[]{"删除", "取消"},
                                     new AlertDialogListener() {
                                         @Override
-                                        public void positiveClick(DialogInterface dialog, int which) {
+                                        public void onPositiveClick(DialogInterface dialog, int which) {
                                             deleteBike(list.get(position));
                                         }
                                     });
@@ -93,7 +91,7 @@ public class BikeInfoFragment extends BaseFragment {
 
                         @Override
                         public void onRightButtonClick(View v, RecyclerView.ViewHolder holder, BikeInfoResponse.BikeInfo bikeInfo) {
-                            MapFragment mapFragment = (MapFragment) mainActivity.getFragment(mainActivity.FRAGMENT_MAP);
+                            MapFragment mapFragment = (MapFragment) getActivityContext().getFragment(getActivityContext().FRAGMENT_MAP);
                             mapFragment.showBikeLocation(bikeInfo);
                         }
                     });
@@ -103,19 +101,6 @@ public class BikeInfoFragment extends BaseFragment {
                 }
             }
         });
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity)
-            mainActivity = (MainActivity) context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mainActivity = null;
     }
 
     private void deleteBike(BikeInfoResponse.BikeInfo bikeInfo) {
@@ -160,7 +145,7 @@ public class BikeInfoFragment extends BaseFragment {
                 new String[]{"更新位置", "需要维修", "删除"};
         showAlertDialogList("修改信息", null, s, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         ApiUtils.getInstance().updateBikeLocation(bikeId, bikeInfo.getLatitude(), bikeInfo.getLongitude(), new ResponseListener<CommonResponse>() {

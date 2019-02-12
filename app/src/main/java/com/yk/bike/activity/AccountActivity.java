@@ -59,7 +59,7 @@ public class AccountActivity extends BaseActivity {
     public void showSelectAvatar() {
         showAlertDialogList("修改头像", null, new String[]{"拍照", "从相册中选"}, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 Intent intent;
                 switch (which) {
                     case 0:

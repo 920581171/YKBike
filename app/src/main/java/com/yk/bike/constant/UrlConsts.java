@@ -28,7 +28,8 @@ public class UrlConsts {
     public static final String POST_USER_INFO_REGISTER_USER_BY_PHONE = "/userinfo/registerUserByPhone";//通过手机号注册用户
     public static final String POST_USER_INFO_REGISTER_USER_BY_NAME = "/userinfo/registerUserByName";//通过用户名和密码注册用户
     public static final String POST_USER_INFO_UPDATE_USER_INFO = "/userinfo/updateUserInfo";//更新用户信息
-    public static final String POST_USER_INFO_APP_LOGIN = "/userinfo/appLogin";//用户登陆
+    public static final String POST_USER_INFO_APP_LOGIN = "/userinfo/appLogin";//用户登录
+    public static final String POST_USER_INFO_FIND_DEPOSIT = "/userinfo/findDeposit";
 
     /**
      * bikeInfo
@@ -51,7 +52,7 @@ public class UrlConsts {
     public static final String POST_ADMIN_INFO_FIND_ALL_ADMIN_INFO = "/adminInfo/findAllAdminInfo";//查找所有管理员信息
     public static final String POST_ADMIN_INFO_REGISTER_ADMIN_INFO = "/adminInfo/registerAdminInfo";//添加管理员
     public static final String POST_ADMIN_INFO_UPDATE_INFO = "/adminInfo/updateAdminInfo";//更新管理员信息
-    public static final String POST_ADMIN_INFO_APP_ADMIN_LOGIN = "/adminInfo/appAdminLogin";//管理员登陆
+    public static final String POST_ADMIN_INFO_APP_ADMIN_LOGIN = "/adminInfo/appAdminLogin";//管理员登录
 
     /**
      * bikeRecord

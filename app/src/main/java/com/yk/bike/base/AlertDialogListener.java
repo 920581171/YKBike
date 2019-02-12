@@ -4,17 +4,17 @@ import android.content.DialogInterface;
 
 public class AlertDialogListener implements OnAlertDialogListener{
     @Override
-    public void positiveClick(DialogInterface dialog, int which) {
+    public void onPositiveClick(DialogInterface dialog, int which) {
 
     }
 
     @Override
-    public void negativeClick(DialogInterface dialog, int which) {
+    public void onNegativeClick(DialogInterface dialog, int which) {
 
     }
 
     @Override
-    public void neutralClick(DialogInterface dialog, int which) {
+    public void onNeutralClick(DialogInterface dialog, int which) {
 
     }
 

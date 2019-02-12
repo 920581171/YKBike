@@ -85,7 +85,7 @@ public class SiteLocationFragment extends BaseFragment<MainActivity> {
     public void siteSetting(SiteLocationResponse.SiteLocation siteLocation) {
         showAlertDialog("删除站点", "是否删除该站点？", new String[]{"删除", "取消"}, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 Snackbar.make(getActivity().findViewById(R.id.fab), "站点即将删除", Snackbar.LENGTH_LONG)
                         .setAction("撤销", v -> {
                             showShort("撤销删除");

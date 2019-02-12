@@ -117,7 +117,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
             case R.id.ctl_logout:
                 showAlertDialog("注销账号", "是否注销管理员：" + adminInfo.getAdminName() + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
                     @Override
-                    public void positiveClick(DialogInterface dialog, int which) {
+                    public void onPositiveClick(DialogInterface dialog, int which) {
                         getActivityContext().setResult(Consts.RESULT_CODE_LOGOUT);
                         getActivityContext().finish();
                     }

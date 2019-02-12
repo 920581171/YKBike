@@ -7,7 +7,9 @@
         android:id="@+id/nav_map"
         android:icon="@drawable/ic_menu_map"
         android:title="地图"/>
-    <group android:id="@+id/group_user" android:visible="true">
+    <group
+        android:id="@+id/group_user"
+        android:visible="true">
         <item
             android:id="@+id/nav_record"
             android:icon="@drawable/ic_menu_bike"
@@ -17,7 +19,9 @@
             android:icon="@drawable/ic_menu_admin"
             android:title="联系管理员"/>
     </group>
-    <group android:id="@+id/group_admin" android:visible="false">
+    <group
+        android:id="@+id/group_admin"
+        android:visible="false">
         <item
             android:id="@+id/nav_bike_info"
             android:icon="@drawable/ic_menu_bike"
@@ -26,6 +30,10 @@
             android:id="@+id/nav_site_plan"
             android:icon="@drawable/ic_site_plan"
             android:title="站点管理"/>
+        <item
+            android:id="@+id/nav_deposit"
+            android:icon="@drawable/ic_menu_deposit"
+            android:title="押金管理"/>
         <item
             android:id="@+id/nav_count"
             android:icon="@drawable/ic_menu_count"

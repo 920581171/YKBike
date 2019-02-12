@@ -97,7 +97,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             "纬度：" + latLng.latitude + "\n经度：" + latLng.longitude + "\n半径范围：" + radius + "m",
                             new String[]{"添加", "取消"}, new AlertDialogListener() {
                                 @Override
-                                public void positiveClick(DialogInterface dialog, int which) {
+                                public void onPositiveClick(DialogInterface dialog, int which) {
                                     ApiUtils.getInstance().addSiteLocation(latLng.latitude, latLng.longitude, radius, new ResponseListener<CommonResponse>() {
                                         @Override
                                         public void onError(String errorMsg) {
@@ -392,7 +392,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 new String[]{"更新位置", "需要维修", "删除"};
         showAlertDialogList("修改信息", null, s, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
                         ApiUtils.getInstance().updateBikeLocation(bikeId, getLatLng().latitude, getLatLng().longitude, new ResponseListener<CommonResponse>() {
@@ -511,7 +511,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             + "计费：" + bikeRecord.getCharge() + "元";
                     showAlertDialog("结束骑行", msg, new String[]{"确定"}, new AlertDialogListener() {
                         @Override
-                        public void positiveClick(DialogInterface dialog, int which) {
+                        public void onPositiveClick(DialogInterface dialog, int which) {
                             showShort("骑行结束");
                             getActivityContext().getFab().show();
                             SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, "");
@@ -575,7 +575,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
             case R.id.tv_stop_bike:
                 showAlertDialog("结束骑行", "是否结束骑行？", new String[]{"结束", "取消"}, new AlertDialogListener() {
                     @Override
-                    public void positiveClick(DialogInterface dialog, int which) {
+                    public void onPositiveClick(DialogInterface dialog, int which) {
                         stopBike();
                     }
                 });

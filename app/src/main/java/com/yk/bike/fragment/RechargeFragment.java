@@ -92,7 +92,7 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                 if (tvDepositCharge.getText().toString().equals("支付押金"))
                     showAlertDialog("支付押金", "是否支付199元押金？", new String[]{"支付", "取消"}, new AlertDialogListener() {
                         @Override
-                        public void positiveClick(DialogInterface dialog, int which) {
+                        public void onPositiveClick(DialogInterface dialog, int which) {
                             ApiUtils.getInstance().updateUserInfo(userInfo.copy().setDeposit(199), new ResponseListener<UserInfoResponse>() {
                                 @Override
                                 public void onSuccess(UserInfoResponse userInfoResponse) {
@@ -109,7 +109,7 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                 else if (tvDepositCharge.getText().toString().equals("申请退还押金"))
                     showAlertDialog("押金", "确认申请退还押金？", new String[]{"申请", "取消"}, new AlertDialogListener() {
                         @Override
-                        public void positiveClick(DialogInterface dialog, int which) {
+                        public void onPositiveClick(DialogInterface dialog, int which) {
                             ApiUtils.getInstance().updateUserInfo(userInfo.copy().setDeposit(-199), new ResponseListener<UserInfoResponse>() {
                                 @Override
                                 public void onSuccess(UserInfoResponse userInfoResponse) {
@@ -151,7 +151,7 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
     public void charge(float charge) {
         showAlertDialog("余额充值", "是否充值" + charge + "元到余额中？", new String[]{"充值", "取消"}, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 ApiUtils.getInstance().updateUserInfo(userInfo.copy().setBalance(userInfo.getBalance() + charge), new ResponseListener<UserInfoResponse>() {
                     @Override
                     public void onSuccess(UserInfoResponse userInfoResponse) {

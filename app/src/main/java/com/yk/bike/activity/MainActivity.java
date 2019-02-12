@@ -39,6 +39,7 @@ import com.yk.bike.fragment.AboutFragment;
 import com.yk.bike.fragment.AdminInfoListFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.BikeRecordFragment;
+import com.yk.bike.fragment.DepositFragment;
 import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
@@ -65,6 +66,7 @@ public class MainActivity extends BaseActivity
     public final int FRAGMENT_ADMIN_INFO = 3;
     public final int FRAGMENT_BIKE_RECORD = 4;
     public final int FRAGMENT_SITE_LOCATION = 5;
+    public final int FRAGMENT_DEPOSIT = 6;
 
     private int currentFragmentNum = 0;
 
@@ -150,13 +152,14 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new BaseFragment[6];
+        fragments = new BaseFragment[7];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
         fragments[FRAGMENT_ADMIN_INFO] = new AdminInfoListFragment();
         fragments[FRAGMENT_BIKE_RECORD] = new BikeRecordFragment();
         fragments[FRAGMENT_SITE_LOCATION] = new SiteLocationFragment();
+        fragments[FRAGMENT_DEPOSIT] = new DepositFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -300,6 +303,8 @@ public class MainActivity extends BaseActivity
             switchFragment(FRAGMENT_BIKE_INFO).initData();
         } else if (id == R.id.nav_site_plan) {
             switchFragment(FRAGMENT_SITE_LOCATION).initData();
+        } else if (id == R.id.nav_deposit) {
+            switchFragment(FRAGMENT_DEPOSIT).initData();
         } else if (id == R.id.nav_count) {
         } else if (id == R.id.nav_account) {
             startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), Consts.REQUEST_CODE_ACCOUNT);
@@ -409,7 +414,7 @@ public class MainActivity extends BaseActivity
         }
         showAlertDialog(title, message, buttonText, new AlertDialogListener() {
             @Override
-            public void positiveClick(DialogInterface dialog, int which) {
+            public void onPositiveClick(DialogInterface dialog, int which) {
                 switch (type) {
                     case Consts.CODE_RESULT_TYPE_ADMIN_ADDED:
                         showShort("查看");
@@ -482,7 +487,7 @@ public class MainActivity extends BaseActivity
             }
 
             @Override
-            public void neutralClick(DialogInterface dialog, int which) {
+            public void onNeutralClick(DialogInterface dialog, int which) {
                 if (Consts.CODE_RESULT_TYPE_ADMIN_ADDED.equals(type) || Consts.CODE_RESULT_TYPE_USER_BIKE.equals(type)) {
                     BikeInfoResponse.BikeInfo bikeInfo = bikeInfoResponse.getData();
                     bikeInfo.setUserId("")
