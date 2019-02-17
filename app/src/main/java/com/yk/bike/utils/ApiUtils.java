@@ -2,7 +2,6 @@ package com.yk.bike.utils;
 
 import com.yk.bike.callback.CommonCallback;
 import com.yk.bike.callback.OnResponseListener;
-import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
@@ -45,12 +44,12 @@ public class ApiUtils {
     private OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build();
 
     private void post(RequestBody requestBody, String url, CommonCallback callback) {
-        Request request = new Request.Builder().url(UrlConsts.IPORT + url).post(requestBody).build();
+        Request request = new Request.Builder().url(UrlConsts.HEADIPORT + url).post(requestBody).build();
         okHttpClient.newCall(request).enqueue(callback);
     }
 
     private void get(String url, CommonCallback callback) {
-        Request request = new Request.Builder().url(UrlConsts.IPORT + url).build();
+        Request request = new Request.Builder().url(UrlConsts.HEADIPORT + url).build();
         okHttpClient.newCall(request).enqueue(callback);
     }
 

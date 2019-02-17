@@ -49,11 +49,10 @@ import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
+import com.yk.bike.websocket.WebSocketManager;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
-
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -90,7 +89,8 @@ public class MainActivity extends BaseActivity
                         finish();
                         break;
                     case Consts.BR_ACTION_LOGIN:
-                        init();
+                        login();
+                        WebSocketManager.getInstance().init(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
                         break;
                     case Consts.BR_ACTION_LOGOUT:
                         logout();
@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity
             f.initData();
     }
 
-    public void init() {
+    public void login() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity
                         .skipMemoryCache(true)
                         //硬盘缓存功能
                         .diskCacheStrategy(DiskCacheStrategy.NONE))
-                .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
+                .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
                 .into(cvAvatar);
 
         tvId.setText(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
@@ -256,6 +256,7 @@ public class MainActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(br);
+        WebSocketManager.getInstance().disconnect();
         if (connection != null)
             unbindService(connection);
     }
@@ -530,6 +531,7 @@ public class MainActivity extends BaseActivity
         SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PASSWORD, "");
         SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE, "");
         SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, "");
+        WebSocketManager.getInstance().disconnect();
         switchFragment(FRAGMENT_ABOUT);
         startActivity(new Intent(this, LoginActivity.class));
     }

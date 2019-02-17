@@ -113,7 +113,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                                     .skipMemoryCache(true)
                                     //硬盘缓存功能
                                     .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
+                            .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
                             .into(cvAvatar);
                 } else {
                     showShort(userInfoResponse.getMsg());
@@ -147,7 +147,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                     resetPassword();
                 break;
             case R.id.ctl_logout:
-                showAlertDialog("注销账号", "是否注销：" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME) + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
+                showAlertDialog("退出账号", "是否退出：" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_NAME) + "？", new String[]{"退出", "取消"}, new AlertDialogListener() {
                     @Override
                     public void onPositiveClick(DialogInterface dialog, int which) {
                         getActivityContext().setResult(Consts.RESULT_CODE_LOGOUT);

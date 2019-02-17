@@ -89,7 +89,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
                                     .skipMemoryCache(true)
                                     //硬盘缓存功能
                                     .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.IPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + adminInfo.getAdminId())
+                            .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + adminInfo.getAdminId())
                             .into(cvAvatar);
 
                 } else {
@@ -115,7 +115,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
                 resetPassword();
                 break;
             case R.id.ctl_logout:
-                showAlertDialog("注销账号", "是否注销管理员：" + adminInfo.getAdminName() + "？", new String[]{"注销", "取消"}, new AlertDialogListener() {
+                showAlertDialog("退出账号", "是否退出管理员：" + adminInfo.getAdminName() + "？", new String[]{"退出", "取消"}, new AlertDialogListener() {
                     @Override
                     public void onPositiveClick(DialogInterface dialog, int which) {
                         getActivityContext().setResult(Consts.RESULT_CODE_LOGOUT);

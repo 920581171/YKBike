@@ -81,4 +81,6 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.2-native'
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
+    //websocket
+    implementation 'com.neovisionaries:nv-websocket-client:2.6'
 }

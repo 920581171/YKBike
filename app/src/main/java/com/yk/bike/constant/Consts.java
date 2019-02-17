@@ -12,7 +12,7 @@ public class Consts {
     public static final int REQUEST_CODE_FROM_CAMERA = 100;
     public static final int REQUEST_CODE_FROM_ALBUM = 101;
 
-    public static final int RESULT_CODE_LOGOUT = 10;//注销
+    public static final int RESULT_CODE_LOGOUT = 10;//退出
 
     public static final String BR_ACTION_EXIT = "com.yk.bike.action.exit";
     public static final String BR_ACTION_LOGIN = "com.yk.bike.action.login";
@@ -36,4 +36,6 @@ public class Consts {
     public static final String CODE_RESULT_TYPE_USER_NO_BIKE = "userNoBike";
     public static final String CODE_RESULT_TYPE_USER_BIKE = "userBike";
     public static final String CODE_RESULT_TYPE_USER_FIX = "userFix";
+
+    public static final int WEBSOCKET_TYPE_GET_PARAM = 0;
 }

@@ -7,10 +7,11 @@ public class UrlConsts {
 //    public static final String IP = "192.168.3.154";
     public static final String IP = "192.168.43.49";
     public static final String PORT = "8080";
-    public static final String IPORT = HEAD + IP + ":" + PORT;
-//    public static final String IPORT = HEAD + "192.168.3.120" + ":" + PORT;
-//        public static final String IPORT = HEAD + "192.168.137.1" + ":" + PORT;
-//    public static final String IPORT = HEAD + "192.168.1.232" + ":" + PORT;
+    public static final String IPORT = IP + ":" + PORT;
+    public static final String HEADIPORT = HEAD + IPORT;
+//    public static final String HEADIPORT = HEAD + "192.168.3.120" + ":" + PORT;
+//        public static final String HEADIPORT = HEAD + "192.168.137.1" + ":" + PORT;
+//    public static final String HEADIPORT = HEAD + "192.168.1.232" + ":" + PORT;
 
     /**
      * file
