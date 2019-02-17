@@ -31,6 +31,7 @@ public class AdminInfoResponse extends BaseResponse {
         private String adminName;
         private String adminPassword;
         private String adminPhone;
+        private String adminType;
 
         public int getId() {
             return id;
@@ -86,14 +87,24 @@ public class AdminInfoResponse extends BaseResponse {
             return this;
         }
 
+        public String getAdminType() {
+            return adminType;
+        }
+
+        public AdminInfo setAdminType(String adminType) {
+            this.adminType = adminType;
+            return this;
+        }
+
         public AdminInfo copy() {
             return new AdminInfo()
-                    .setId(getId())
-                    .setAdminId(getAdminId())
-                    .setAdminAccount(getAdminAccount())
-                    .setAdminName(getAdminName())
-                    .setAdminPassword(getAdminPassword())
-                    .setAdminPhone(getAdminPhone());
+                    .setId(id)
+                    .setAdminId(adminId)
+                    .setAdminAccount(adminAccount)
+                    .setAdminName(adminName)
+                    .setAdminPassword(adminPassword)
+                    .setAdminPhone(adminPhone)
+                    .setAdminType(adminType);
         }
     }
 }
