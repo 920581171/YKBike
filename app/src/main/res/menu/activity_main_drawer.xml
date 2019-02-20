@@ -18,6 +18,10 @@
             android:id="@+id/nav_admin"
             android:icon="@drawable/ic_menu_admin"
             android:title="联系管理员"/>
+        <item
+            android:id="@+id/nav_message_board_sender"
+            android:icon="@drawable/ic_menu_message_board"
+            android:title="留言板"/>
     </group>
     <group
         android:id="@+id/group_admin"
@@ -34,6 +38,10 @@
             android:id="@+id/nav_deposit"
             android:icon="@drawable/ic_menu_deposit"
             android:title="押金管理"/>
+        <item
+            android:id="@+id/nav_message_board_handler"
+            android:icon="@drawable/ic_menu_message_board"
+            android:title="留言板"/>
         <!--<item-->
             <!--android:id="@+id/nav_count"-->
             <!--android:icon="@drawable/ic_menu_count"-->

@@ -49,11 +49,13 @@ public class CommonCallback<T> implements Callback {
             }
             MainHandler.getInstance().post(() -> {
                 onResponseListener.onSuccess(t);
-               onResponseListener.onFinish();
+                onResponseListener.onFinish();
             });
-        } catch (IOException | IllegalStateException e) {
-            onResponseListener.onError("数据解析错误");
-            onResponseListener.onFinish();
+        } catch (Exception e) {
+            MainHandler.getInstance().post(() -> {
+                onResponseListener.onError("数据解析错误");
+                onResponseListener.onFinish();
+            });
             e.printStackTrace();
         }
     }

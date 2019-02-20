@@ -70,6 +70,8 @@
 
         <activity android:name=".activity.AccountActivity"/>
 
+        <activity android:name=".activity.MessageBroadActivity"/>
+
         <!--截图-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

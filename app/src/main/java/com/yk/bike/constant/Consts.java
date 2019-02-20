@@ -38,4 +38,6 @@ public class Consts {
     public static final String CODE_RESULT_TYPE_USER_FIX = "userFix";
 
     public static final int WEBSOCKET_TYPE_GET_PARAM = 0;
+
+    public static final String INTENT_STRING_MESSAGE_ID = "messageId";
 }

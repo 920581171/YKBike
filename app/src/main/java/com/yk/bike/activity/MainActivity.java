@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.BikeRecordFragment;
 import com.yk.bike.fragment.DepositFragment;
 import com.yk.bike.fragment.MapFragment;
+import com.yk.bike.fragment.MessageBroadListFragment;
 import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordResponse;
@@ -66,6 +68,7 @@ public class MainActivity extends BaseActivity
     public final int FRAGMENT_BIKE_RECORD = 4;
     public final int FRAGMENT_SITE_LOCATION = 5;
     public final int FRAGMENT_DEPOSIT = 6;
+    public final int FRAGMENT_MESSAGE_BROAD = 7;
 
     private int currentFragmentNum = 0;
 
@@ -152,7 +155,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new BaseFragment[7];
+        fragments = new BaseFragment[8];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
@@ -160,6 +163,7 @@ public class MainActivity extends BaseActivity
         fragments[FRAGMENT_BIKE_RECORD] = new BikeRecordFragment();
         fragments[FRAGMENT_SITE_LOCATION] = new SiteLocationFragment();
         fragments[FRAGMENT_DEPOSIT] = new DepositFragment();
+        fragments[FRAGMENT_MESSAGE_BROAD] = new MessageBroadListFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -277,7 +281,11 @@ public class MainActivity extends BaseActivity
 
         switch (id) {
             case R.id.action_add:
-                ((MapFragment) fragments[FRAGMENT_MAP]).sitePlan();
+                if (currentFragmentNum == FRAGMENT_MAP) {
+                    ((MapFragment) fragments[FRAGMENT_MAP]).sitePlan();
+                } else if (currentFragmentNum == FRAGMENT_MESSAGE_BROAD) {
+                    startActivity(new Intent(MainActivity.this, MessageBroadActivity.class));
+                }
                 break;
             case R.id.action_forward:
                 switchFragment(FRAGMENT_MAP);
@@ -294,24 +302,36 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_map) {
-            ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
-        } else if (id == R.id.nav_record) {
-            switchFragment(FRAGMENT_BIKE_RECORD).initData();
-        } else if (id == R.id.nav_admin) {
-            switchFragment(FRAGMENT_ADMIN_INFO).initData();
-        } else if (id == R.id.nav_bike_info) {
-            switchFragment(FRAGMENT_BIKE_INFO).initData();
-        } else if (id == R.id.nav_site_plan) {
-            switchFragment(FRAGMENT_SITE_LOCATION).initData();
-        } else if (id == R.id.nav_deposit) {
-            switchFragment(FRAGMENT_DEPOSIT).initData();
-        }
-        //        else if (id == R.id.nav_count) { }
-        else if (id == R.id.nav_account) {
-            startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), Consts.REQUEST_CODE_ACCOUNT);
-        } else if (id == R.id.nav_info) {
-            switchFragment(FRAGMENT_ABOUT).initData();
+        switch (id) {
+            case R.id.nav_map:
+                ((MapFragment) switchFragment(FRAGMENT_MAP)).initBikeLocation();
+                break;
+            case R.id.nav_record:
+                switchFragment(FRAGMENT_BIKE_RECORD).initData();
+                break;
+            case R.id.nav_admin:
+                switchFragment(FRAGMENT_ADMIN_INFO).initData();
+                break;
+            case R.id.nav_bike_info:
+                switchFragment(FRAGMENT_BIKE_INFO).initData();
+                break;
+            case R.id.nav_site_plan:
+                switchFragment(FRAGMENT_SITE_LOCATION).initData();
+                break;
+            case R.id.nav_deposit:
+                switchFragment(FRAGMENT_DEPOSIT).initData();
+                break;
+            //        else if (id == R.id.nav_count) { }
+            case R.id.nav_message_board_sender:
+            case R.id.nav_message_board_handler:
+                switchFragment(FRAGMENT_MESSAGE_BROAD).initData();
+                break;
+            case R.id.nav_account:
+                startActivityForResult(new Intent(MainActivity.this, AccountActivity.class), Consts.REQUEST_CODE_ACCOUNT);
+                break;
+            case R.id.nav_info:
+                switchFragment(FRAGMENT_ABOUT).initData();
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -557,11 +577,13 @@ public class MainActivity extends BaseActivity
         return binder.getAMapLocation();
     }
 
-    public void addOnServiceTimeListener(LocationService.OnServiceTimeListener onServiceTimeListener) {
+    public void addOnServiceTimeListener(LocationService.OnServiceTimeListener
+                                                 onServiceTimeListener) {
         binder.addOnServiceTimeListener(onServiceTimeListener);
     }
 
-    public void removeOnServiceTimeListener(LocationService.OnServiceTimeListener onServiceTimeListener) {
+    public void removeOnServiceTimeListener(LocationService.OnServiceTimeListener
+                                                    onServiceTimeListener) {
         binder.removeOnServiceTimeListener(onServiceTimeListener);
     }
 }

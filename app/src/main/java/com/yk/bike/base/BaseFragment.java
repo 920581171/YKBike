@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import com.yk.bike.R;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.MapFragment;
+import com.yk.bike.fragment.MessageBroadListFragment;
+import com.yk.bike.fragment.MessageBroadUserFragment;
 import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BaseResponse;
 import com.yk.bike.utils.SharedPreferencesUtils;
@@ -47,8 +49,9 @@ public abstract class BaseFragment<T extends BaseActivity> extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        boolean isShowAddSite = BaseFragment.this instanceof MapFragment && SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN);
-        menu.setGroupVisible(R.id.group_add, isShowAddSite);
+        boolean isShowAdd = (BaseFragment.this instanceof MapFragment && SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN))||
+                (BaseFragment.this instanceof MessageBroadListFragment && !SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN));
+        menu.setGroupVisible(R.id.group_add, isShowAdd);
         menu.setGroupVisible(R.id.group_forward, BaseFragment.this instanceof SiteLocationFragment);
     }
 

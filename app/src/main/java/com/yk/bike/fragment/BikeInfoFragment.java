@@ -16,6 +16,7 @@ import com.yk.bike.adapter.BikeInfoAdapter;
 import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
+import com.yk.bike.base.BaseRecyclerFragment;
 import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.BikeInfoListResponse;
@@ -26,28 +27,9 @@ import com.yk.bike.utils.MainHandler;
 
 import java.util.List;
 
-public class BikeInfoFragment extends BaseFragment<MainActivity> {
+public class BikeInfoFragment extends BaseRecyclerFragment<MainActivity> {
 
     private static final String TAG = "BikeInfoFragment";
-
-    private RecyclerView recyclerView;
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    @Override
-    public int initLayout() {
-        return R.layout.fragment_recycler;
-    }
-
-    @Override
-    public void initView(View rootView, Bundle savedInstanceState) {
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            MainHandler.getInstance().postDelayed(this::initData,500);
-        });
-    }
 
     @Override
     public void initData() {
@@ -57,9 +39,7 @@ public class BikeInfoFragment extends BaseFragment<MainActivity> {
     private void initRecyclerView() {
         ApiUtils.getInstance().findAllBikeInfo(new ResponseListener<BikeInfoListResponse>() {
             @Override
-            public void onFinish() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
+            public void onFinish() { onDataFinish();}
 
             @Override
             public void onError(String errorMsg) {
@@ -95,9 +75,7 @@ public class BikeInfoFragment extends BaseFragment<MainActivity> {
                             mapFragment.showBikeLocation(bikeInfo);
                         }
                     });
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    onDataChange(adapter);
                 }
             }
         });

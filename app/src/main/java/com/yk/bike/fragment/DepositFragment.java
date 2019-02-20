@@ -13,6 +13,7 @@ import com.yk.bike.adapter.DepositAdapter;
 import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
+import com.yk.bike.base.BaseRecyclerFragment;
 import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.UserInfoListResponse;
@@ -22,33 +23,14 @@ import com.yk.bike.utils.MainHandler;
 
 import java.util.List;
 
-public class DepositFragment extends BaseFragment<MainActivity> {
-
-    private RecyclerView recyclerView;
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    @Override
-    public int initLayout() {
-        return R.layout.fragment_recycler;
-    }
-
-    @Override
-    public void initView(View rootView, Bundle savedInstanceState) {
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            MainHandler.getInstance().postDelayed(this::initData, 500);
-        });
-    }
+public class DepositFragment extends BaseRecyclerFragment<MainActivity> {
 
     @Override
     public void initData() {
         ApiUtils.getInstance().findDeposit(new ResponseListener<UserInfoListResponse>() {
             @Override
             public void onFinish() {
-                swipeRefreshLayout.setRefreshing(false);
+                onDataFinish();
             }
 
             @Override
@@ -56,9 +38,7 @@ public class DepositFragment extends BaseFragment<MainActivity> {
                 if (isResponseSuccess(userInfoListResponse)) {
                     List<UserInfoResponse.UserInfo> userInfos = userInfoListResponse.getData();
                     DepositAdapter adapter = new DepositAdapter(userInfos);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    onDataChange(adapter);
 
                     adapter.setOnItemClickListener(new OnItemClickListener() {
                         @Override

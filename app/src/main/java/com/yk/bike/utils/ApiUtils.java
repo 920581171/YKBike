@@ -10,6 +10,8 @@ import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordListResponse;
 import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.MessageBroadListResponse;
+import com.yk.bike.response.MessageBroadResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -478,5 +480,105 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_SITE_LOCATION_DELETE_SITE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /*-------------------------------------------------MessageBroid-------------------------------------------------*/
+
+    /**
+     * 添加留言（发送者）
+     *
+     * @param messageBroad
+     * @param onResponseListener
+     */
+    public void addMessageBroad(MessageBroadResponse.MessageBroad messageBroad, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("senderId", messageBroad.getSenderId())
+                .add("messageContent", messageBroad.getMessageContent())
+                .add("messageType", messageBroad.getMessageType())
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_ADD, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    public void updateMessageBroad(MessageBroadResponse.MessageBroad messageBroad, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("messageId", messageBroad.getMessageId())
+                .add("senderId", messageBroad.getSenderId())
+                .add("handlerId", messageBroad.getHandlerId())
+                .add("handlerName", messageBroad.getHandlerName())
+                .add("messageContent", messageBroad.getMessageContent())
+                .add("messageReply", messageBroad.getMessageReply())
+                .add("messageStatus", messageBroad.getMessageStatus())
+                .add("messageType", messageBroad.getMessageType())
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_UPDATE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 查询所有留言板
+     *
+     * @param onResponseListener
+     */
+    public void findAllMessageBroad(OnResponseListener<MessageBroadListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder().build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_ALL, new CommonCallback<>(onResponseListener, MessageBroadListResponse.class));
+    }
+
+    /**
+     * 根据messageType查询所有留言板
+     *
+     * @param onResponseListener
+     */
+    public void findMessageBroadByType(OnResponseListener<MessageBroadListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("messageType", "1")
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_ALL_BY_TYPE, new CommonCallback<>(onResponseListener, MessageBroadListResponse.class));
+    }
+
+    /**
+     * 根据发送者Id查询留言板
+     *
+     * @param senderId
+     * @param onResponseListener
+     */
+    public void findMessageBroadBySenderId(String senderId, OnResponseListener<MessageBroadListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("senderId", senderId)
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_BY_SENDER_ID, new CommonCallback<>(onResponseListener, MessageBroadListResponse.class));
+    }
+
+    /**
+     * 根据处理者Id查询留言板
+     *
+     * @param handlerId
+     * @param onResponseListener
+     */
+    public void findMessageBroadByHandlerIdWithType(String handlerId, OnResponseListener<MessageBroadListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("handlerId", handlerId)
+                .add("messageType", "1")
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_BY_HANDLER_ID_WITH_TYPE, new CommonCallback<>(onResponseListener, MessageBroadListResponse.class));
+    }
+
+    /**
+     * 根据处理者Id查询留言板
+     *
+     * @param messageId
+     * @param onResponseListener
+     */
+    public void findMessageBroadByMessageId(String messageId, OnResponseListener<MessageBroadResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("messageId", messageId)
+                .build();
+
+        post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_BY_MESSAGE_ID, new CommonCallback<>(onResponseListener, MessageBroadResponse.class));
     }
 }

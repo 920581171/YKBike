@@ -43,6 +43,7 @@
     <string name="string_show_phone">手机号：</string>
     <string name="string_call">拨打电话</string>
     <string name="string_show_order_id">记录编号：</string>
+    <string name="string_show_msg_id">留言编号：</string>
     <string name="string_charge">元</string>
     <string name="string_show_charge">计费：</string>
     <string name="string_duration">分钟</string>
@@ -57,4 +58,6 @@
     <string name="string_add">添加</string>
     <string name="string_forward">前往</string>
     <string name="string_stop_bike">结束骑行</string>
+    <string name="string_hint_advice">输入您的反馈或建议</string>
+    <string name="string_hint_help">输入您的任何疑问或请求帮助</string>
 </resources>

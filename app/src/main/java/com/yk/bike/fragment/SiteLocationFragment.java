@@ -16,6 +16,7 @@ import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.adapter.SiteLocationAdapter;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
+import com.yk.bike.base.BaseRecyclerFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.SiteLocationListResponse;
@@ -25,32 +26,14 @@ import com.yk.bike.utils.MainHandler;
 
 import java.util.List;
 
-public class SiteLocationFragment extends BaseFragment<MainActivity> {
-
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    @Override
-    public int initLayout() {
-        return R.layout.fragment_recycler;
-    }
-
-    @Override
-    public void initView(View rootView, Bundle savedInstanceState) {
-        recyclerView = rootView.findViewById(R.id.recyclerView);
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            MainHandler.getInstance().postDelayed(this::initData, 500);
-        });
-    }
+public class SiteLocationFragment extends BaseRecyclerFragment<MainActivity> {
 
     @Override
     public void initData() {
         ApiUtils.getInstance().findAllSiteLocation(new ResponseListener<SiteLocationListResponse>() {
             @Override
             public void onFinish() {
-                swipeRefreshLayout.setRefreshing(false);
+                onDataFinish();
             }
 
             @Override
@@ -58,6 +41,7 @@ public class SiteLocationFragment extends BaseFragment<MainActivity> {
                 if (isResponseSuccess(siteLocationListResponse)) {
                     List<SiteLocationResponse.SiteLocation> siteLocations = siteLocationListResponse.getData();
                     SiteLocationAdapter adapter = new SiteLocationAdapter(siteLocations);
+                    onDataChange(adapter);
                     adapter.setOnItemClickListener(new OnItemClickListener<SiteLocationResponse.SiteLocation>() {
                         @Override
                         public void onClick(View v, RecyclerView.ViewHolder holder, int position) {
@@ -74,9 +58,8 @@ public class SiteLocationFragment extends BaseFragment<MainActivity> {
 
                         }
                     });
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                }else {
+                    showShort(siteLocationListResponse.getMsg());
                 }
             }
         });

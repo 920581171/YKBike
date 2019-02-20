@@ -2,16 +2,16 @@ package com.yk.bike.constant;
 
 public class UrlConsts {
     public static final String HEAD = "http://";
-//    public static final String IP = "192.168.43.151";
-//    public static final String IP = "192.168.0.112";
-//    public static final String IP = "192.168.3.154";
+    //    public static final String IP = "192.168.43.151";
+    //    public static final String IP = "192.168.0.112";
+    //        public static final String IP = "192.168.3.154";
     public static final String IP = "192.168.43.49";
+    //    public static final String IP = "192.168.137.1";
     public static final String PORT = "8080";
     public static final String IPORT = IP + ":" + PORT;
     public static final String HEADIPORT = HEAD + IPORT;
-//    public static final String HEADIPORT = HEAD + "192.168.3.120" + ":" + PORT;
-//        public static final String HEADIPORT = HEAD + "192.168.137.1" + ":" + PORT;
-//    public static final String HEADIPORT = HEAD + "192.168.1.232" + ":" + PORT;
+    //    public static final String HEADIPORT = HEAD + "192.168.3.120" + ":" + PORT;
+    //    public static final String HEADIPORT = HEAD + "192.168.1.232" + ":" + PORT;
 
     /**
      * file
@@ -77,4 +77,16 @@ public class UrlConsts {
     public static final String POST_SITE_LOCATION_FIND_ALL_SITE = "/siteLocation/findAllSiteLocation";
     public static final String POST_SITE_LOCATION_FIND_BY_SITE_ID = "/siteLocation/findSiteLocationById";
     public static final String POST_SITE_LOCATION_UPDATE_SITE = "/siteLocation/updateSiteLocation";
+
+    /**
+     * messagebroad
+     */
+    public static final String POST_MESSAGE_BROAD_ADD = "/messagebroad/addMessageBroad";
+    public static final String POST_MESSAGE_BROAD_DELETE = "/messagebroad/deleteMessageBroad";
+    public static final String POST_MESSAGE_BROAD_FIND_ALL = "/messagebroad/findAllMessageBroad";
+    public static final String POST_MESSAGE_BROAD_FIND_ALL_BY_TYPE = "/messagebroad/findMessageBroadByType";
+    public static final String POST_MESSAGE_BROAD_FIND_BY_HANDLER_ID_WITH_TYPE = "/messagebroad/findMessageBroadByHandlerIdWithType";
+    public static final String POST_MESSAGE_BROAD_FIND_BY_MESSAGE_ID = "/messagebroad/findMessageBroadByMessageId";
+    public static final String POST_MESSAGE_BROAD_FIND_BY_SENDER_ID = "/messagebroad/findMessageBroadBySenderId";
+    public static final String POST_MESSAGE_BROAD_UPDATE = "/messagebroad/updateMessageBroad";
 }

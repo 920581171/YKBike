@@ -2,13 +2,13 @@ package com.yk.bike.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yk.bike.R;
+import com.yk.bike.base.BaseAdapter;
+import com.yk.bike.base.BaseViewHolder;
 import com.yk.bike.response.BikeRecordResponse;
 
 import java.text.DateFormat;
@@ -16,51 +16,33 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class BikeRecordAdapter extends RecyclerView.Adapter<BikeRecordAdapter.ViewHolder> {
-
-    List<BikeRecordResponse.BikeRecord> list;
-
-    private OnItemClickListener<BikeRecordResponse.BikeRecord> onItemClickListener;
+public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord> {
 
     public BikeRecordAdapter(List<BikeRecordResponse.BikeRecord> list) {
-        this.list = list;
-    }
-
-    public List<BikeRecordResponse.BikeRecord> getList() {
-        return list;
-    }
-
-    public BikeRecordAdapter setList(List<BikeRecordResponse.BikeRecord> list) {
-        this.list = list;
-        return this;
-    }
-
-    public OnItemClickListener<BikeRecordResponse.BikeRecord> getOnItemClickListener() {
-        return onItemClickListener;
-    }
-
-    public BikeRecordAdapter setOnItemClickListener(OnItemClickListener<BikeRecordResponse.BikeRecord> onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-        return this;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = list.size() == 0 ?
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_empty_list, viewGroup, false) :
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_bike_record, viewGroup, false);
-        return new ViewHolder(view);
+        super(list);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.setIsRecyclable(false);
+    public int initLayout() {
+        return R.layout.item_recycler_bike_record;
+    }
 
-        if (list.size()==0)
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
+        baseViewHolder.setIsRecyclable(false);
+
+        View itemView = baseViewHolder.itemView;
+        TextView tvOrderId = itemView.findViewById(R.id.tv_order_id);
+        TextView tvBikeId = itemView.findViewById(R.id.tv_bike_id);
+        TextView tvMileage = itemView.findViewById(R.id.tv_mileage);
+        TextView tvCharge = itemView.findViewById(R.id.tv_charge);
+        TextView tvDuration = itemView.findViewById(R.id.tv_duration);
+        TextView tvCreateTime = itemView.findViewById(R.id.tv_create_time);
+
+        if (list.size() == 0)
             return;
 
-        Context context = viewHolder.itemView.getContext();
+        Context context = itemView.getContext();
 
         String charge = String.valueOf(list.get(i).getCharge()) + context.getResources().getString(R.string.string_charge);
 
@@ -77,44 +59,18 @@ public class BikeRecordAdapter extends RecyclerView.Adapter<BikeRecordAdapter.Vi
             charge = mileageText = durationText = "骑行中";
         }
 
-        viewHolder.tvOrderId.setText(list.get(i).getOrderId());
-        viewHolder.tvBikeId.setText(list.get(i).getBikeId());
-        viewHolder.tvMileage.setText(mileageText);
-        viewHolder.tvCharge.setText(charge);
-        viewHolder.tvCreateTime.setText(createTime);
-        viewHolder.tvDuration.setText(durationText);
+        tvOrderId.setText(list.get(i).getOrderId());
+        tvBikeId.setText(list.get(i).getBikeId());
+        tvMileage.setText(mileageText);
+        tvCharge.setText(charge);
+        tvCreateTime.setText(createTime);
+        tvDuration.setText(durationText);
 
-        viewHolder.itemView.setOnClickListener(v -> {
+        itemView.setOnClickListener(v -> {
             if (onItemClickListener != null)
-                onItemClickListener.onClick(v, viewHolder, i);
+                onItemClickListener.onClick(v, baseViewHolder, i);
         });
 
-        viewHolder.itemView.setOnLongClickListener(v -> false);
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size() == 0 ? 1 : list.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tvOrderId;
-        public TextView tvBikeId;
-        public TextView tvMileage;
-        public TextView tvCharge;
-        public TextView tvDuration;
-        public TextView tvCreateTime;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            tvOrderId = itemView.findViewById(R.id.tv_order_id);
-            tvBikeId = itemView.findViewById(R.id.tv_bike_id);
-            tvMileage = itemView.findViewById(R.id.tv_mileage);
-            tvCharge = itemView.findViewById(R.id.tv_charge);
-            tvDuration = itemView.findViewById(R.id.tv_duration);
-            tvCreateTime = itemView.findViewById(R.id.tv_create_time);
-        }
+        itemView.setOnLongClickListener(v -> false);
     }
 }

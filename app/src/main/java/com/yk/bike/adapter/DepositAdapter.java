@@ -8,27 +8,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yk.bike.R;
+import com.yk.bike.base.BaseAdapter;
+import com.yk.bike.base.BaseViewHolder;
 import com.yk.bike.response.UserInfoResponse;
 
 import java.util.List;
 
-public class DepositAdapter extends RecyclerView.Adapter<DepositAdapter.ViewHolder> {
+public class DepositAdapter extends BaseAdapter<UserInfoResponse.UserInfo> {
 
-    private List<UserInfoResponse.UserInfo> list;
-
-    private OnItemClickListener onItemClickListener;
-
-    public List<UserInfoResponse.UserInfo> getList() {
-        return list;
+    public DepositAdapter(List<UserInfoResponse.UserInfo> list) {
+        super(list);
     }
 
-    public DepositAdapter setList(List<UserInfoResponse.UserInfo> list) {
-        this.list = list;
-        return this;
-    }
-
-    public OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
+    @Override
+    public int initLayout() {
+        return R.layout.item_recycler_deposit_info;
     }
 
     public DepositAdapter setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -36,48 +30,19 @@ public class DepositAdapter extends RecyclerView.Adapter<DepositAdapter.ViewHold
         return this;
     }
 
-    public DepositAdapter(List<UserInfoResponse.UserInfo> list) {
-        this.list = list;
-    }
-
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = list.size() == 0 ?
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_empty_list, viewGroup, false) :
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recycler_deposit_info, viewGroup, false);
-        return new DepositAdapter.ViewHolder(view);
-    }
+    public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
+        baseViewHolder.setIsRecyclable(false);
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.setIsRecyclable(false);
-
-        if (list.size()==0)
+        if (list.size() == 0)
             return;
 
-        viewHolder.tvUserId.setText(list.get(i).getUserId());
+        baseViewHolder.getTextView(R.id.tv_user_id).setText(list.get(i).getUserId());
 
-        viewHolder.itemView.setOnClickListener(v -> {
+        baseViewHolder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onClick(v, viewHolder, i);
+                onItemClickListener.onClick(v, baseViewHolder, i);
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size() == 0 ? 1 : list.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tvUserId;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            tvUserId = itemView.findViewById(R.id.tv_user_id);
-        }
     }
 }
