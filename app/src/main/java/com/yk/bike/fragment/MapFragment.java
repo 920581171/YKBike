@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.Projection;
@@ -528,6 +529,28 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
         });
     }
 
+    public void checkStop() {
+        ApiUtils.getInstance().findAllSiteLocation(new ResponseListener<SiteLocationListResponse>() {
+            @Override
+            public void onSuccess(SiteLocationListResponse siteLocationListResponse) {
+                if (isResponseSuccess(siteLocationListResponse)) {
+                    List<SiteLocationResponse.SiteLocation> list = siteLocationListResponse.getData();
+                    for (SiteLocationResponse.SiteLocation siteLocation:list){
+                        LatLng latLng = new LatLng(siteLocation.getLatitude(),siteLocation.getLongitude());
+                        float distance = AMapUtils.calculateLineDistance(getLatLng(),latLng);
+                        if (distance<siteLocation.getRadius()){
+                            stopBike();
+                            return;
+                        }
+                    }
+                    showAlertDialog("无法结束","不在停车区域内",new String[]{"确定"},new AlertDialogListener());
+                } else {
+                    showShort(siteLocationListResponse.getMsg());
+                }
+            }
+        });
+    }
+
     public String[] subTime(long after, long before) {
         String[] subTimes = new String[3];
         long subTime = (after - before) / 1000;
@@ -576,7 +599,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 showAlertDialog("结束骑行", "是否结束骑行？", new String[]{"结束", "取消"}, new AlertDialogListener() {
                     @Override
                     public void onPositiveClick(DialogInterface dialog, int which) {
-                        stopBike();
+                        checkStop();
                     }
                 });
                 break;

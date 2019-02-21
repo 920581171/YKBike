@@ -17,8 +17,6 @@ public class MessageBroadActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common);
 
-        setResult(Consts.RESULT_CODE_MESSAGE_BROAD);
-
         BaseFragment fragment = SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE).equals(Consts.LOGIN_TYPE_ADMIN) ?
                 new MessageBroadAdminFragment().setMessageId(getIntent().getStringExtra(Consts.INTENT_STRING_MESSAGE_ID)) :
                 new MessageBroadUserFragment();
