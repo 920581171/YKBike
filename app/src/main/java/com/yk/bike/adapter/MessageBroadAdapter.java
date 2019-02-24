@@ -24,8 +24,6 @@ public class MessageBroadAdapter extends BaseAdapter<MessageBroadResponse.Messag
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
-
         if (list.size() == 0)
             return;
 

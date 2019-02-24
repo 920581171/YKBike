@@ -15,6 +15,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     public BaseViewHolder(@NonNull View itemView) {
         super(itemView);
+        setIsRecyclable(false);
     }
 
     public View getView(int viewId){

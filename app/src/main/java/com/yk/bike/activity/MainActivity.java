@@ -19,27 +19,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.yk.bike.R;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
-import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.fragment.AboutFragment;
 import com.yk.bike.fragment.AdminInfoListFragment;
 import com.yk.bike.fragment.BikeInfoFragment;
 import com.yk.bike.fragment.BikeRecordFragment;
+import com.yk.bike.fragment.ChatRoomFragment;
 import com.yk.bike.fragment.DepositFragment;
 import com.yk.bike.fragment.MapFragment;
 import com.yk.bike.fragment.MessageBroadListFragment;
@@ -49,8 +45,13 @@ import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.BitmapCache;
+import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
+import com.yk.bike.utils.SpUtils;
+import com.yk.bike.websocket.ChatMessage;
+import com.yk.bike.websocket.NotificationUtils;
 import com.yk.bike.websocket.WebSocketManager;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
@@ -69,6 +70,7 @@ public class MainActivity extends BaseActivity
     public final int FRAGMENT_SITE_LOCATION = 5;
     public final int FRAGMENT_DEPOSIT = 6;
     public final int FRAGMENT_MESSAGE_BROAD = 7;
+    public final int FRAGMENT_CHAT_ROOM = 8;
 
     private int currentFragmentNum = 0;
 
@@ -98,6 +100,20 @@ public class MainActivity extends BaseActivity
                     case Consts.BR_ACTION_LOGOUT:
                         logout();
                         break;
+                    case Consts.BR_ACTION_CHAT:
+                        if (!ChatActivity.isFront) {
+                            ChatMessage chatMessage = GsonUtils.fromJson(intent.getStringExtra(Consts.INTENT_STRING_CHAT), ChatMessage.class);
+                            NotificationUtils.getInstance().showChatMessage(chatMessage.getFromId(), chatMessage.getChatContent());
+                        }
+                        break;
+                    case Consts.BR_ACTION_FORCE_LOGOUT:
+                        showAlertDialog("强制下线", "账号在其他设备登录", new String[]{"确定"}, new AlertDialogListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                logout();
+                            }
+                        });
+                        break;
                 }
         }
     };
@@ -106,13 +122,15 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Consts.BR_ACTION_EXIT);
         intentFilter.addAction(Consts.BR_ACTION_LOGIN);
         intentFilter.addAction(Consts.BR_ACTION_LOGOUT);
+        intentFilter.addAction(Consts.BR_ACTION_CHAT);
+        intentFilter.addAction(Consts.BR_ACTION_FORCE_LOGOUT);
         registerReceiver(br, intentFilter);
 
         fab = findViewById(R.id.fab);
@@ -155,7 +173,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void initFragment() {
-        fragments = new BaseFragment[8];
+        fragments = new BaseFragment[9];
         fragments[FRAGMENT_MAP] = new MapFragment();
         fragments[FRAGMENT_BIKE_INFO] = new BikeInfoFragment();
         fragments[FRAGMENT_ABOUT] = new AboutFragment();
@@ -164,6 +182,7 @@ public class MainActivity extends BaseActivity
         fragments[FRAGMENT_SITE_LOCATION] = new SiteLocationFragment();
         fragments[FRAGMENT_DEPOSIT] = new DepositFragment();
         fragments[FRAGMENT_MESSAGE_BROAD] = new MessageBroadListFragment();
+        fragments[FRAGMENT_CHAT_ROOM] = new ChatRoomFragment();
 
         getSupportFragmentManager().getFragments().clear();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -194,7 +213,7 @@ public class MainActivity extends BaseActivity
 
         int avatarId;
 
-        if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE))) {
+        if (SpUtils.isLoginAdmin()) {
             menu.setGroupVisible(R.id.group_user, false);
             menu.setGroupVisible(R.id.group_admin, true);
             avatarId = R.drawable.admin;
@@ -208,16 +227,7 @@ public class MainActivity extends BaseActivity
         CircleImageView cvAvatar = view.findViewById(R.id.cv_avatar);
         TextView tvId = view.findViewById(R.id.tv_id);
 
-        Glide.with(this)
-                .applyDefaultRequestOptions(new RequestOptions()
-                        .error(avatarId)
-                        //禁用内存缓存
-                        .skipMemoryCache(true)
-                        //硬盘缓存功能
-                        .diskCacheStrategy(DiskCacheStrategy.NONE))
-                .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
-                .into(cvAvatar);
-
+        BitmapCache.getAvatar(avatarId, SpUtils.getLoginId(), cvAvatar);
         tvId.setText(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
 
         refreshFragment();
@@ -322,6 +332,9 @@ public class MainActivity extends BaseActivity
                 switchFragment(FRAGMENT_DEPOSIT).initData();
                 break;
             //        else if (id == R.id.nav_count) { }
+            case R.id.nav_chat_room:
+                switchFragment(FRAGMENT_CHAT_ROOM).initData();
+                break;
             case R.id.nav_message_board_sender:
             case R.id.nav_message_board_handler:
                 switchFragment(FRAGMENT_MESSAGE_BROAD).initData();

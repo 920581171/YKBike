@@ -25,7 +25,8 @@ public class BikeInfoAdapter extends BaseAdapter<BikeInfoResponse.BikeInfo> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
+        if (list.size()==0)
+            return;
 
         View itemView = baseViewHolder.itemView;
         TextView bikeId = itemView.findViewById(R.id.tv_bike_id);
@@ -33,9 +34,6 @@ public class BikeInfoAdapter extends BaseAdapter<BikeInfoResponse.BikeInfo> {
         TextView mileage = itemView.findViewById(R.id.tv_mileage);
         ImageView ivShowInMap = itemView.findViewById(R.id.iv_show_in_map);
         TextView tvShowInMap = itemView.findViewById(R.id.tv_show_in_map);
-
-        if (list.size()==0)
-            return;
 
         bikeId.setText(list.get(i).getBikeId());
         String mileageText = list.get(i).getMileage() + itemView.getContext().getResources().getString(R.string.string_mileage_unit);

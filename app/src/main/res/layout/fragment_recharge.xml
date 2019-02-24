@@ -28,7 +28,7 @@
             android:layout_marginEnd="8dp"
             android:text="押金"
             android:textColor="@android:color/black"
-            app:layout_constraintEnd_toStartOf="@+id/view"
+            app:layout_constraintEnd_toStartOf="@+id/arrow_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_show_deposit"/>
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/arrow_left"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -66,7 +66,7 @@
             android:text="余额"
             android:textColor="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/arrow_left"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView

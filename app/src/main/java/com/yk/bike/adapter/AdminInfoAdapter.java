@@ -22,8 +22,6 @@ public class AdminInfoAdapter extends BaseAdapter<AdminInfoResponse.AdminInfo> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
-
         if (list.size()==0)
             return;
 
@@ -31,6 +29,9 @@ public class AdminInfoAdapter extends BaseAdapter<AdminInfoResponse.AdminInfo> {
         baseViewHolder.getTextView(R.id.tv_phone).setText(list.get(i).getAdminPhone());
 
         baseViewHolder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener!=null){
+                onItemClickListener.onClick(v,baseViewHolder,i);
+            }
         });
         baseViewHolder.itemView.setOnLongClickListener(v -> false);
         baseViewHolder.getImageView(R.id.iv_call).setOnClickListener(v -> {

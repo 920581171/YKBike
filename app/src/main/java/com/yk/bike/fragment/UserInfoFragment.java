@@ -11,21 +11,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.yk.bike.R;
 import com.yk.bike.activity.AccountActivity;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
-import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MobResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.AccountValidatorUtil;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.MainHandler;
@@ -106,15 +103,7 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                     tvDeposit.setText(userInfo.getDeposit() < 0 ? "押金退还中" : String.valueOf(userInfo.getDeposit()));
                     tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? Color.RED : Color.BLACK);
 
-                    Glide.with(getActivityContext())
-                            .applyDefaultRequestOptions(new RequestOptions()
-                                    .error(R.drawable.avatar)
-                                    //禁用内存缓存
-                                    .skipMemoryCache(true)
-                                    //硬盘缓存功能
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + userInfo.getUserId())
-                            .into(cvAvatar);
+                    BitmapCache.getAvatar(R.drawable.avatar,userInfo.getUserId(),cvAvatar);
                 } else {
                     showShort(userInfoResponse.getMsg());
                 }

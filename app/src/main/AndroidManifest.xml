@@ -72,6 +72,8 @@
 
         <activity android:name=".activity.MessageBroadActivity"/>
 
+        <activity android:name=".activity.ChatActivity"/>
+
         <!--截图-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

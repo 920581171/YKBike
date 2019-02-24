@@ -24,15 +24,13 @@ public class SiteLocationAdapter extends BaseAdapter<SiteLocationResponse.SiteLo
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
+        if (list.size()==0)
+            return;
 
         View itemView = baseViewHolder.itemView;
         TextView tvLatitude = itemView.findViewById(R.id.tv_latitude);
         TextView tvLongitude = itemView.findViewById(R.id.tv_longitude);
         TextView tvRadius = itemView.findViewById(R.id.tv_radius);
-
-        if (list.size()==0)
-            return;
 
         tvLatitude.setText(String.valueOf(list.get(i).getLatitude()));
         tvLongitude.setText(String.valueOf(list.get(i).getLongitude()));

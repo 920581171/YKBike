@@ -3,7 +3,7 @@ package com.yk.bike.callback;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.gson.Gson;
+import com.yk.bike.response.BaseResponse;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MainHandler;
 
@@ -13,7 +13,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class CommonCallback<T> implements Callback {
+public class CommonCallback<T extends BaseResponse> implements Callback {
 
     private static final String TAG = "CommonCallback";
 

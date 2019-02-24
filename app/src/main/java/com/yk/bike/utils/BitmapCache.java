@@ -1,12 +1,28 @@
 package com.yk.bike.utils;
 
-import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseApplication;
+import com.yk.bike.constant.UrlConsts;
+
+import java.util.concurrent.ExecutionException;
 
 public class BitmapCache {
     private static BitmapCache instance;
@@ -75,5 +91,31 @@ public class BitmapCache {
         vectorDrawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public static void getAvatar(int drawableId, String loginId, ImageView avatar) {
+        Glide.with(BaseApplication.getApplication())
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .error(drawableId)
+                        //禁用内存缓存
+                        .skipMemoryCache(true)
+                        //硬盘缓存功能
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
+                .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + loginId)
+                .into(avatar);
+    }
+
+    public static void getAvatar(int drawableId, String loginId,RequestListener<Bitmap> listener) {
+        Glide.with(BaseApplication.getApplication())
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .error(drawableId)
+                        //禁用内存缓存
+                        .skipMemoryCache(true)
+                        //硬盘缓存功能
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
+                .asBitmap()
+                .listener(listener)
+                .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + loginId)
+                .submit();
     }
 }

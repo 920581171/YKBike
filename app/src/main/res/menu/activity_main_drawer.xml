@@ -39,13 +39,13 @@
             android:icon="@drawable/ic_menu_deposit"
             android:title="押金管理"/>
         <item
+            android:id="@+id/nav_chat_room"
+            android:icon="@drawable/ic_menu_chat_room"
+            android:title="聊天记录"/>
+        <item
             android:id="@+id/nav_message_board_handler"
             android:icon="@drawable/ic_menu_message_board"
             android:title="留言板"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_count"-->
-            <!--android:icon="@drawable/ic_menu_count"-->
-            <!--android:title="统计"/>-->
     </group>
 
     <item android:title="账户">

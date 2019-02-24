@@ -16,7 +16,9 @@ public class Consts {
 
     public static final String BR_ACTION_EXIT = "com.yk.bike.action.exit";
     public static final String BR_ACTION_LOGIN = "com.yk.bike.action.login";
-    public static final String BR_ACTION_LOGOUT  = "com.yk,bike.action.logout";
+    public static final String BR_ACTION_LOGOUT = "com.yk,bike.action.logout";
+    public static final String BR_ACTION_CHAT = "com.yk,bike.action.chat";
+    public static final String BR_ACTION_FORCE_LOGOUT = "com.yk,bike.action.force.logout";
 
     public static final String SP_STRING_LOGIN_NAME = "loginName";
     public static final String SP_STRING_LOGIN_PHONE = "loginPhone";
@@ -37,7 +39,24 @@ public class Consts {
     public static final String CODE_RESULT_TYPE_USER_BIKE = "userBike";
     public static final String CODE_RESULT_TYPE_USER_FIX = "userFix";
 
+    public static final int WEBSOCKET_TYPE_FORCE_LOGOUT = -1;
     public static final int WEBSOCKET_TYPE_GET_PARAM = 0;
+    public static final int WEBSOCKET_TYPE_CHAT = 1;
 
     public static final String INTENT_STRING_MESSAGE_ID = "messageId";
+    public static final String INTENT_STRING_TO_ID = "toId";
+    public static final String INTENT_STRING_CHAT = "chat";
+
+    public static final String CHAT_TYPE_TEXT = "0";
+    public static final String CHAT_TYPE_IMAGE = "1";
+    public static final String CHAT_TYPE_AUDIO = "2";
+
+    public static final int NOTIFICATION_ID_CHAT = 1;
+    public static final int NOTIFICATION_ID_OTHER = 0;
+
+    public static final String CHANNEL_ID_CHAT = "1";
+    public static final String CHANNEL_ID_OTHER = "0";
+
+    public static final String CHANNEL_NAME_CHAT = "聊天消息";
+    public static final String CHANNEL_NAME_OTHER = "其他";
 }

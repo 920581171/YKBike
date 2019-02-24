@@ -1,5 +1,6 @@
 package com.yk.bike.websocket;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.neovisionaries.ws.client.WebSocket;
@@ -7,6 +8,7 @@ import com.neovisionaries.ws.client.WebSocketAdapter;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.neovisionaries.ws.client.WebSocketFrame;
+import com.yk.bike.base.BaseApplication;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.utils.GsonUtils;
@@ -59,13 +61,17 @@ public class WebSocketManager {
         public void onTextMessage(WebSocket websocket, String text) throws Exception {
             super.onTextMessage(websocket, text);
             WebSocketMessage webSocketMessage = GsonUtils.fromJson(text, WebSocketMessage.class);
-            if (webSocketMessage.getType() == Consts.WEBSOCKET_TYPE_GET_PARAM) {
+            if (webSocketMessage.getType() == Consts.WEBSOCKET_TYPE_FORCE_LOGOUT) {
+                BaseApplication.getApplication().sendBroadcast(new Intent().setAction(Consts.BR_ACTION_FORCE_LOGOUT));
+            } else if (webSocketMessage.getType() == Consts.WEBSOCKET_TYPE_GET_PARAM) {
                 WebSocketParam param = new WebSocketParam()
                         .setLoginId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
                         .setLoginType(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE))
                         .setPassword(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_PASSWORD));
                 webSocketMessage.setData(GsonUtils.toJson(param));
                 sendText(GsonUtils.toJson(webSocketMessage));
+            } else if (webSocketMessage.getType() == Consts.WEBSOCKET_TYPE_CHAT) {
+                BaseApplication.getApplication().sendBroadcast(new Intent().setAction(Consts.BR_ACTION_CHAT).putExtra(Consts.INTENT_STRING_CHAT, (String) webSocketMessage.getData()));
             }
             Log.d(TAG, "收到文字：" + text);
         }

@@ -9,12 +9,15 @@ import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordListResponse;
 import com.yk.bike.response.BikeRecordResponse;
+import com.yk.bike.response.ChatMessageListResponse;
+import com.yk.bike.response.ChatRoomListResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.MessageBroadListResponse;
 import com.yk.bike.response.MessageBroadResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
+import com.yk.bike.websocket.ChatMessage;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -580,5 +583,30 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_MESSAGE_BROAD_FIND_BY_MESSAGE_ID, new CommonCallback<>(onResponseListener, MessageBroadResponse.class));
+    }
+
+    /*-------------------------------------------------------------chatMessage-----------------------------------------------------------*/
+
+    /**
+     * 根据fristId查找聊天人员
+     */
+    public void findALLChatMessageByBothId(String id1, String id2, OnResponseListener<ChatMessageListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("id1", id1)
+                .add("id2", id2)
+                .build();
+
+        post(formBody, UrlConsts.POST_CHAT_MESSAGE_BOTH_ALL, new CommonCallback<>(onResponseListener, ChatMessageListResponse.class));
+    }
+
+    /*-------------------------------------------------------------chatRoom-----------------------------------------------------------*/
+
+
+    public void findALLChatRoomByFristId(String fristId, OnResponseListener<ChatRoomListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("fristId", fristId)
+                .build();
+
+        post(formBody, UrlConsts.POST_CHAT_ROOM_FIND_ALL_BY_FRISTID, new CommonCallback<>(onResponseListener, ChatRoomListResponse.class));
     }
 }

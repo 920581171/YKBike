@@ -1,6 +1,8 @@
 package com.yk.bike.callback;
 
-public interface OnResponseListener<T> {
+import com.yk.bike.response.BaseResponse;
+
+public interface OnResponseListener<T extends BaseResponse> {
     void onStart();
     void onFinish();
     void onError(String errorMsg);

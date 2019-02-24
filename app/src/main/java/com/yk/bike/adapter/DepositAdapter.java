@@ -32,8 +32,6 @@ public class DepositAdapter extends BaseAdapter<UserInfoResponse.UserInfo> {
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
-
         if (list.size() == 0)
             return;
 

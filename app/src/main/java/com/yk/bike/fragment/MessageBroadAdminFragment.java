@@ -1,11 +1,13 @@
 package com.yk.bike.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.widget.TextView;
 
 import com.yk.bike.R;
+import com.yk.bike.activity.ChatActivity;
 import com.yk.bike.activity.MessageBroadActivity;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
@@ -70,7 +72,8 @@ public class MessageBroadAdminFragment extends BaseFragment<MessageBroadActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_content:
+            case R.id.tv_contact:
+                startActivity(new Intent(getActivityContext(), ChatActivity.class).putExtra(Consts.INTENT_STRING_TO_ID, messageBroad.getSenderId()));
                 break;
             case R.id.tv_reply:
                 updateMessageBroad();

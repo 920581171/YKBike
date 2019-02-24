@@ -29,7 +29,8 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder baseViewHolder, int i) {
-        baseViewHolder.setIsRecyclable(false);
+        if (list.size() == 0)
+            return;
 
         View itemView = baseViewHolder.itemView;
         TextView tvOrderId = itemView.findViewById(R.id.tv_order_id);
@@ -38,9 +39,6 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
         TextView tvCharge = itemView.findViewById(R.id.tv_charge);
         TextView tvDuration = itemView.findViewById(R.id.tv_duration);
         TextView tvCreateTime = itemView.findViewById(R.id.tv_create_time);
-
-        if (list.size() == 0)
-            return;
 
         Context context = itemView.getContext();
 

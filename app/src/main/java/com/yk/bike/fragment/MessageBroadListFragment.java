@@ -65,7 +65,7 @@ public class MessageBroadListFragment extends BaseRecyclerFragment<MainActivity>
                     adapter.setOnItemClickListener(new ItemClickListener<MessageBroadResponse.MessageBroad>() {
                         @Override
                         public void onClick(View v, RecyclerView.ViewHolder holder, int position) {
-                            if (messageBroads.get(position).getMessageType().equals("0"))
+                            if (messageBroads.get(position).getMessageStatus().equals("0"))
                                 startActivity(new Intent(getActivityContext(), MessageBroadActivity.class).putExtra(Consts.INTENT_STRING_MESSAGE_ID, messageBroads.get(position).getMessageId()));
                         }
                     });

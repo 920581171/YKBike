@@ -8,12 +8,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.yk.bike.R;
 import com.yk.bike.activity.AccountActivity;
 import com.yk.bike.base.AlertDialogListener;
@@ -25,6 +21,7 @@ import com.yk.bike.response.AdminInfoResponse;
 import com.yk.bike.response.MobResponse;
 import com.yk.bike.utils.AccountValidatorUtil;
 import com.yk.bike.utils.ApiUtils;
+import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.MD5Utils;
 import com.yk.bike.utils.MainHandler;
@@ -36,10 +33,11 @@ import java.util.Objects;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AdminInfoFragment extends BaseFragment<AccountActivity> implements View.OnClickListener {
 
-    private ImageView cvAvatar;
+    private CircleImageView cvAvatar;
     private TextView tvId;
     private TextView tvName;
     private TextView tvPhone;
@@ -82,16 +80,7 @@ public class AdminInfoFragment extends BaseFragment<AccountActivity> implements 
                     tvName.setText(adminInfo.getAdminName());
                     tvPhone.setText(adminInfo.getAdminPhone());
 
-                    Glide.with(getActivityContext())
-                            .applyDefaultRequestOptions(new RequestOptions()
-                                    .error(R.drawable.admin)
-                                    //禁用内存缓存
-                                    .skipMemoryCache(true)
-                                    //硬盘缓存功能
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE))
-                            .load(UrlConsts.HEADIPORT + UrlConsts.GET_COMMON_DOWNLOAD_AVATAR + "?id=" + adminInfo.getAdminId())
-                            .into(cvAvatar);
-
+                    BitmapCache.getAvatar(R.drawable.admin,adminInfo.getAdminId(),cvAvatar);
                 } else {
                     showShort(adminInfoResponse.getMsg());
                 }

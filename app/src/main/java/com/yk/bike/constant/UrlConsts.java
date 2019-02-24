@@ -4,8 +4,8 @@ public class UrlConsts {
     public static final String HEAD = "http://";
     //    public static final String IP = "192.168.43.151";
     //    public static final String IP = "192.168.0.112";
-            public static final String IP = "192.168.3.154";
-//    public static final String IP = "192.168.43.49";
+    //            public static final String IP = "192.168.3.154";
+    public static final String IP = "192.168.43.49";
     //    public static final String IP = "192.168.137.1";
     public static final String PORT = "8080";
     public static final String IPORT = IP + ":" + PORT;
@@ -89,4 +89,14 @@ public class UrlConsts {
     public static final String POST_MESSAGE_BROAD_FIND_BY_MESSAGE_ID = "/messagebroad/findMessageBroadByMessageId";
     public static final String POST_MESSAGE_BROAD_FIND_BY_SENDER_ID = "/messagebroad/findMessageBroadBySenderId";
     public static final String POST_MESSAGE_BROAD_UPDATE = "/messagebroad/updateMessageBroad";
+
+    /**
+     * chatmessage
+     */
+    public static final String POST_CHAT_MESSAGE_BOTH_ALL = "/chatmessage/findALLChatMessageByBothId";
+
+    /**
+     * chatroom
+     */
+    public static final String POST_CHAT_ROOM_FIND_ALL_BY_FRISTID = "/chatroom/findALLChatRoomByFristId";
 }
