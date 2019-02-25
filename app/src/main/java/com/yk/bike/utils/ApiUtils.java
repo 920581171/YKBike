@@ -506,13 +506,9 @@ public class ApiUtils {
     public void updateMessageBroad(MessageBroadResponse.MessageBroad messageBroad, OnResponseListener<CommonResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("messageId", messageBroad.getMessageId())
-                .add("senderId", messageBroad.getSenderId())
                 .add("handlerId", messageBroad.getHandlerId())
                 .add("handlerName", messageBroad.getHandlerName())
-                .add("messageContent", messageBroad.getMessageContent())
                 .add("messageReply", messageBroad.getMessageReply())
-                .add("messageStatus", messageBroad.getMessageStatus())
-                .add("messageType", messageBroad.getMessageType())
                 .build();
 
         post(formBody, UrlConsts.POST_MESSAGE_BROAD_UPDATE, new CommonCallback<>(onResponseListener, CommonResponse.class));
