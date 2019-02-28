@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.yk.bike.R;
 import com.yk.bike.base.BaseAdapter;
 import com.yk.bike.base.BaseViewHolder;
+import com.yk.bike.response.DepositRecordResponse;
 import com.yk.bike.response.UserInfoResponse;
 
 import java.util.List;

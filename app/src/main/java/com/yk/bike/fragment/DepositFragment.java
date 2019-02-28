@@ -16,10 +16,12 @@ import com.yk.bike.base.BaseFragment;
 import com.yk.bike.base.BaseRecyclerFragment;
 import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
+import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.MainHandler;
+import com.yk.bike.utils.SpUtils;
 
 import java.util.List;
 
@@ -48,25 +50,25 @@ public class DepositFragment extends BaseRecyclerFragment<MainActivity> {
                                 public void onPositiveClick(DialogInterface dialog, int which) {
                                     switch (which) {
                                         case 0:
-                                            ApiUtils.getInstance().updateUserInfo(userInfos.get(position).setDeposit(0), new ResponseListener<UserInfoResponse>() {
+                                            ApiUtils.getInstance().addDepositRecord(userInfos.get(position).getUserId(),0, new ResponseListener<CommonResponse>() {
                                                 @Override
-                                                public void onSuccess(UserInfoResponse userInfoResponse) {
-                                                    if (isResponseSuccess(userInfoResponse)) {
+                                                public void onSuccess(CommonResponse commonResponse) {
+                                                    if (isResponseSuccess(commonResponse)) {
                                                         showShort("同意申请");
                                                     } else {
-                                                        showShort(userInfoResponse.getMsg());
+                                                        showShort(commonResponse.getMsg());
                                                     }
                                                 }
                                             });
                                             break;
                                         case 1:
-                                            ApiUtils.getInstance().updateUserInfo(userInfos.get(position).setDeposit(199), new ResponseListener<UserInfoResponse>() {
+                                            ApiUtils.getInstance().addDepositRecord(userInfos.get(position).getUserId(),199, new ResponseListener<CommonResponse>() {
                                                 @Override
-                                                public void onSuccess(UserInfoResponse userInfoResponse) {
-                                                    if (isResponseSuccess(userInfoResponse)) {
+                                                public void onSuccess(CommonResponse commonResponse) {
+                                                    if (isResponseSuccess(commonResponse)) {
                                                         showShort("拒绝申请");
                                                     } else {
-                                                        showShort(userInfoResponse.getMsg());
+                                                        showShort(commonResponse.getMsg());
                                                     }
                                                 }
                                             });

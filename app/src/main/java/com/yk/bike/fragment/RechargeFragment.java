@@ -13,13 +13,17 @@ import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseFragment;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
+import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
+import com.yk.bike.utils.SpUtils;
 
 public class RechargeFragment extends BaseFragment<AccountActivity> implements View.OnClickListener {
 
+    private TextView tvShowDeposit;
     private TextView tvDeposit;
+    private TextView tvShowBalance;
     private TextView tvBalance;
 
     UserInfoResponse.UserInfo userInfo;
@@ -33,7 +37,9 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
 
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
+        tvShowDeposit = rootView.findViewById(R.id.tv_show_deposit);
         tvDeposit = rootView.findViewById(R.id.tv_deposit);
+        tvShowBalance = rootView.findViewById(R.id.tv_show_balance);
         tvBalance = rootView.findViewById(R.id.tv_balance);
         tvDepositCharge = rootView.findViewById(R.id.tv_deposit_charge);
         ctlChargeList = rootView.findViewById(R.id.ctl_charge_list);
@@ -49,6 +55,9 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
 
         ConstraintLayout ctlBalanceCharge = rootView.findViewById(R.id.ctl_balance_charge);
         ConstraintLayout ctlDepositCharge = rootView.findViewById(R.id.ctl_deposit_charge);
+
+        tvShowDeposit.setOnClickListener(this);
+        tvDeposit.setOnClickListener(this);
 
         tcCharge10.setOnClickListener(this);
         tcCharge20.setOnClickListener(this);
@@ -84,6 +93,10 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_show_deposit:
+            case R.id.tv_deposit:
+                getActivityContext().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new DepositRecordFragment()).addToBackStack(null).commit();
+                break;
             case R.id.ctl_balance_charge:
                 v.setSelected(ctlChargeList.getVisibility() == View.GONE);
                 ctlChargeList.setVisibility(ctlChargeList.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
@@ -93,14 +106,14 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                     showAlertDialog("支付押金", "是否支付199元押金？", new String[]{"支付", "取消"}, new AlertDialogListener() {
                         @Override
                         public void onPositiveClick(DialogInterface dialog, int which) {
-                            ApiUtils.getInstance().updateUserInfo(userInfo.copy().setDeposit(199), new ResponseListener<UserInfoResponse>() {
+                            ApiUtils.getInstance().addDepositRecord(SpUtils.getLoginId(), 199, new ResponseListener<CommonResponse>() {
                                 @Override
-                                public void onSuccess(UserInfoResponse userInfoResponse) {
-                                    if (isResponseSuccess(userInfoResponse)) {
+                                public void onSuccess(CommonResponse commonResponse) {
+                                    if (isResponseSuccess(commonResponse)) {
                                         showShort("支付成功");
                                         initData();
                                     } else {
-                                        showShort(userInfoResponse.getMsg());
+                                        showShort(commonResponse.getMsg());
                                     }
                                 }
                             });

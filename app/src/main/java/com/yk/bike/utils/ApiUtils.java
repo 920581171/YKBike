@@ -12,6 +12,7 @@ import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.ChatMessageListResponse;
 import com.yk.bike.response.ChatRoomListResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.DepositRecordListResponse;
 import com.yk.bike.response.MessageBroadListResponse;
 import com.yk.bike.response.MessageBroadResponse;
 import com.yk.bike.response.SiteLocationListResponse;
@@ -604,5 +605,44 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_CHAT_ROOM_FIND_ALL_BY_FRISTID, new CommonCallback<>(onResponseListener, ChatRoomListResponse.class));
+    }
+
+    /*-----------------------------------------------depositrecord-----------------------------------------------------------*/
+
+    /**
+     * 添加押金记录
+     */
+    public void addDepositRecord(String userId, float deposit, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .add("deposit", String.valueOf(deposit))
+                .build();
+
+        post(formBody, UrlConsts.POST_DEPOSIT_RECORD_ADD, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 更新押金记录
+     */
+    public void updateDepositRecord(String userId, String depositStatus, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_DEPOSIT_RECORD_UPDATE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 根据用户Id查询押金记录
+     *
+     * @param userId
+     * @param onResponseListener
+     */
+    public void findDepositRecordByUserId(String userId, OnResponseListener<DepositRecordListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_DEPOSIT_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, DepositRecordListResponse.class));
     }
 }
