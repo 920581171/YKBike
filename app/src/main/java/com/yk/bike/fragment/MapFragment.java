@@ -1,6 +1,7 @@
 package com.yk.bike.fragment;
 
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -37,10 +38,12 @@ import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.SiteLocationResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.SharedPreferencesUtils;
+import com.yk.bike.utils.SpUtils;
 import com.yk.bike.widght.SitePlanView;
 
 import java.text.SimpleDateFormat;
@@ -535,15 +538,15 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
             public void onSuccess(SiteLocationListResponse siteLocationListResponse) {
                 if (isResponseSuccess(siteLocationListResponse)) {
                     List<SiteLocationResponse.SiteLocation> list = siteLocationListResponse.getData();
-                    for (SiteLocationResponse.SiteLocation siteLocation:list){
-                        LatLng latLng = new LatLng(siteLocation.getLatitude(),siteLocation.getLongitude());
-                        float distance = AMapUtils.calculateLineDistance(getLatLng(),latLng);
-                        if (distance<siteLocation.getRadius()){
+                    for (SiteLocationResponse.SiteLocation siteLocation : list) {
+                        LatLng latLng = new LatLng(siteLocation.getLatitude(), siteLocation.getLongitude());
+                        float distance = AMapUtils.calculateLineDistance(getLatLng(), latLng);
+                        if (distance < siteLocation.getRadius()) {
                             stopBike();
                             return;
                         }
                     }
-                    showAlertDialog("无法结束","不在停车区域内",new String[]{"确定"},new AlertDialogListener());
+                    showAlertDialog("无法结束", "不在停车区域内", new String[]{"确定"}, new AlertDialogListener());
                 } else {
                     showShort(siteLocationListResponse.getMsg());
                 }
@@ -599,7 +602,25 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 showAlertDialog("结束骑行", "是否结束骑行？", new String[]{"结束", "取消"}, new AlertDialogListener() {
                     @Override
                     public void onPositiveClick(DialogInterface dialog, int which) {
-                        checkStop();
+                        ApiUtils.getInstance().findUserByUserId(SpUtils.getLoginId(), new ResponseListener<UserInfoResponse>() {
+                            @Override
+                            public void onSuccess(UserInfoResponse userInfoResponse) {
+                                if (isResponseSuccess(userInfoResponse)) {
+                                    if (userInfoResponse.getData().getDeposit() > 0) {
+                                        stopBike();
+                                    } else {
+                                        showAlertDialog("提示", "您不是会员，需要在指定地点停车", new String[]{"停车","取消"}, new AlertDialogListener() {
+                                            @Override
+                                            public void onPositiveClick(DialogInterface dialog, int which) {
+                                                checkStop();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    showShort(userInfoResponse.getMsg());
+                                }
+                            }
+                        });
                     }
                 });
                 break;
