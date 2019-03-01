@@ -5,6 +5,7 @@ import com.yk.bike.callback.OnResponseListener;
 import com.yk.bike.constant.UrlConsts;
 import com.yk.bike.response.AdminInfoListResponse;
 import com.yk.bike.response.AdminInfoResponse;
+import com.yk.bike.response.BalanceRecordListResponse;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordListResponse;
@@ -434,9 +435,11 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_BIKE_RECORD_UPDATE_BIKE_RECORD, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
     }
 
-    public void finishBike(String orderId, OnResponseListener<BikeRecordResponse> onResponseListener) {
+    public void finishBike(String orderId,double latitude, double longitude, OnResponseListener<BikeRecordResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("orderId", orderId)
+                .add("latitude", String.valueOf(latitude))
+                .add("longitude", String.valueOf(longitude))
                 .build();
         post(formBody, UrlConsts.POST_BIKE_RECORD_FINISH_BIKE, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
     }
@@ -644,5 +647,44 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_DEPOSIT_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, DepositRecordListResponse.class));
+    }
+
+    /*-----------------------------------------------depositrecord-----------------------------------------------------------*/
+
+    /**
+     * 添加余额记录
+     */
+    public void addBalanceRecord(String userId, float balance, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .add("balance", String.valueOf(balance))
+                .build();
+
+        post(formBody, UrlConsts.POST_BALANCE_RECORD_ADD, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 更新余额记录
+     */
+    public void updateBalanceRecord(String userId, String depositStatus, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_BALANCE_RECORD_UPDATE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 根据用户Id查询余额记录
+     *
+     * @param userId
+     * @param onResponseListener
+     */
+    public void findBalanceRecordByUserId(String userId, OnResponseListener<BalanceRecordListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_BALANCE_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, BalanceRecordListResponse.class));
     }
 }

@@ -58,6 +58,8 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
 
         tvShowDeposit.setOnClickListener(this);
         tvDeposit.setOnClickListener(this);
+        tvShowBalance.setOnClickListener(this);
+        tvBalance.setOnClickListener(this);
 
         tcCharge10.setOnClickListener(this);
         tcCharge20.setOnClickListener(this);
@@ -96,6 +98,10 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
             case R.id.tv_show_deposit:
             case R.id.tv_deposit:
                 getActivityContext().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new DepositRecordFragment()).addToBackStack(null).commit();
+                break;
+            case R.id.tv_show_balance:
+            case R.id.tv_balance:
+                getActivityContext().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new BalanceRecordFragment()).addToBackStack(null).commit();
                 break;
             case R.id.ctl_balance_charge:
                 v.setSelected(ctlChargeList.getVisibility() == View.GONE);
@@ -165,14 +171,14 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
         showAlertDialog("余额充值", "是否充值" + charge + "元到余额中？", new String[]{"充值", "取消"}, new AlertDialogListener() {
             @Override
             public void onPositiveClick(DialogInterface dialog, int which) {
-                ApiUtils.getInstance().updateUserInfo(userInfo.copy().setBalance(userInfo.getBalance() + charge), new ResponseListener<UserInfoResponse>() {
+                ApiUtils.getInstance().addBalanceRecord(SpUtils.getLoginId(),charge, new ResponseListener<CommonResponse>() {
                     @Override
-                    public void onSuccess(UserInfoResponse userInfoResponse) {
-                        if (isResponseSuccess(userInfoResponse)) {
+                    public void onSuccess(CommonResponse commonResponse) {
+                        if (isResponseSuccess(commonResponse)) {
                             showShort("充值成功");
                             initData();
                         } else {
-                            showShort(userInfoResponse.getMsg());
+                            showShort(commonResponse.getMsg());
                         }
                     }
                 });

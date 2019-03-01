@@ -107,4 +107,11 @@ public class UrlConsts {
     public static final String POST_DEPOSIT_RECORD_BY_USERID = "/depositrecord/findDepositRecordByUserId";
     public static final String POST_DEPOSIT_RECORD_ADD = "/depositrecord/addDepositRecord";
     public static final String POST_DEPOSIT_RECORD_UPDATE = "/depositrecord/updateDepositRecord";
+
+    /**
+     * balancerecord
+     */
+    public static final String POST_BALANCE_RECORD_BY_USERID = "/balancerecord/findBalanceRecordByUserId";
+    public static final String POST_BALANCE_RECORD_ADD = "/balancerecord/addBalanceRecord";
+    public static final String POST_BALANCE_RECORD_UPDATE = "/balancerecord/updateBalanceRecord";
 }

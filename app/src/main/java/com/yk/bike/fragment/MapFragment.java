@@ -499,10 +499,12 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
 
         getActivityContext().addOnServiceTimeListener(onServiceTimeListener);
         getActivityContext().getFab().hide();
+
+        initBikeLocation();
     }
 
     public void stopBike() {
-        ApiUtils.getInstance().finishBike(SharedPreferencesUtils.getString(Consts.SP_STRING_ORDER_ID), new ResponseListener<BikeRecordResponse>() {
+        ApiUtils.getInstance().finishBike(SharedPreferencesUtils.getString(Consts.SP_STRING_ORDER_ID), getLatLng().latitude, getLatLng().longitude, new ResponseListener<BikeRecordResponse>() {
             @Override
             public void onSuccess(BikeRecordResponse bikeRecordResponse) {
                 if (isResponseSuccess(bikeRecordResponse)) {
@@ -523,6 +525,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             tvStopBike.setVisibility(View.GONE);
                             getActivityContext().removeOnServiceTimeListener(onServiceTimeListener);
                             onServiceTimeListener = null;
+                            initBikeLocation();
                         }
                     });
                 } else {
@@ -609,7 +612,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                                     if (userInfoResponse.getData().getDeposit() > 0) {
                                         stopBike();
                                     } else {
-                                        showAlertDialog("提示", "您不是会员，需要在指定地点停车", new String[]{"停车","取消"}, new AlertDialogListener() {
+                                        showAlertDialog("提示", "您不是会员，需要在指定地点停车", new String[]{"停车", "取消"}, new AlertDialogListener() {
                                             @Override
                                             public void onPositiveClick(DialogInterface dialog, int which) {
                                                 checkStop();
