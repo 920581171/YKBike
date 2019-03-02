@@ -6,6 +6,7 @@ public class UrlConsts {
     //    public static final String IP = "192.168.0.112";
     //            public static final String IP = "192.168.3.154";
     public static final String IP = "192.168.43.49";
+//    public static final String IP = "luoyk.xin";
     //    public static final String IP = "192.168.137.1";
     public static final String PORT = "8080";
     public static final String NAME = "/YKBikeService";
@@ -19,7 +20,7 @@ public class UrlConsts {
      */
     public static final String GET_COMMON_DOWNLOAD_AVATAR = "/common/downloadAvatar";//下载头像
     public static final String POST_COMMON_UPLOAD_AVATAR = "/common/uploadAvatar";//上传头像
-    public static final String POST_COMMON_GET_SERVICE_TIME = "/common/getServiceTime";//上传头像
+    public static final String POST_COMMON_GET_SERVICE_TIME = "/common/getServiceTime";//获取服务器时间
 
     /**
      * userInfo
@@ -114,4 +115,11 @@ public class UrlConsts {
     public static final String POST_BALANCE_RECORD_BY_USERID = "/balancerecord/findBalanceRecordByUserId";
     public static final String POST_BALANCE_RECORD_ADD = "/balancerecord/addBalanceRecord";
     public static final String POST_BALANCE_RECORD_UPDATE = "/balancerecord/updateBalanceRecord";
+
+    /**
+     * scorerecord
+     */
+    public static final String POST_SCORE_RECORD_BY_USERID = "/scorerecord/findScoreRecordByUserId";
+    public static final String POST_SCORE_RECORD_ADD = "/scorerecord/addScoreRecord";
+    public static final String POST_SCORE_RECORD_UPDATE = "/scorerecord/updateScoreRecord";
 }

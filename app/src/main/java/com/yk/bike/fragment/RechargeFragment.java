@@ -4,6 +4,9 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.solver.widgets.ConstraintTableLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,10 +28,14 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
     private TextView tvDeposit;
     private TextView tvShowBalance;
     private TextView tvBalance;
+    private TextView tvShowScore;
+    private TextView tvScore;
 
     UserInfoResponse.UserInfo userInfo;
     private TextView tvDepositCharge;
     private ConstraintLayout ctlChargeList;
+    private ConstraintLayout ctlScoreList;
+    private TextView tvMember;
 
     @Override
     public int initLayout() {
@@ -41,35 +48,50 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
         tvDeposit = rootView.findViewById(R.id.tv_deposit);
         tvShowBalance = rootView.findViewById(R.id.tv_show_balance);
         tvBalance = rootView.findViewById(R.id.tv_balance);
+        tvShowScore = rootView.findViewById(R.id.tv_show_score);
+        tvScore = rootView.findViewById(R.id.tv_score);
         tvDepositCharge = rootView.findViewById(R.id.tv_deposit_charge);
         ctlChargeList = rootView.findViewById(R.id.ctl_charge_list);
+        ctlScoreList = rootView.findViewById(R.id.ctl_score_list);
+        tvMember = rootView.findViewById(R.id.tv_member);
 
         ctlChargeList.setVisibility(View.GONE);
+        ctlScoreList.setVisibility(View.GONE);
 
-        TextView tcCharge10 = rootView.findViewById(R.id.charge10);
-        TextView tcCharge20 = rootView.findViewById(R.id.charge20);
-        TextView tcCharge30 = rootView.findViewById(R.id.charge30);
-        TextView tcCharge50 = rootView.findViewById(R.id.charge50);
-        TextView tcCharge100 = rootView.findViewById(R.id.charge100);
-        TextView tcCharge150 = rootView.findViewById(R.id.charge150);
+        TextView tvCharge10 = rootView.findViewById(R.id.charge10);
+        TextView tvCharge20 = rootView.findViewById(R.id.charge20);
+        TextView tvCharge30 = rootView.findViewById(R.id.charge30);
+        TextView tvCharge50 = rootView.findViewById(R.id.charge50);
+        TextView tvCharge100 = rootView.findViewById(R.id.charge100);
+        TextView tvCharge150 = rootView.findViewById(R.id.charge150);
+        TextView tvScore50 = rootView.findViewById(R.id.score50);
+        TextView tvScore100 = rootView.findViewById(R.id.score100);
+        TextView tvScore250 = rootView.findViewById(R.id.score250);
 
         ConstraintLayout ctlBalanceCharge = rootView.findViewById(R.id.ctl_balance_charge);
         ConstraintLayout ctlDepositCharge = rootView.findViewById(R.id.ctl_deposit_charge);
+        ConstraintLayout ctlScoreExchange = rootView.findViewById(R.id.ctl_score_exchange);
 
         tvShowDeposit.setOnClickListener(this);
         tvDeposit.setOnClickListener(this);
         tvShowBalance.setOnClickListener(this);
         tvBalance.setOnClickListener(this);
+        tvShowScore.setOnClickListener(this);
+        tvScore.setOnClickListener(this);
 
-        tcCharge10.setOnClickListener(this);
-        tcCharge20.setOnClickListener(this);
-        tcCharge30.setOnClickListener(this);
-        tcCharge50.setOnClickListener(this);
-        tcCharge100.setOnClickListener(this);
-        tcCharge150.setOnClickListener(this);
+        tvCharge10.setOnClickListener(this);
+        tvCharge20.setOnClickListener(this);
+        tvCharge30.setOnClickListener(this);
+        tvCharge50.setOnClickListener(this);
+        tvCharge100.setOnClickListener(this);
+        tvCharge150.setOnClickListener(this);
+        tvScore50.setOnClickListener(this);
+        tvScore100.setOnClickListener(this);
+        tvScore250.setOnClickListener(this);
 
         ctlBalanceCharge.setOnClickListener(this);
         ctlDepositCharge.setOnClickListener(this);
+        ctlScoreExchange.setOnClickListener(this);
     }
 
     @Override
@@ -80,11 +102,15 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                 if (isResponseSuccess(userInfoResponse)) {
                     userInfo = userInfoResponse.getData();
                     tvBalance.setText(String.valueOf(userInfo.getBalance()));
-                    tvBalance.setTextColor(userInfo.getBalance() <= 10 ? Color.RED : Color.BLACK);
+                    tvBalance.setTextColor(userInfo.getBalance() <= 10 ? ContextCompat.getColor(getActivityContext(), R.color.colorAccent) : Color.BLACK);
                     tvDeposit.setText(userInfo.getDeposit() < 0 ? "押金退还中" : String.valueOf(userInfo.getDeposit()));
-                    tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? Color.RED : Color.BLACK);
+                    tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? ContextCompat.getColor(getActivityContext(), R.color.colorAccent) : Color.BLACK);
                     tvDepositCharge.setText(userInfo.getDeposit() < 0 ? "已申请退还押金" :
                             userInfo.getDeposit() == 0 ? "支付押金" : "申请退还押金");
+                    tvScore.setText(String.valueOf(userInfo.getScore()));
+                    tvScore.setTextColor(userInfo.getScore() >= 500 ? ContextCompat.getColor(getActivityContext(), R.color.colorPrimary) : Color.BLACK);
+                    tvMember.setText(userInfo.getScore() >= 500?"你已成为会员":"还差"+(500-userInfo.getScore())+"积分成为会员");
+                    tvMember.setTextColor(userInfo.getScore() >= 500 ? ContextCompat.getColor(getActivityContext(), R.color.colorPrimary) : Color.BLACK);
                 } else {
                     showShort(userInfoResponse.getMsg());
                 }
@@ -103,9 +129,17 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
             case R.id.tv_balance:
                 getActivityContext().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new BalanceRecordFragment()).addToBackStack(null).commit();
                 break;
+            case R.id.tv_show_score:
+            case R.id.tv_score:
+                getActivityContext().getSupportFragmentManager().beginTransaction().replace(R.id.ll_fragment, new ScoreRecordFragment()).addToBackStack(null).commit();
+                break;
             case R.id.ctl_balance_charge:
                 v.setSelected(ctlChargeList.getVisibility() == View.GONE);
                 ctlChargeList.setVisibility(ctlChargeList.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+                break;
+            case R.id.ctl_score_exchange:
+                v.setSelected(ctlScoreList.getVisibility() == View.GONE);
+                ctlScoreList.setVisibility(ctlScoreList.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
                 break;
             case R.id.ctl_deposit_charge:
                 if (tvDepositCharge.getText().toString().equals("支付押金"))
@@ -164,6 +198,15 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
             case R.id.charge150:
                 charge(150);
                 break;
+            case R.id.score50:
+                checkScore(50);
+                break;
+            case R.id.score100:
+                checkScore(100);
+                break;
+            case R.id.score250:
+                checkScore(250);
+                break;
         }
     }
 
@@ -171,7 +214,7 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
         showAlertDialog("余额充值", "是否充值" + charge + "元到余额中？", new String[]{"充值", "取消"}, new AlertDialogListener() {
             @Override
             public void onPositiveClick(DialogInterface dialog, int which) {
-                ApiUtils.getInstance().addBalanceRecord(SpUtils.getLoginId(),charge, new ResponseListener<CommonResponse>() {
+                ApiUtils.getInstance().addBalanceRecord(SpUtils.getLoginId(), charge, new ResponseListener<CommonResponse>() {
                     @Override
                     public void onSuccess(CommonResponse commonResponse) {
                         if (isResponseSuccess(commonResponse)) {
@@ -182,6 +225,42 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
                         }
                     }
                 });
+            }
+        });
+    }
+
+    public void checkScore(int score) {
+        showAlertDialog("积分兑换", "是否使用" + score + "积分兑换余额？", new String[]{"兑换", "取消"}, new AlertDialogListener() {
+            @Override
+            public void onPositiveClick(DialogInterface dialog, int which) {
+                if (userInfo.getScore() >= 500 && userInfo.getScore() - score <= 500) {
+                    showAlertDialog("即将失去会员资格", "兑换后将失去会员资格", new String[]{"确定兑换", "取消"}, new AlertDialogListener() {
+                        @Override
+                        public void onPositiveClick(DialogInterface dialog, int which) {
+                            exchange(score);
+                        }
+                    });
+                } else {
+                    exchange(score);
+                }
+            }
+        });
+    }
+
+    public void exchange(int score) {
+        if (userInfo.getScore() - score < 0) {
+            showAlertDialog("兑换失败", "积分不足以兑换", new String[]{"确定"}, new AlertDialogListener());
+            return;
+        }
+        ApiUtils.getInstance().addScoreRecord(SpUtils.getLoginId(), score, new ResponseListener<CommonResponse>() {
+            @Override
+            public void onSuccess(CommonResponse commonResponse) {
+                if (isResponseSuccess(commonResponse)) {
+                    showShort("兑换成功");
+                    initData();
+                } else {
+                    showShort(commonResponse.getMsg());
+                }
             }
         });
     }

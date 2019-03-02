@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -44,8 +45,10 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
     private TextView tvPhone;
     private TextView tvDeposit;
     private TextView tvBalance;
+    private TextView tvScore;
 
     private UserInfoResponse.UserInfo userInfo;
+    private TextView tvMember;
 
     @Override
     public int initLayout() {
@@ -60,6 +63,8 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
         tvPhone = rootView.findViewById(R.id.tv_phone);
         tvDeposit = rootView.findViewById(R.id.tv_deposit);
         tvBalance = rootView.findViewById(R.id.tv_balance);
+        tvScore = rootView.findViewById(R.id.tv_score);
+        tvMember = rootView.findViewById(R.id.tv_member);
 
         ConstraintLayout ctlAvatar = rootView.findViewById(R.id.ctl_avatar);
         ConstraintLayout ctlName = rootView.findViewById(R.id.ctl_name);
@@ -99,11 +104,15 @@ public class UserInfoFragment extends BaseFragment<AccountActivity> implements V
                         tvPhone.setTextColor(Color.BLACK);
                     }
                     tvBalance.setText(String.valueOf(userInfo.getBalance()));
-                    tvBalance.setTextColor(userInfo.getBalance() <= 10 ? Color.RED : Color.BLACK);
+                    tvBalance.setTextColor(userInfo.getBalance() <= 10 ? ContextCompat.getColor(getActivityContext(), R.color.colorAccent) : Color.BLACK);
                     tvDeposit.setText(userInfo.getDeposit() < 0 ? "押金退还中" : String.valueOf(userInfo.getDeposit()));
-                    tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? Color.RED : Color.BLACK);
+                    tvDeposit.setTextColor(userInfo.getDeposit() <= 0 ? ContextCompat.getColor(getActivityContext(), R.color.colorAccent) : Color.BLACK);
+                    tvScore.setText(String.valueOf(userInfo.getScore()));
+                    tvScore.setTextColor(userInfo.getScore() >= 500 ? ContextCompat.getColor(getActivityContext(), R.color.colorPrimary) : Color.BLACK);
+                    tvMember.setText(userInfo.getScore() >= 500?"你已成为会员":"还差"+(500-userInfo.getScore())+"积分成为会员");
+                    tvMember.setTextColor(userInfo.getScore() >= 500 ? ContextCompat.getColor(getActivityContext(), R.color.colorPrimary) : Color.BLACK);
 
-                    BitmapCache.getAvatar(R.drawable.avatar,userInfo.getUserId(),cvAvatar);
+                    BitmapCache.getAvatar(R.drawable.avatar, userInfo.getUserId(), cvAvatar);
                 } else {
                     showShort(userInfoResponse.getMsg());
                 }

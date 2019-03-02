@@ -16,6 +16,8 @@ import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.DepositRecordListResponse;
 import com.yk.bike.response.MessageBroadListResponse;
 import com.yk.bike.response.MessageBroadResponse;
+import com.yk.bike.response.ScoreRecordListResponse;
+import com.yk.bike.response.ScoreRecordResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
@@ -686,5 +688,44 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_BALANCE_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, BalanceRecordListResponse.class));
+    }
+
+    /*-----------------------------------------------scorerecord-----------------------------------------------------------*/
+
+    /**
+     * 添加积分记录
+     */
+    public void addScoreRecord(String userId, int score, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .add("score", String.valueOf(score))
+                .build();
+
+        post(formBody, UrlConsts.POST_SCORE_RECORD_ADD, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 更新积分记录
+     */
+    public void updateScoreRecord(String userId, String depositStatus, OnResponseListener<CommonResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_SCORE_RECORD_UPDATE, new CommonCallback<>(onResponseListener, CommonResponse.class));
+    }
+
+    /**
+     * 根据用户Id查询积分记录
+     *
+     * @param userId
+     * @param onResponseListener
+     */
+    public void findScoreRecordByUserId(String userId, OnResponseListener<ScoreRecordListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("userId", userId)
+                .build();
+
+        post(formBody, UrlConsts.POST_SCORE_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, ScoreRecordListResponse.class));
     }
 }

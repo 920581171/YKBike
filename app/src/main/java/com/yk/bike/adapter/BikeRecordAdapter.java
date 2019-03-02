@@ -38,11 +38,12 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
         TextView tvMileage = itemView.findViewById(R.id.tv_mileage);
         TextView tvCharge = itemView.findViewById(R.id.tv_charge);
         TextView tvDuration = itemView.findViewById(R.id.tv_duration);
+        TextView tvScore = itemView.findViewById(R.id.tv_score);
         TextView tvCreateTime = itemView.findViewById(R.id.tv_create_time);
 
         Context context = itemView.getContext();
 
-        String charge = String.valueOf(list.get(i).getCharge()) + context.getResources().getString(R.string.string_charge);
+        String charge = list.get(i).getCharge() + context.getResources().getString(R.string.string_charge);
 
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
         String mileageText = decimalFormat.format(list.get(i).getMileage() / 1000f) + context.getResources().getString(R.string.string_mileage_unit);
@@ -52,6 +53,8 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
 
         long duration = list.get(i).getEndTime().getTime() - list.get(i).getCreateTime().getTime();
         String durationText = duration / 1000 / 60 + context.getResources().getString(R.string.string_duration);
+
+        String score = (int)(list.get(i).getCharge() * 100) + context.getResources().getString(R.string.string_score);
 
         if (list.get(i).getOrderStatus().equals("0")) {
             charge = mileageText = durationText = "骑行中";
@@ -63,6 +66,7 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
         tvCharge.setText(charge);
         tvCreateTime.setText(createTime);
         tvDuration.setText(durationText);
+        tvScore.setText(score);
 
         itemView.setOnClickListener(v -> {
             if (onItemClickListener != null)

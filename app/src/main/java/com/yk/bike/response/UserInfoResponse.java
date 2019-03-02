@@ -35,6 +35,7 @@ public class UserInfoResponse extends BaseResponse {
         private String userPassword;
         private float deposit;
         private float balance;
+        private int score;
 
         public int getId() {
             return id;
@@ -99,15 +100,25 @@ public class UserInfoResponse extends BaseResponse {
             return this;
         }
 
+        public int getScore() {
+            return score;
+        }
+
+        public UserInfo setScore(int score) {
+            this.score = score;
+            return this;
+        }
+
         public UserInfo copy() {
             return new UserInfoResponse.UserInfo()
-                    .setId(getId())
-                    .setUserId(getUserId())
-                    .setUserName(getUserName())
-                    .setUserPassword(getUserPassword())
-                    .setUserPhone(getUserPhone())
-                    .setDeposit(getDeposit())
-                    .setBalance(getBalance());
+                    .setId(id)
+                    .setUserId(userId)
+                    .setUserName(userName)
+                    .setUserPassword(userPassword)
+                    .setUserPhone(userPhone)
+                    .setDeposit(deposit)
+                    .setBalance(balance)
+                    .setScore(score);
         }
     }
 }

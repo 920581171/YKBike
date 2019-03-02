@@ -143,4 +143,26 @@
         app:layout_constraintStart_toEndOf="@+id/tv_show_charge"
         app:layout_constraintTop_toTopOf="@+id/tv_show_charge"/>
 
+    <TextView
+        android:id="@+id/tv_show_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/string_show_score"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_show_duration"
+        app:layout_constraintStart_toEndOf="@+id/tv_charge"
+        />
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/string_score"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_show_score"
+        app:layout_constraintStart_toEndOf="@+id/tv_show_score"
+        app:layout_constraintTop_toTopOf="@+id/tv_show_score"/>
+
 </android.support.constraint.ConstraintLayout>

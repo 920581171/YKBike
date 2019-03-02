@@ -514,7 +514,8 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             subTimes[1] + "分" + subTimes[2] + "秒" :
                             subTimes[0] + "小时" + subTimes[1] + "分" + subTimes[2] + "秒") + "\n"
                             + "里程：" + bikeRecord.getMileage() + "米" + "\n"
-                            + "计费：" + bikeRecord.getCharge() + "元";
+                            + "计费：" + bikeRecord.getCharge() + "元" + "\n"
+                            + "你获得了" + (int)(bikeRecord.getCharge() * 100) + "积分";
                     showAlertDialog("结束骑行", msg, new String[]{"确定"}, new AlertDialogListener() {
                         @Override
                         public void onPositiveClick(DialogInterface dialog, int which) {
@@ -609,10 +610,10 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             @Override
                             public void onSuccess(UserInfoResponse userInfoResponse) {
                                 if (isResponseSuccess(userInfoResponse)) {
-                                    if (userInfoResponse.getData().getDeposit() > 0) {
+                                    if (userInfoResponse.getData().getDeposit() > 0 || userInfoResponse.getData().getScore() >= 500) {
                                         stopBike();
                                     } else {
-                                        showAlertDialog("提示", "您不是会员，需要在指定地点停车", new String[]{"停车", "取消"}, new AlertDialogListener() {
+                                        showAlertDialog("提示", "您不是会员或没有押金，需要在指定地点停车", new String[]{"停车", "取消"}, new AlertDialogListener() {
                                             @Override
                                             public void onPositiveClick(DialogInterface dialog, int which) {
                                                 checkStop();

@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorF0F0F0">
@@ -10,7 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/ctl_balance"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="96dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -23,12 +22,11 @@
             android:id="@+id/tv_show_deposit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
             android:text="押金"
             android:textColor="@android:color/black"
-            app:layout_constraintEnd_toStartOf="@+id/arrow_left"
+            app:layout_constraintEnd_toStartOf="@+id/left"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -43,30 +41,43 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_show_deposit"/>
 
         <View
-            android:id="@+id/arrow_left"
+            android:id="@+id/left"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
+            android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:background="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_member"
+            app:layout_constraintEnd_toStartOf="@+id/tv_show_balance"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_show_deposit"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/tv_show_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="余额"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toStartOf="@+id/right"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/left"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/right"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:text="余额"
-            android:textColor="@android:color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/arrow_left"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/black"
+            app:layout_constraintBottom_toTopOf="@+id/tv_member"
+            app:layout_constraintEnd_toStartOf="@+id/tv_show_score"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_show_balance"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
@@ -78,6 +89,41 @@
             app:layout_constraintEnd_toEndOf="@+id/tv_show_balance"
             app:layout_constraintStart_toStartOf="@+id/tv_show_balance"
             app:layout_constraintTop_toBottomOf="@+id/tv_show_balance"/>
+
+        <TextView
+            android:id="@+id/tv_show_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="积分"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/right"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="@+id/tv_show_score"
+            app:layout_constraintStart_toStartOf="@+id/tv_show_score"
+            app:layout_constraintTop_toBottomOf="@+id/tv_show_score"/>
+
+        <TextView
+            android:id="@+id/tv_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="还差250积分成为会员"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -197,6 +243,91 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_score_exchange"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/btn_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ctl_charge_list">
+
+        <TextView
+            android:id="@+id/tv_score_exchange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="积分兑换"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ctl_score_list"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ctl_score_exchange">
+
+        <TextView
+            android:id="@+id/score50"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_white"
+            android:gravity="center"
+            android:text="50积分\n换5￥"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/score100"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_white"
+            android:gravity="center"
+            android:text="100积分\n换10￥"
+            app:layout_constraintEnd_toStartOf="@+id/score250"
+            app:layout_constraintStart_toEndOf="@+id/score50"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/score250"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_white"
+            android:gravity="center"
+            android:text="250积分\n换25￥"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/ctl_deposit_charge"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -207,7 +338,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ctl_charge_list">
+        app:layout_constraintTop_toBottomOf="@+id/ctl_score_list">
 
         <TextView
             android:id="@+id/tv_deposit_charge"

@@ -46,6 +46,8 @@
     <string name="string_show_msg_id">留言编号：</string>
     <string name="string_charge">元</string>
     <string name="string_show_charge">计费：</string>
+    <string name="string_score">分</string>
+    <string name="string_show_score">积分：</string>
     <string name="string_duration">分钟</string>
     <string name="string_show_duration">计时：</string>
     <string name="string_show_create_time">创建时间：</string>
