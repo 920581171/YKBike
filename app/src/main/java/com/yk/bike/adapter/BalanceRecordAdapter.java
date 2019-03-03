@@ -26,9 +26,11 @@ public class BalanceRecordAdapter extends BaseAdapter<BalanceRecordResponse.Bala
         if (list.size() == 0)
             return;
 
-        String status = list.get(i).getBalance() >= 0 ?
-                "充值" + list.get(i).getBalance() + "元" :
-                "扣除" + Math.abs(list.get(i).getBalance()) + "元";
+        String status = list.get(i).getIsExchange().equals("1") ?
+                "兑换" + list.get(i).getBalance() + "元" :
+                list.get(i).getBalance() >= 0 ?
+                        "充值" + list.get(i).getBalance() + "元" :
+                        "扣除" + Math.abs(list.get(i).getBalance()) + "元";
 
         baseViewHolder.getTextView(R.id.tv_record_id).setText(list.get(i).getRecordId());
         baseViewHolder.getTextView(R.id.tv_create_time).setText(SimpleDateFormat.getDateTimeInstance().format(list.get(i).getCreateTime().getTime()));

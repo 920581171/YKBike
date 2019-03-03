@@ -32,6 +32,7 @@ public class BalanceRecordResponse extends BaseResponse{
         private String userId;
         private float balance;
         private Date createTime;
+        private String isExchange;
 
         public int getId() {
             return id;
@@ -75,6 +76,15 @@ public class BalanceRecordResponse extends BaseResponse{
 
         public BalanceRecord setCreateTime(Date createTime) {
             this.createTime = createTime;
+            return this;
+        }
+
+        public String getIsExchange() {
+            return isExchange;
+        }
+
+        public BalanceRecord setIsExchange(String isExchange) {
+            this.isExchange = isExchange;
             return this;
         }
     }

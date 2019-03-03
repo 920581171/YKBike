@@ -67,7 +67,8 @@ public class WebSocketManager {
                 WebSocketParam param = new WebSocketParam()
                         .setLoginId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID))
                         .setLoginType(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_TYPE))
-                        .setPassword(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_PASSWORD));
+                        .setPassword(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_PASSWORD))
+                        .setLoginDevice("mobile");
                 webSocketMessage.setData(GsonUtils.toJson(param));
                 sendText(GsonUtils.toJson(webSocketMessage));
             } else if (webSocketMessage.getType() == Consts.WEBSOCKET_TYPE_CHAT) {

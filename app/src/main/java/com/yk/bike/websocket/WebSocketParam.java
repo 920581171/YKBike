@@ -4,6 +4,7 @@ public class WebSocketParam {
     private String loginId;
     private String loginType;
     private String password;
+    private String loginDevice;
 
     public String getLoginId() {
         return loginId;
@@ -29,6 +30,15 @@ public class WebSocketParam {
 
     public WebSocketParam setPassword(String password) {
         this.password = password;
+        return this;
+    }
+
+    public String getLoginDevice() {
+        return loginDevice;
+    }
+
+    public WebSocketParam setLoginDevice(String loginDevice) {
+        this.loginDevice = loginDevice;
         return this;
     }
 }

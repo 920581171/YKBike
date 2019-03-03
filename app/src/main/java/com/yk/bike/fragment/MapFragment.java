@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -42,8 +43,12 @@ import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.BitmapCache;
+import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yk.bike.utils.SpUtils;
+import com.yk.bike.websocket.WebSocketLoaction;
+import com.yk.bike.websocket.WebSocketManager;
+import com.yk.bike.websocket.WebSocketMessage;
 import com.yk.bike.widght.SitePlanView;
 
 import java.text.SimpleDateFormat;
@@ -493,6 +498,19 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                     subTimes[1] + ":" + subTimes[2] :
                     subTimes[0] + ":" + subTimes[1] + ":" + subTimes[2];
             tvShowBikeTime.setText(time);
+
+            LatLng latLng = getLatLng();
+
+            WebSocketLoaction webSocketLoaction = new WebSocketLoaction()
+                    .setUserId(SpUtils.getLoginId())
+                    .setLatitude(latLng.latitude)
+                    .setLongitude(latLng.longitude);
+
+            WebSocketMessage webSocketMessage = new WebSocketMessage()
+                    .setType(Consts.WEBSOCKET_TYPE_LOCATION)
+                    .setData(GsonUtils.toJson(webSocketLoaction));
+
+            WebSocketManager.getInstance().sendText(GsonUtils.toJson(webSocketMessage));
         };
 
         SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, bikeRecord.getOrderId());
@@ -527,6 +545,15 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             getActivityContext().removeOnServiceTimeListener(onServiceTimeListener);
                             onServiceTimeListener = null;
                             initBikeLocation();
+
+                            WebSocketLoaction webSocketLoaction = new WebSocketLoaction()
+                                    .setUserId(SpUtils.getLoginId());
+
+                            WebSocketMessage webSocketMessage = new WebSocketMessage()
+                                    .setType(Consts.WEBSOCKET_TYPE_LOCATION)
+                                    .setData(GsonUtils.toJson(webSocketLoaction));
+
+                            WebSocketManager.getInstance().sendText(GsonUtils.toJson(webSocketMessage));
                         }
                     });
                 } else {
