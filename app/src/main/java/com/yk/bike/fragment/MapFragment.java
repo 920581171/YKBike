@@ -550,7 +550,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                                     .setUserId(SpUtils.getLoginId());
 
                             WebSocketMessage webSocketMessage = new WebSocketMessage()
-                                    .setType(Consts.WEBSOCKET_TYPE_LOCATION)
+                                    .setType(Consts.WEBSOCKET_TYPE_STOP_LOCATION)
                                     .setData(GsonUtils.toJson(webSocketLoaction));
 
                             WebSocketManager.getInstance().sendText(GsonUtils.toJson(webSocketMessage));
