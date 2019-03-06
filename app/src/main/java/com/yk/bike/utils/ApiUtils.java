@@ -200,6 +200,7 @@ public class ApiUtils {
                 .add("userName", NullObjectUtils.emptyString(userInfo.getUserName()))
                 .add("userPhone", NullObjectUtils.emptyString(userInfo.getUserPhone()))
                 .add("userPassword", NullObjectUtils.emptyString(userInfo.getUserPassword()))
+                .add("score", String.valueOf(userInfo.getScore()))
                 .add("deposit", String.valueOf(userInfo.getDeposit()))
                 .add("balance", String.valueOf(userInfo.getBalance()))
                 .build();
@@ -437,7 +438,7 @@ public class ApiUtils {
         post(formBody, UrlConsts.POST_BIKE_RECORD_UPDATE_BIKE_RECORD, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
     }
 
-    public void finishBike(String orderId,double latitude, double longitude, OnResponseListener<BikeRecordResponse> onResponseListener) {
+    public void finishBike(String orderId, double latitude, double longitude, OnResponseListener<BikeRecordResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("orderId", orderId)
                 .add("latitude", String.valueOf(latitude))

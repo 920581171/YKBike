@@ -360,7 +360,7 @@ public class MainActivity extends BaseActivity
             if (data != null) {
                 String qrCode = data.getStringExtra(Constant.CODED_CONTENT);
                 String content = new String(Base64.decode(qrCode, Base64.DEFAULT));
-                if (!content.contains("bike"))
+                if (!content.contains("BIKE"))
                     showShort("不是正确的二维码");
                 else
                     ApiUtils.getInstance().findBikeByBikeId(content, new ResponseListener<BikeInfoResponse>() {

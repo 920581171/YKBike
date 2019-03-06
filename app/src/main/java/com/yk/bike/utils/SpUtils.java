@@ -1,8 +1,12 @@
 package com.yk.bike.utils;
 
 import com.yk.bike.constant.Consts;
+import com.yk.bike.constant.UrlConsts;
 
 public class SpUtils {
+    public static String getIpAddress() {
+        return (String) SharedPreferencesUtils.get(Consts.SP_STRING_IP_ADDRESS, UrlConsts.IPS[0]);
+    }
     public static String getLoginId() {
         return SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID);
     }

@@ -20,6 +20,7 @@ public class Consts {
     public static final String BR_ACTION_CHAT = "com.yk,bike.action.chat";
     public static final String BR_ACTION_FORCE_LOGOUT = "com.yk,bike.action.force.logout";
 
+    public static final String SP_STRING_IP_ADDRESS = "ipAddress";
     public static final String SP_STRING_LOGIN_NAME = "loginName";
     public static final String SP_STRING_LOGIN_PHONE = "loginPhone";
     public static final String SP_STRING_LOGIN_PASSWORD = "loginPassword";

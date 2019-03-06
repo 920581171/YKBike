@@ -1,27 +1,19 @@
 package com.yk.bike.fragment;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.yk.bike.R;
 import com.yk.bike.activity.MainActivity;
 import com.yk.bike.adapter.DepositAdapter;
 import com.yk.bike.adapter.OnItemClickListener;
 import com.yk.bike.base.AlertDialogListener;
-import com.yk.bike.base.BaseFragment;
 import com.yk.bike.base.BaseRecyclerFragment;
-import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.UserInfoListResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.utils.ApiUtils;
-import com.yk.bike.utils.MainHandler;
-import com.yk.bike.utils.SpUtils;
 
 import java.util.List;
 
