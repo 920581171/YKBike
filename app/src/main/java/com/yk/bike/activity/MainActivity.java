@@ -464,10 +464,12 @@ public class MainActivity extends BaseActivity
 
                                     @Override
                                     public void onSuccess(CommonResponse commonResponse) {
-                                        if (isResponseSuccess(commonResponse))
+                                        if (isResponseSuccess(commonResponse)) {
+                                            fragments[FRAGMENT_MAP].initData();
                                             showShort("添加成功");
-                                        else
+                                        } else {
                                             showShort(commonResponse.getMsg());
+                                        }
                                     }
                                 });
                         break;
@@ -485,10 +487,12 @@ public class MainActivity extends BaseActivity
 
                             @Override
                             public void onSuccess(CommonResponse commonResponse) {
-                                if (isResponseSuccess(commonResponse))
+                                if (isResponseSuccess(commonResponse)) {
+                                    fragments[FRAGMENT_MAP].initData();
                                     showShort("维修完成");
-                                else
+                                } else {
                                     showShort(commonResponse.getMsg());
+                                }
                             }
                         });
                         break;
@@ -537,10 +541,12 @@ public class MainActivity extends BaseActivity
 
                         @Override
                         public void onSuccess(CommonResponse commonResponse) {
-                            if (isResponseSuccess(commonResponse))
+                            if (isResponseSuccess(commonResponse)) {
+                                fragments[FRAGMENT_MAP].initData();
                                 showShort("报修成功");
-                            else
+                            } else {
                                 showShort(commonResponse.getMsg());
+                            }
                         }
                     });
                 }
