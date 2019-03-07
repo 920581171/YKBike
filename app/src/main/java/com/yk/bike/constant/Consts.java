@@ -28,6 +28,7 @@ public class Consts {
     public static final String SP_STRING_LOGIN_ID = "loginId";
     public static final String SP_STRING_LOGIN_GET_CODE_TIME = "getCodeTime";//获取验证码时间
     public static final String SP_STRING_ORDER_ID = "orderId";
+    public static final String SP_STRING_MINE_FASTEST = "mineFastest";
 
     public static final String LOGIN_TYPE_PHONE = "typePhone";
     public static final String LOGIN_TYPE_USER = "typeUser";

@@ -74,6 +74,8 @@
 
         <activity android:name=".activity.ChatActivity"/>
 
+        <activity android:name=".activity.MineWeeperActivity"/>
+
         <!--截图-->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
