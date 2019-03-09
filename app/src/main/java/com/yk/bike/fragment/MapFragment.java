@@ -637,10 +637,10 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             @Override
                             public void onSuccess(UserInfoResponse userInfoResponse) {
                                 if (isResponseSuccess(userInfoResponse)) {
-                                    if (userInfoResponse.getData().getDeposit() > 0 || userInfoResponse.getData().getScore() >= 500) {
+                                    if (userInfoResponse.getData().getScore() >= 500) {
                                         stopBike();
                                     } else {
-                                        showAlertDialog("提示", "您不是会员或没有押金，需要在指定地点停车", new String[]{"停车", "取消"}, new AlertDialogListener() {
+                                        showAlertDialog("提示", "您不是会员，需要在指定地点停车", new String[]{"停车", "取消"}, new AlertDialogListener() {
                                             @Override
                                             public void onPositiveClick(DialogInterface dialog, int which) {
                                                 checkStop();

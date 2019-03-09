@@ -29,6 +29,7 @@ import com.yk.bike.R;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
+import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
@@ -43,6 +44,7 @@ import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
 import com.yk.bike.utils.BitmapCache;
@@ -501,14 +503,18 @@ public class MainActivity extends BaseActivity
                                 .setBikeId(bikeInfoResponse.getData().getBikeId())
                                 .setUserId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
 
-                        ApiUtils.getInstance().addBikeRecord(bikeRecord, new ResponseListener<BikeRecordResponse>() {
+                        ApiUtils.getInstance().findUserByUserId(SpUtils.getLoginId(),new ResponseListener<UserInfoResponse>(){
                             @Override
-                            public void onSuccess(BikeRecordResponse bikeRecordResponse) {
-                                if (isResponseSuccess(bikeRecordResponse)) {
-                                    ((MapFragment) fragments[FRAGMENT_MAP]).startBike(bikeRecordResponse.getData());
-                                    showShort("开始骑行");
-                                } else {
-                                    showShort(bikeRecordResponse.getMsg());
+                            public void onSuccess(UserInfoResponse userInfoResponse) {
+                                if (userInfoResponse.getData().getDeposit()!=0){
+                                    startBike(bikeRecord);
+                                }else{
+                                    showAlertDialog("没有押金","请先支付押金",new String[]{"去支付","取消"}, new AlertDialogListener(){
+                                        @Override
+                                        public void onPositiveClick(DialogInterface dialog, int which) {
+                                            startActivity(new Intent(MainActivity.this,AccountActivity.class));
+                                        }
+                                    });
                                 }
                             }
 
@@ -550,6 +556,25 @@ public class MainActivity extends BaseActivity
                         }
                     });
                 }
+            }
+        });
+    }
+
+    public void startBike(BikeRecordResponse.BikeRecord bikeRecord){
+        ApiUtils.getInstance().addBikeRecord(bikeRecord, new ResponseListener<BikeRecordResponse>() {
+            @Override
+            public void onSuccess(BikeRecordResponse bikeRecordResponse) {
+                if (isResponseSuccess(bikeRecordResponse)) {
+                    ((MapFragment) fragments[FRAGMENT_MAP]).startBike(bikeRecordResponse.getData());
+                    showShort("开始骑行");
+                } else {
+                    showShort(bikeRecordResponse.getMsg());
+                }
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                showShort(errorMsg);
             }
         });
     }
