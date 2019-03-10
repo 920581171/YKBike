@@ -486,7 +486,7 @@ public class ApiUtils {
      */
     public void deleteSiteLocation(String siteId, OnResponseListener<CommonResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
-                .add("bikeId", siteId)
+                .add("siteId", siteId)
                 .build();
 
         post(formBody, UrlConsts.POST_SITE_LOCATION_DELETE_SITE, new CommonCallback<>(onResponseListener, CommonResponse.class));
