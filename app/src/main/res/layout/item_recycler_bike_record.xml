@@ -78,28 +78,6 @@
         app:layout_constraintTop_toTopOf="@+id/tv_show_create_time"/>
 
     <TextView
-        android:id="@+id/tv_show_mileage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/string_show_mileage"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_show_duration"/>
-
-    <TextView
-        android:id="@+id/tv_mileage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/string_mileage_unit"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_show_mileage"
-        app:layout_constraintStart_toEndOf="@+id/tv_show_mileage"
-        app:layout_constraintTop_toTopOf="@+id/tv_show_mileage"/>
-
-    <TextView
         android:id="@+id/tv_show_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -164,5 +142,38 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_show_score"
         app:layout_constraintStart_toEndOf="@+id/tv_show_score"
         app:layout_constraintTop_toTopOf="@+id/tv_show_score"/>
+
+    <TextView
+        android:id="@+id/tv_show_mileage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/string_show_mileage"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_show_duration"/>
+
+    <TextView
+        android:id="@+id/tv_mileage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/string_mileage_unit"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_show_mileage"
+        app:layout_constraintStart_toEndOf="@+id/tv_show_mileage"
+        app:layout_constraintTop_toTopOf="@+id/tv_show_mileage"/>
+
+    <TextView
+        android:id="@+id/tv_bike_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/string_bike_type"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_show_mileage"
+        app:layout_constraintStart_toEndOf="@+id/tv_mileage"
+        app:layout_constraintTop_toTopOf="@+id/tv_show_mileage"/>
 
 </android.support.constraint.ConstraintLayout>

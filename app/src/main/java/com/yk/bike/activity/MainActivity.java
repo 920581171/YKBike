@@ -29,7 +29,6 @@ import com.yk.bike.R;
 import com.yk.bike.base.AlertDialogListener;
 import com.yk.bike.base.BaseActivity;
 import com.yk.bike.base.BaseFragment;
-import com.yk.bike.base.OnAlertDialogListener;
 import com.yk.bike.callback.ResponseListener;
 import com.yk.bike.constant.Consts;
 import com.yk.bike.fragment.AboutFragment;
@@ -43,7 +42,10 @@ import com.yk.bike.fragment.MessageBroadListFragment;
 import com.yk.bike.fragment.SiteLocationFragment;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordResponse;
+import com.yk.bike.response.BikeTypeListResponse;
+import com.yk.bike.response.BikeTypeResponse;
 import com.yk.bike.response.CommonResponse;
+import com.yk.bike.response.QRResponse;
 import com.yk.bike.response.UserInfoResponse;
 import com.yk.bike.service.LocationService;
 import com.yk.bike.utils.ApiUtils;
@@ -52,12 +54,16 @@ import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.NullObjectUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yk.bike.utils.SpUtils;
+import com.yk.bike.utils.StaticUtils;
 import com.yk.bike.websocket.ChatMessage;
 import com.yk.bike.websocket.NotificationUtils;
 import com.yk.bike.websocket.WebSocketManager;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -97,6 +103,7 @@ public class MainActivity extends BaseActivity
                         break;
                     case Consts.BR_ACTION_LOGIN:
                         login();
+                        StaticUtils.getInstance().initBikeTypeMap();
                         WebSocketManager.getInstance().init(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
                         break;
                     case Consts.BR_ACTION_LOGOUT:
@@ -238,7 +245,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void initRecord() {
-        ApiUtils.getInstance().findBikeRecordIsCycling(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID), new ResponseListener<BikeRecordResponse>() {
+        ApiUtils.getInstance().findBikeRecordIsCycling(SpUtils.getLoginId(), new ResponseListener<BikeRecordResponse>() {
             @Override
             public void onSuccess(BikeRecordResponse bikeRecordResponse) {
                 if (isResponseSuccess(bikeRecordResponse)) {
@@ -361,21 +368,27 @@ public class MainActivity extends BaseActivity
         if (requestCode == Consts.REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String qrCode = data.getStringExtra(Constant.CODED_CONTENT);
-                String content = new String(Base64.decode(qrCode, Base64.DEFAULT));
-                if (!content.contains("BIKE"))
-                    showShort("不是正确的二维码");
-                else
-                    ApiUtils.getInstance().findBikeByBikeId(content, new ResponseListener<BikeInfoResponse>() {
-                        @Override
-                        public void onError(String errorMsg) {
-                            showShort(errorMsg);
-                        }
+                try {
+                    String content = new String(Base64.decode(qrCode, Base64.DEFAULT));
+                    QRResponse qr = GsonUtils.fromJson(content, QRResponse.class);
+                    if (!qr.getBikeId().contains("BIKE"))
+                        showShort("不是正确的二维码");
+                    else
+                        ApiUtils.getInstance().findBikeByBikeId(qr.getBikeId(), new ResponseListener<BikeInfoResponse>() {
+                            @Override
+                            public void onError(String errorMsg) {
+                                showShort(errorMsg);
+                            }
 
-                        @Override
-                        public void onSuccess(BikeInfoResponse bikeInfoResponse) {
-                            onQRCodeResult(content, bikeInfoResponse);
-                        }
-                    });
+                            @Override
+                            public void onSuccess(BikeInfoResponse bikeInfoResponse) {
+                                onQRCodeResult(qr, bikeInfoResponse);
+                            }
+                        });
+                }catch (Exception e){
+                    showShort("不是正确的二维码");
+                    e.printStackTrace();
+                }
             }
         } else if (requestCode == Consts.REQUEST_CODE_ACCOUNT && resultCode == Consts.RESULT_CODE_LOGOUT) {
             logout();
@@ -403,28 +416,31 @@ public class MainActivity extends BaseActivity
         startActivityForResult(intent, Consts.REQUEST_CODE_SCAN);
     }
 
-    public void onQRCodeResult(String content, BikeInfoResponse bikeInfoResponse) {
+    public void onQRCodeResult(QRResponse qr, BikeInfoResponse bikeInfoResponse) {
         String type;
         String title;
         String message;
         String[] buttonText;
+        BikeTypeResponse.BikeType bikeType = StaticUtils.getInstance().getBikeType(qr.getBikeType());
         AMapLocation aMapLocation = binder.getAMapLocation();
         if (Consts.LOGIN_TYPE_ADMIN.equals(SharedPreferencesUtils.get(Consts.SP_STRING_LOGIN_TYPE, ""))) {
             if (isResponseSuccess(bikeInfoResponse)) {
                 if ("0".equals(bikeInfoResponse.getData().getFix())) {
                     title = "自行车已添加";
-                    message = "车辆编号：" + content;
+                    message = "车辆编号：" + qr.getBikeId() + "\n" +
+                            "车辆类型：" + bikeType.getTypeName();
                     buttonText = new String[]{"查看", "取消", "需要维修"};
                     type = Consts.CODE_RESULT_TYPE_ADMIN_ADDED;
                 } else {
                     title = "自行车正在维修中";
-                    message = "车辆编号：" + content;
+                    message = "车辆编号：" + qr.getBikeId() + "\n" +
+                            "车辆类型：" + bikeType.getTypeName();
                     buttonText = new String[]{"维修完毕", "取消"};
                     type = Consts.CODE_RESULT_TYPE_ADMIN_FIX;
                 }
             } else {
                 title = "添加自行车";
-                message = "添加车辆编号：" + content + "到\n" +
+                message = "添加车辆编号：" + qr.getBikeId() + "到\n" +
                         binder.getAMapLocation().getAddress() + "？";
                 buttonText = new String[]{"添加", "取消"};
                 type = Consts.CODE_RESULT_TYPE_ADMIN_NEW_ADD;
@@ -433,12 +449,14 @@ public class MainActivity extends BaseActivity
             if (isResponseSuccess(bikeInfoResponse)) {
                 if ("0".equals(bikeInfoResponse.getData().getFix())) {
                     title = "扫码成功";
-                    message = "车辆可用，编号：" + content;
+                    message = "车辆可用，编号：" + qr.getBikeId() + "\n" +
+                            "车辆类型：" + bikeType.getTypeName() + "\n" +
+                            "费用：" + bikeType.getUnitPrice() + " 元/10分钟";
                     buttonText = new String[]{"立即骑行", "取消", "报修"};
                     type = Consts.CODE_RESULT_TYPE_USER_BIKE;
                 } else {
                     title = "扫码成功";
-                    message = "车辆正在维修，编号：" + content;
+                    message = "车辆正在维修，编号：" + qr.getBikeId();
                     buttonText = new String[]{"扫下一辆", "取消"};
                     type = Consts.CODE_RESULT_TYPE_USER_FIX;
                 }
@@ -457,7 +475,7 @@ public class MainActivity extends BaseActivity
                         showShort("查看");
                         break;
                     case Consts.CODE_RESULT_TYPE_ADMIN_NEW_ADD:
-                        ApiUtils.getInstance().addBikeInfo(content, aMapLocation.getLatitude(), aMapLocation.getLongitude(),
+                        ApiUtils.getInstance().addBikeInfo(qr, aMapLocation.getLatitude(), aMapLocation.getLongitude(),
                                 new ResponseListener<CommonResponse>() {
                                     @Override
                                     public void onError(String errorMsg) {
@@ -501,6 +519,7 @@ public class MainActivity extends BaseActivity
                     case Consts.CODE_RESULT_TYPE_USER_BIKE:
                         BikeRecordResponse.BikeRecord bikeRecord = new BikeRecordResponse.BikeRecord()
                                 .setBikeId(bikeInfoResponse.getData().getBikeId())
+                                .setBikeType(bikeInfoResponse.getData().getBikeType())
                                 .setUserId(SharedPreferencesUtils.getString(Consts.SP_STRING_LOGIN_ID));
 
                         ApiUtils.getInstance().findUserByUserId(SpUtils.getLoginId(),new ResponseListener<UserInfoResponse>(){
@@ -595,6 +614,7 @@ public class MainActivity extends BaseActivity
         SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_PASSWORD, "");
         SharedPreferencesUtils.put(Consts.SP_STRING_LOGIN_TYPE, "");
         SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, "");
+        ((MapFragment)fragments[FRAGMENT_MAP]).resetCount();
         WebSocketManager.getInstance().disconnect();
         switchFragment(FRAGMENT_ABOUT);
         startActivity(new Intent(this, LoginActivity.class));

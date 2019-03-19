@@ -9,6 +9,8 @@ import com.yk.bike.R;
 import com.yk.bike.base.BaseAdapter;
 import com.yk.bike.base.BaseViewHolder;
 import com.yk.bike.response.BikeInfoResponse;
+import com.yk.bike.response.BikeTypeResponse;
+import com.yk.bike.utils.StaticUtils;
 
 import java.util.List;
 
@@ -34,11 +36,15 @@ public class BikeInfoAdapter extends BaseAdapter<BikeInfoResponse.BikeInfo> {
         TextView mileage = itemView.findViewById(R.id.tv_mileage);
         ImageView ivShowInMap = itemView.findViewById(R.id.iv_show_in_map);
         TextView tvShowInMap = itemView.findViewById(R.id.tv_show_in_map);
+        TextView tvBikeType = itemView.findViewById(R.id.tv_bike_type);
+
+        BikeTypeResponse.BikeType bikeType = StaticUtils.getInstance().getBikeType(list.get(i).getBikeType());
 
         bikeId.setText(list.get(i).getBikeId());
         String mileageText = list.get(i).getMileage() + itemView.getContext().getResources().getString(R.string.string_mileage_unit);
         String userId = list.get(i).getUserId();
         mileage.setText(mileageText);
+        tvBikeType.setText(bikeType.getTypeName());
 
         if ("1".equals(list.get(i).getFix())) {
             status.setText(itemView.getContext().getResources().getString(R.string.string_status_fix));

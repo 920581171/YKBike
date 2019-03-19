@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.mob.MobSDK;
 import com.yk.bike.utils.BitmapCache;
+import com.yk.bike.utils.StaticUtils;
 import com.yk.bike.websocket.NotificationUtils;
 
 public class BaseApplication extends Application {
@@ -18,6 +19,7 @@ public class BaseApplication extends Application {
         MobSDK.init(this);
         BitmapCache.getInstance().init();
         NotificationUtils.getInstance().init();
+        StaticUtils.getInstance().init();
     }
 
     @Override
@@ -26,6 +28,7 @@ public class BaseApplication extends Application {
         application = null;
         BitmapCache.getInstance().relese();
         NotificationUtils.getInstance().relese();
+        StaticUtils.getInstance().relese();
     }
 
     public static BaseApplication getApplication() {

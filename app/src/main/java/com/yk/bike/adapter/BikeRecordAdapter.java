@@ -10,6 +10,8 @@ import com.yk.bike.R;
 import com.yk.bike.base.BaseAdapter;
 import com.yk.bike.base.BaseViewHolder;
 import com.yk.bike.response.BikeRecordResponse;
+import com.yk.bike.response.BikeTypeResponse;
+import com.yk.bike.utils.StaticUtils;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -40,6 +42,7 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
         TextView tvDuration = itemView.findViewById(R.id.tv_duration);
         TextView tvScore = itemView.findViewById(R.id.tv_score);
         TextView tvCreateTime = itemView.findViewById(R.id.tv_create_time);
+        TextView tvBikeType = itemView.findViewById(R.id.tv_bike_type);
 
         Context context = itemView.getContext();
 
@@ -60,6 +63,10 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
             charge = mileageText = durationText = "骑行中";
         }
 
+        BikeTypeResponse.BikeType bikeType = StaticUtils.getInstance().getBikeType(list.get(i).getBikeType());
+
+        String bikeTypeText = bikeType.getTypeName() + "：" + bikeType.getUnitPrice() + "元/10分钟";
+
         tvOrderId.setText(list.get(i).getOrderId());
         tvBikeId.setText(list.get(i).getBikeId());
         tvMileage.setText(mileageText);
@@ -67,6 +74,7 @@ public class BikeRecordAdapter extends BaseAdapter<BikeRecordResponse.BikeRecord
         tvCreateTime.setText(createTime);
         tvDuration.setText(durationText);
         tvScore.setText(score);
+        tvBikeType.setText(bikeTypeText);
 
         itemView.setOnClickListener(v -> {
             if (onItemClickListener != null)

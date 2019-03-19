@@ -173,7 +173,7 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="10￥"
+            android:text="￥10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -186,7 +186,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="20￥"
+            android:text="￥20"
             app:layout_constraintEnd_toStartOf="@+id/charge30"
             app:layout_constraintStart_toEndOf="@+id/charge10"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -199,7 +199,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="30￥"
+            android:text="￥30"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -211,7 +211,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="50￥"
+            android:text="￥50"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -224,7 +224,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="100￥"
+            android:text="￥100"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/charge150"
             app:layout_constraintStart_toEndOf="@+id/charge50"/>
@@ -237,7 +237,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="150￥"
+            android:text="￥150"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </android.support.constraint.ConstraintLayout>
@@ -292,7 +292,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="50积分\n换5￥"
+            android:text="50积分\n换￥5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -306,7 +306,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="100积分\n换10￥"
+            android:text="100积分\n换￥10"
             app:layout_constraintEnd_toStartOf="@+id/score250"
             app:layout_constraintStart_toEndOf="@+id/score50"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -320,7 +320,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/btn_white"
             android:gravity="center"
-            android:text="250积分\n换25￥"
+            android:text="250积分\n换￥25"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

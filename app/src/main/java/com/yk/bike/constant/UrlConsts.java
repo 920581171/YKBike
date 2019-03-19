@@ -119,4 +119,9 @@ public class UrlConsts {
     public static final String POST_SCORE_RECORD_BY_USERID = "/scorerecord/findScoreRecordByUserId";
     public static final String POST_SCORE_RECORD_ADD = "/scorerecord/addScoreRecord";
     public static final String POST_SCORE_RECORD_UPDATE = "/scorerecord/updateScoreRecord";
+
+    /**
+     * bikeType
+     */
+    public static final String POST_BIKE_TYPE_FIND_ALL = "/bikeType/findAllBikeType";
 }

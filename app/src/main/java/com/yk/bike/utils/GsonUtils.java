@@ -25,7 +25,7 @@ public class GsonUtils {
         return getGson().toJson(object);
     }
 
-    public static <T>T fromJson(String string,Type type) throws IllegalStateException{
-        return getGson().fromJson(string,type);
+    public static <T> T fromJson(String string, Type type) throws IllegalStateException {
+        return getGson().fromJson(string, type);
     }
 }

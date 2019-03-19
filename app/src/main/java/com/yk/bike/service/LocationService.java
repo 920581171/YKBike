@@ -27,6 +27,8 @@ public class LocationService extends Service {
 
     private static final String TAG = "LocationService";
 
+    public static final int COUNT_DOWN = 100;
+
     //声明AMapLocationClient类对象
     private AMapLocationClient mLocationClient;
     //声明定位回调监听器
@@ -41,7 +43,7 @@ public class LocationService extends Service {
     private long serviceTime = 0;
     private long t = 0;
 
-    private int count = 100;
+    private int count = COUNT_DOWN;
 
     private LinkedList<OnServiceTimeListener> onServiceTimeListeners = new LinkedList<>();
 
@@ -62,7 +64,7 @@ public class LocationService extends Service {
             count--;
             //每隔一段时间同步一次服务器时间
             if (count <= 0) {
-                count = 100;
+                count = COUNT_DOWN;
                 initServiceTime(false);
             }
             for (OnServiceTimeListener listener : onServiceTimeListeners)

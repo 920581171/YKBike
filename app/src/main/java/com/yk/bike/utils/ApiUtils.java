@@ -10,12 +10,14 @@ import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordListResponse;
 import com.yk.bike.response.BikeRecordResponse;
+import com.yk.bike.response.BikeTypeListResponse;
 import com.yk.bike.response.ChatMessageListResponse;
 import com.yk.bike.response.ChatRoomListResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.DepositRecordListResponse;
 import com.yk.bike.response.MessageBroadListResponse;
 import com.yk.bike.response.MessageBroadResponse;
+import com.yk.bike.response.QRResponse;
 import com.yk.bike.response.ScoreRecordListResponse;
 import com.yk.bike.response.ScoreRecordResponse;
 import com.yk.bike.response.SiteLocationListResponse;
@@ -305,14 +307,15 @@ public class ApiUtils {
     /**
      * 添加自行车信息
      *
-     * @param bikeId
+     * @param qr
      * @param latitude
      * @param longitude
      * @param onResponseListener
      */
-    public void addBikeInfo(String bikeId, double latitude, double longitude, OnResponseListener<CommonResponse> onResponseListener) {
+    public void addBikeInfo(QRResponse qr, double latitude, double longitude, OnResponseListener<CommonResponse> onResponseListener) {
         FormBody formBody = new FormBody.Builder()
-                .add("bikeId", bikeId)
+                .add("bikeId", qr.getBikeId())
+                .add("bikeType", qr.getBikeType())
                 .add("latitude", String.valueOf(latitude))
                 .add("longitude", String.valueOf(longitude))
                 .build();
@@ -422,6 +425,7 @@ public class ApiUtils {
         FormBody formBody = new FormBody.Builder()
                 .add("userId", NullObjectUtils.emptyString(bikeRecord.getUserId()))
                 .add("bikeId", NullObjectUtils.emptyString(bikeRecord.getBikeId()))
+                .add("bikeType", NullObjectUtils.emptyString(bikeRecord.getBikeType()))
                 .build();
         post(formBody, UrlConsts.POST_BIKE_RECORD_ADD_BIKE_RECORD, new CommonCallback<>(onResponseListener, BikeRecordResponse.class));
     }
@@ -728,5 +732,17 @@ public class ApiUtils {
                 .build();
 
         post(formBody, UrlConsts.POST_SCORE_RECORD_BY_USERID, new CommonCallback<>(onResponseListener, ScoreRecordListResponse.class));
+    }
+
+    /*-------------------------------------------------bikeType-------------------------------------------------*/
+
+    /**
+     * 查询所有车辆类型
+     * @param onResponseListener
+     */
+    public void findAllBikeType(OnResponseListener<BikeTypeListResponse> onResponseListener) {
+        FormBody formBody = new FormBody.Builder().build();
+
+        post(formBody, UrlConsts.POST_BIKE_TYPE_FIND_ALL, new CommonCallback<>(onResponseListener, BikeTypeListResponse.class));
     }
 }

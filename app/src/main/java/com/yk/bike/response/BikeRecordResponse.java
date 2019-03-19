@@ -30,6 +30,7 @@ public class BikeRecordResponse extends BaseResponse {
         private String orderId;
         private String userId;
         private String bikeId;
+        private String bikeType;
         private float charge;
         private float mileage;
         private Date createTime;
@@ -69,6 +70,15 @@ public class BikeRecordResponse extends BaseResponse {
 
         public BikeRecord setBikeId(String bikeId) {
             this.bikeId = bikeId;
+            return this;
+        }
+
+        public String getBikeType() {
+            return bikeType;
+        }
+
+        public BikeRecord setBikeType(String bikeType) {
+            this.bikeType = bikeType;
             return this;
         }
 
@@ -121,6 +131,7 @@ public class BikeRecordResponse extends BaseResponse {
             return new BikeRecord()
                     .setUserId(userId)
                     .setBikeId(bikeId)
+                    .setBikeType(bikeType)
                     .setCharge(charge)
                     .setCreateTime(createTime)
                     .setEndTime(endTime)

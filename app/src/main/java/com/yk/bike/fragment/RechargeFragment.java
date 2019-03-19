@@ -24,11 +24,8 @@ import com.yk.bike.utils.SpUtils;
 
 public class RechargeFragment extends BaseFragment<AccountActivity> implements View.OnClickListener {
 
-    private TextView tvShowDeposit;
     private TextView tvDeposit;
-    private TextView tvShowBalance;
     private TextView tvBalance;
-    private TextView tvShowScore;
     private TextView tvScore;
 
     UserInfoResponse.UserInfo userInfo;
@@ -44,11 +41,11 @@ public class RechargeFragment extends BaseFragment<AccountActivity> implements V
 
     @Override
     public void initView(View rootView, Bundle savedInstanceState) {
-        tvShowDeposit = rootView.findViewById(R.id.tv_show_deposit);
+        TextView tvShowDeposit = rootView.findViewById(R.id.tv_show_deposit);
         tvDeposit = rootView.findViewById(R.id.tv_deposit);
-        tvShowBalance = rootView.findViewById(R.id.tv_show_balance);
+        TextView tvShowBalance = rootView.findViewById(R.id.tv_show_balance);
         tvBalance = rootView.findViewById(R.id.tv_balance);
-        tvShowScore = rootView.findViewById(R.id.tv_show_score);
+        TextView tvShowScore = rootView.findViewById(R.id.tv_show_score);
         tvScore = rootView.findViewById(R.id.tv_score);
         tvDepositCharge = rootView.findViewById(R.id.tv_deposit_charge);
         ctlChargeList = rootView.findViewById(R.id.ctl_charge_list);

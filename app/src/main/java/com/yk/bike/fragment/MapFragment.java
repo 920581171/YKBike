@@ -1,11 +1,9 @@
 package com.yk.bike.fragment;
 
 import android.content.DialogInterface;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -36,6 +34,8 @@ import com.yk.bike.constant.Consts;
 import com.yk.bike.response.BikeInfoListResponse;
 import com.yk.bike.response.BikeInfoResponse;
 import com.yk.bike.response.BikeRecordResponse;
+import com.yk.bike.response.BikeTypeListResponse;
+import com.yk.bike.response.BikeTypeResponse;
 import com.yk.bike.response.CommonResponse;
 import com.yk.bike.response.SiteLocationListResponse;
 import com.yk.bike.response.SiteLocationResponse;
@@ -46,12 +46,12 @@ import com.yk.bike.utils.BitmapCache;
 import com.yk.bike.utils.GsonUtils;
 import com.yk.bike.utils.SharedPreferencesUtils;
 import com.yk.bike.utils.SpUtils;
+import com.yk.bike.utils.StaticUtils;
 import com.yk.bike.websocket.WebSocketLoaction;
 import com.yk.bike.websocket.WebSocketManager;
 import com.yk.bike.websocket.WebSocketMessage;
 import com.yk.bike.widght.SitePlanView;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnInfoWindowClickListener, View.OnClickListener {
@@ -65,6 +65,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
     private AMap mAMap;
 
     private TextView tvShowBikeTime;
+    private TextView tvShowBikeCharge;
     private TextView tvStopBike;
 
     private LocationService.OnServiceTimeListener onServiceTimeListener;
@@ -82,15 +83,19 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
         ImageView ivNarrow = rootView.findViewById(R.id.iv_narrow);
         SitePlanView sitePlanView = rootView.findViewById(R.id.sitePlanView);
         tvShowBikeTime = rootView.findViewById(R.id.tv_show_bike_time);
+        tvShowBikeCharge = rootView.findViewById(R.id.tv_show_bike_charge);
+        ImageView ivHelpMoney = rootView.findViewById(R.id.iv_help_money);
         tvStopBike = rootView.findViewById(R.id.tv_stop_bike);
 
         tvShowBikeTime.setVisibility(View.GONE);
+        tvShowBikeCharge.setVisibility(View.GONE);
         tvStopBike.setVisibility(View.GONE);
 
         showLocation.setOnClickListener(this);
         sitePlan.setOnClickListener(this);
         ivEnlarge.setOnClickListener(this);
         ivNarrow.setOnClickListener(this);
+        ivHelpMoney.setOnClickListener(this);
         tvStopBike.setOnClickListener(this);
 
         initMap(savedInstanceState);
@@ -206,9 +211,12 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                                             BitmapCache.getInstance().getLocationOn() :
                                             BitmapCache.getInstance().getLocationUser();
 
+                            String title = getString(R.string.string_show_bike_id) + bikeId + "\n" +
+                                    StaticUtils.getInstance().getBikeTypeName(b.getBikeType());
+
                             BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
                             MarkerOptions markerOptions = new MarkerOptions()
-                                    .title(getString(R.string.string_show_bike_id) + bikeId)
+                                    .title(title)
                                     .snippet(snippet)
                                     .position(latLng)
                                     .icon(bitmapDescriptor);
@@ -490,14 +498,22 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
 
     public void startBike(BikeRecordResponse.BikeRecord bikeRecord) {
         tvShowBikeTime.setVisibility(View.VISIBLE);
+        tvShowBikeCharge.setVisibility(View.VISIBLE);
         tvStopBike.setVisibility(View.VISIBLE);
 
         onServiceTimeListener = serviceTime -> {
             String[] subTimes = subTime(serviceTime, bikeRecord.getCreateTime().getTime());
-            String time = subTimes[0].equals("") ?
+            String timeText = "计时：" + (subTimes[0].equals("") ?
                     subTimes[1] + ":" + subTimes[2] :
-                    subTimes[0] + ":" + subTimes[1] + ":" + subTimes[2];
-            tvShowBikeTime.setText(time);
+                    subTimes[0] + ":" + subTimes[1] + ":" + subTimes[2]);
+            tvShowBikeTime.setText(timeText);
+
+            float charge = (serviceTime - bikeRecord.getCreateTime().getTime()) / 1000f / 60f / 10f;
+            BikeTypeResponse.BikeType bikeType = StaticUtils.getInstance().getBikeType(bikeRecord.getBikeType());
+            charge = charge * bikeType.getUnitPrice();
+            String chargeText = "计费："+String.valueOf((float) (Math.round(charge * 100)) / 100);
+
+            tvShowBikeCharge.setText(chargeText);
 
             LatLng latLng = getLatLng();
 
@@ -540,10 +556,7 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                             showShort("骑行结束");
                             getActivityContext().getFab().show();
                             SharedPreferencesUtils.put(Consts.SP_STRING_ORDER_ID, "");
-                            tvShowBikeTime.setVisibility(View.GONE);
-                            tvStopBike.setVisibility(View.GONE);
-                            getActivityContext().removeOnServiceTimeListener(onServiceTimeListener);
-                            onServiceTimeListener = null;
+                            resetCount();
                             initBikeLocation();
 
                             WebSocketLoaction webSocketLoaction = new WebSocketLoaction()
@@ -561,6 +574,15 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 }
             }
         });
+    }
+
+    public void resetCount(){
+        tvShowBikeTime.setVisibility(View.GONE);
+        tvShowBikeCharge.setVisibility(View.GONE);
+        tvStopBike.setVisibility(View.GONE);
+        if (onServiceTimeListener!=null)
+            getActivityContext().removeOnServiceTimeListener(onServiceTimeListener);
+        onServiceTimeListener = null;
     }
 
     public void checkStop() {
@@ -628,6 +650,13 @@ public class MapFragment extends BaseFragment<MainActivity> implements AMap.OnIn
                 break;
             case R.id.iv_narrow:
                 cameraNarrow();
+                break;
+            case R.id.iv_help_money:
+                StringBuilder message = new StringBuilder();
+                for (BikeTypeResponse.BikeType bikeType : StaticUtils.getInstance().getBikeTypeMap().values()){
+                    message.append(bikeType.getTypeName()).append("：").append(bikeType.getUnitPrice()).append("元/10分钟").append("\n");
+                }
+                showAlertDialog("价格公示",message.toString(),new String[]{"确定"},new AlertDialogListener());
                 break;
             case R.id.tv_stop_bike:
                 showAlertDialog("结束骑行", "是否结束骑行？", new String[]{"结束", "取消"}, new AlertDialogListener() {

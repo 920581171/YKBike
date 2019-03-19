@@ -69,6 +69,10 @@ public class SharedPreferencesUtils {
         return getSharedPreferences().getBoolean(key, false);
     }
 
+    public static float getFloat(String key){
+        return getSharedPreferences().getFloat(key, 0f);
+    }
+
     /**
      * 移除某个key值已经对应的值
      */

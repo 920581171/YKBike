@@ -28,6 +28,7 @@ public class BikeInfoResponse extends BaseResponse{
 
         private int id;
         private String bikeId;
+        private String bikeType;
         private String userId;
         private double latitude;
         private double longitude;
@@ -49,6 +50,15 @@ public class BikeInfoResponse extends BaseResponse{
 
         public BikeInfo setBikeId(String bikeId) {
             this.bikeId = bikeId;
+            return this;
+        }
+
+        public String getBikeType() {
+            return bikeType;
+        }
+
+        public BikeInfo setBikeType(String bikeType) {
+            this.bikeType = bikeType;
             return this;
         }
 

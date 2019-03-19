@@ -67,19 +67,47 @@
 
     <TextView
         android:id="@+id/tv_show_bike_time"
-        android:layout_width="wrap_content"
+        android:layout_width="144dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/btn_white"
-        android:gravity="center"
-        android:text="00:00"
+        android:background="@drawable/btn_up_white"
+        android:gravity="left|center_vertical"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
+        android:text="计时：00:00"
         android:textColor="@color/colorAccent"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_show_bike_charge"
+        android:layout_width="144dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/btn_down_white"
+        android:gravity="left|center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="计费：100.00"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_show_bike_time"/>
+
+    <ImageView
+        android:id="@+id/iv_help_money"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn_white"
+        android:padding="8dp"
+        android:tint="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_show_bike_charge"
+        app:srcCompat="@drawable/ic_help_money"/>
 
     <TextView
         android:id="@+id/tv_stop_bike"
