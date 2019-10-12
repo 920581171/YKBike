@@ -6,7 +6,7 @@ public class UrlConsts {
     public static final String HEAD = "http://";
     public static final String[] IPS = {"luoyk.xin","192.168.43.49"};
     public static final String PORT = "8080";
-    public static final String NAME = "/YKBikeService";
+    public static final String NAME = "/YKBikeServer";
     public static final String IPORT = SpUtils.getIpAddress() + ":" + PORT + NAME;
     public static final String HEADIPORT = HEAD + IPORT;
     //    public static final String HEADIPORT = HEAD + "192.168.3.120" + ":" + PORT;
