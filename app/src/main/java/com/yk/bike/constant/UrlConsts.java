@@ -4,7 +4,7 @@ import com.yk.bike.utils.SpUtils;
 
 public class UrlConsts {
     public static final String HEAD = "http://";
-    public static final String[] IPS = {"luoyk.xin","192.168.43.49"};
+    public static final String[] IPS = {"120.79.3.112"};
     public static final String PORT = "8080";
     public static final String NAME = "/YKBikeServer";
     public static final String IPORT = SpUtils.getIpAddress() + ":" + PORT + NAME;
